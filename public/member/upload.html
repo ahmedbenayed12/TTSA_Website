@@ -33,8 +33,8 @@
       <div class="sidebar-logo-text"><div class="t1">Submission Portal</div><div class="t2">Participant Area</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a href="/member/dashboard.html" style="justify-content:center;">Dashboard</a>
-      <a href="/member/submit.html" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;margin:12px 0;border-radius:var(--radius);background:var(--red);color:#fff;font-weight:700;font-size:.88rem;text-decoration:none;box-shadow:var(--shadow-sm);"><span style="font-size:1.2rem;line-height:1;margin-bottom:2px;">+</span> New Abstract</a>
+      <a href="/member/dashboard.html" style="justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
+      <a href="/member/submit.html" id="navNewAbsBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;margin:12px 0;border-radius:var(--radius);background:var(--red);color:#fff;font-weight:700;font-size:.88rem;text-decoration:none;box-shadow:var(--shadow-sm);"><span style="font-size:1.2rem;line-height:1;margin-bottom:2px;">+</span> New Abstract</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
@@ -111,12 +111,30 @@ if (!absId) location.href = '/member/dashboard.html';
 let selectedFile = null;
 
 async function init() {
-  const [me, abstract, settings] = await Promise.all([
+  const [me, abstract, settings, allAbstracts] = await Promise.all([
     apiFetch('/auth/me'),
     apiFetch('/abstracts/'+absId),
-    fetch('/api/settings').then(r=>r.json())
+    fetch('/api/settings').then(r=>r.json()),
+    apiFetch('/abstracts')
   ]);
   
+  // Check if deadline passed or slots full to disable the New Abstract button
+  const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
+  const isFull = allAbstracts.length >= maxSlots;
+  let passed = false;
+  if (settings.submission_deadline) {
+    const d = new Date(settings.submission_deadline);
+    passed = new Date() > d;
+  }
+  
+  if (passed || isFull) {
+    const navBtn = document.getElementById('navNewAbsBtn');
+    if (navBtn) {
+      navBtn.style.pointerEvents = 'none';
+      navBtn.style.opacity = '0.5';
+      navBtn.title = passed ? 'Deadline has passed' : 'Maximum abstracts reached';
+    }
+  }
   document.getElementById('sidebarName').textContent = me.first_name+' '+me.last_name;
   // document.getElementById('sidebarAvatar').textContent = me.first_name[0];
 
