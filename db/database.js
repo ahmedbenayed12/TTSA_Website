@@ -1,0 +1,183 @@
+const Database = require('better-sqlite3');
+const path = require('path');
+const fs = require('fs');
+
+const DB_PATH = path.join(__dirname, '..', 'ttsa.db');
+
+const db = new Database(DB_PATH);
+db.pragma('journal_mode = WAL');
+db.pragma('foreign_keys = ON');
+
+function initSchema() {
+  db.exec(`
+    -- USERS (members)
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      nationality TEXT NOT NULL CHECK(nationality IN ('Tunisian','Foreign')),
+      country TEXT NOT NULL DEFAULT 'Tunisia',
+      profession TEXT NOT NULL CHECK(profession IN ('Medical','Paramedical')),
+      specialty TEXT NOT NULL CHECK(specialty IN ('Thoracic','Other')),
+      specialty_details TEXT,
+      seniority TEXT NOT NULL CHECK(seniority IN ('Senior','Resident')),
+      is_verified INTEGER NOT NULL DEFAULT 0,
+      otp TEXT,
+      otp_expires_at INTEGER,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+
+    -- REVIEWERS (secondary admins)
+    CREATE TABLE IF NOT EXISTS reviewers (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+
+    -- ADMINS (super admins)
+    CREATE TABLE IF NOT EXISTS admins (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      first_name TEXT NOT NULL DEFAULT 'Super',
+      last_name TEXT NOT NULL DEFAULT 'Admin',
+      created_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+
+    -- ABSTRACTS
+    CREATE TABLE IF NOT EXISTS abstracts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      title TEXT NOT NULL,
+      topic TEXT,
+      main_text TEXT NOT NULL,
+      word_count INTEGER NOT NULL DEFAULT 0,
+      preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either')),
+      status TEXT NOT NULL DEFAULT 'Draft'
+        CHECK(status IN ('Draft','Submitted','Under Review','Accepted','Refused','Revision')),
+      is_locked INTEGER NOT NULL DEFAULT 0,
+      file_path TEXT,
+      file_name TEXT,
+      file_uploaded_at INTEGER,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+      updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+      FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+
+    -- AUTHORS (1-10 per abstract)
+    CREATE TABLE IF NOT EXISTS authors (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      abstract_id INTEGER NOT NULL,
+      first_name TEXT NOT NULL,
+      last_name TEXT NOT NULL,
+      email TEXT,
+      institution TEXT NOT NULL,
+      country TEXT NOT NULL,
+      affiliation_index INTEGER NOT NULL,
+      is_corresponding INTEGER NOT NULL DEFAULT 0,
+      sort_order INTEGER NOT NULL DEFAULT 0,
+      FOREIGN KEY(abstract_id) REFERENCES abstracts(id) ON DELETE CASCADE
+    );
+
+    -- REVIEWER ASSIGNMENTS
+    CREATE TABLE IF NOT EXISTS reviewer_assignments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      abstract_id INTEGER NOT NULL,
+      reviewer_id INTEGER NOT NULL,
+      assigned_at INTEGER NOT NULL DEFAULT (unixepoch()),
+      UNIQUE(abstract_id, reviewer_id),
+      FOREIGN KEY(abstract_id) REFERENCES abstracts(id) ON DELETE CASCADE,
+      FOREIGN KEY(reviewer_id) REFERENCES reviewers(id) ON DELETE CASCADE
+    );
+
+    -- REVIEWS (evaluations)
+    CREATE TABLE IF NOT EXISTS reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      abstract_id INTEGER NOT NULL,
+      reviewer_id INTEGER NOT NULL,
+      criteria1 INTEGER NOT NULL DEFAULT 0 CHECK(criteria1 BETWEEN 0 AND 5),
+      criteria2 INTEGER NOT NULL DEFAULT 0 CHECK(criteria2 BETWEEN 0 AND 5),
+      criteria3 INTEGER NOT NULL DEFAULT 0 CHECK(criteria3 BETWEEN 0 AND 5),
+      criteria4 INTEGER NOT NULL DEFAULT 0 CHECK(criteria4 BETWEEN 0 AND 5),
+      total_score INTEGER GENERATED ALWAYS AS (criteria1+criteria2+criteria3+criteria4) STORED,
+      verdict TEXT CHECK(verdict IN ('Admitted','Refused')),
+      presentation_type TEXT CHECK(presentation_type IN ('Oral','Poster')),
+      comments TEXT,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+      updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+      UNIQUE(abstract_id, reviewer_id),
+      FOREIGN KEY(abstract_id) REFERENCES abstracts(id) ON DELETE CASCADE,
+      FOREIGN KEY(reviewer_id) REFERENCES reviewers(id) ON DELETE CASCADE
+    );
+
+    -- SETTINGS (dynamic config)
+    CREATE TABLE IF NOT EXISTS settings (
+      key TEXT PRIMARY KEY,
+      value TEXT NOT NULL,
+      updated_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+
+    -- EVENTS
+    CREATE TABLE IF NOT EXISTS events (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT,
+      event_date TEXT,
+      event_end_date TEXT,
+      location TEXT,
+      poster_url TEXT,
+      is_published INTEGER NOT NULL DEFAULT 1,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+
+    -- GUIDELINES
+    CREATE TABLE IF NOT EXISTS guidelines (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      content TEXT,
+      file_url TEXT,
+      category TEXT DEFAULT 'General',
+      is_published INTEGER NOT NULL DEFAULT 1,
+      created_at INTEGER NOT NULL DEFAULT (unixepoch())
+    );
+  `);
+
+  // Default settings
+  const defaultSettings = [
+    ['congress_name', 'TTSA Annual Congress 2026'],
+    ['submission_deadline', '2026-08-31T23:59:59'],
+    ['upload_deadline', '2026-10-15T23:59:59'],
+    ['blind_review', 'false'],
+    ['max_abstracts_per_user', '3'],
+    ['max_words_per_abstract', '300'],
+    ['criteria1_label', 'Originality'],
+    ['criteria2_label', 'Methodology'],
+    ['criteria3_label', 'Clarity'],
+    ['criteria4_label', 'Clinical Relevance'],
+  ];
+
+  const insertSetting = db.prepare(
+    'INSERT OR IGNORE INTO settings(key, value) VALUES(?, ?)'
+  );
+  for (const [key, value] of defaultSettings) {
+    insertSetting.run(key, value);
+  }
+
+  console.log('✅ Database schema initialized');
+
+  // Migration: add submission_number if not present
+  const cols = db.prepare("PRAGMA table_info(abstracts)").all().map(c => c.name);
+  if (!cols.includes('submission_number')) {
+    db.exec('ALTER TABLE abstracts ADD COLUMN submission_number INTEGER');
+    console.log('✅ Migration: submission_number column added');
+  }
+}
+
+initSchema();
+
+module.exports = db;

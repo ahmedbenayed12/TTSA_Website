@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Abstracts Management – TTSA</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .table-container { background:var(--white); border-radius:var(--radius-lg); border:1px solid var(--gray-200); overflow:hidden; }
+    .table-container table { width:100%; border-collapse:collapse; text-align:left; }
+    .table-container th, .table-container td { padding:12px 16px; border-bottom:1px solid var(--gray-100); }
+    .table-container th { background:var(--gray-50); font-size:.8rem; color:var(--gray-600); text-transform:uppercase; white-space:nowrap; }
+    .table-container tbody tr:hover { background:var(--gray-50); }
+    .status-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:12px; font-size:.75rem; font-weight:600; }
+    .score-box { background:var(--blue-light); color:var(--blue); font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block; }
+  </style>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html" class="active"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Abstracts & Reviews</h2>
+      <div style="display:flex;gap:12px">
+        <button class="btn btn-outline btn-sm" onclick="finalizeAll()">📧 Finalize & Send Emails</button>
+      </div>
+    </div>
+    <div class="portal-body">
+      
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-header" style="background:var(--blue-light);border-bottom:none">
+          <div style="display:flex;align-items:center;gap:16px">
+            <span style="font-size:1.5rem">🕵️‍♂️</span>
+            <div>
+              <h4 style="color:var(--blue);margin-bottom:4px">Blind Review Mode</h4>
+              <p style="font-size:.85rem;color:var(--gray-600);margin:0">When enabled, reviewers will not see author names or affiliations.</p>
+            </div>
+            <div style="margin-left:auto">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
+                <input type="checkbox" id="blindToggle" onchange="toggleBlind()" style="width:18px;height:18px;accent-color:var(--blue)">
+                Enable Blind Review
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="abstractsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Submitter</th>
+              <th>Status</th>
+              <th>Reviewer</th>
+              <th>Score</th>
+              <th>Verdict</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="8" style="text-align:center;padding:40px">Loading abstracts...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Assign Modal -->
+<div class="modal-overlay" id="assignModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="assignTitle">Assign Reviewer</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="assignAbsId"/>
+      <div class="form-group">
+        <label class="form-label">Select Reviewer</label>
+        <select id="reviewerSelect" class="form-control">
+          <option value="">-- Loading reviewers --</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAssignment()" id="assignBtn">Save Assignment</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+
+let abstracts = [];
+let reviewers = [];
+
+const statusColors = { Draft:'badge-gray', Submitted:'badge-blue', 'Under Review':'badge-yellow', Accepted:'badge-green', Refused:'badge-red' };
+
+async function init() {
+  const [me, abs, revs, settings] = await Promise.all([
+    apiFetch('/auth/me'),
+    apiFetch('/admin/abstracts'),
+    apiFetch('/admin/reviewers'),
+    fetch('/api/settings').then(r=>r.json())
+  ]);
+
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+  
+  abstracts = abs;
+  reviewers = revs;
+  document.getElementById('blindToggle').checked = settings.blind_review === 'true';
+
+  renderTable();
+
+  // Populate select
+  document.getElementById('reviewerSelect').innerHTML = '<option value="">-- Select Reviewer --</option>' +
+    reviewers.map(r=>`<option value="${r.id}">${r.last_name}, ${r.first_name}</option>`).join('');
+}
+
+function renderTable() {
+  const tbody = document.querySelector('#abstractsTable tbody');
+  if (!abstracts.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-500)">No abstracts found</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = abstracts.map(a => {
+    const isSubmitted = a.status !== 'Draft';
+    let btnHtml = '';
+    if (a.status === 'Draft') {
+      btnHtml = '<span style="color:var(--gray-400);font-size:.8rem">Locked by user</span>';
+    } else {
+      btnHtml = `<button class="btn btn-outline btn-sm" onclick="openAssign(${a.id})">${a.reviewer_name?'Reassign':'Assign'}</button>`;
+    }
+
+    let verdictHtml = '—';
+    if (a.verdict==='Admitted') verdictHtml = '<span style="color:var(--success);font-weight:700">Admitted</span>';
+    else if (a.verdict==='Refused') verdictHtml = '<span style="color:var(--red);font-weight:700">Refused</span>';
+
+    return `
+      <tr>
+        <td style="font-weight:600;color:var(--gray-500)">
+          ${a.submission_number ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">#${a.submission_number}</span>` : `<span class="badge badge-gray">ID: ${a.id}</span>`}
+        </td>
+        <td>
+          <div style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${a.title}">${a.title}</div>
+          <div style="font-size:.75rem;color:var(--gray-500)">${a.word_count} words</div>
+        </td>
+        <td>
+          <div style="font-weight:500">${a.submitter_name}</div>
+          <div style="font-size:.75rem;color:var(--gray-500)">${a.submitter_email}</div>
+        </td>
+        <td><span class="status-badge ${statusColors[a.status]}">${a.status}</span></td>
+        <td>${a.reviewer_name ? a.reviewer_name : '<span style="color:var(--gray-400)">Unassigned</span>'}</td>
+        <td>${a.total_score!=null ? `<span class="score-box">${a.total_score}/20</span>` : '—'}</td>
+        <td>${verdictHtml}</td>
+        <td>${btnHtml}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+async function toggleBlind() {
+  const enabled = document.getElementById('blindToggle').checked;
+  try {
+    await apiFetch('/admin/blind-review', { method:'PATCH', body:JSON.stringify({enabled}) });
+    showToast(`Blind review ${enabled?'enabled':'disabled'}`);
+  } catch(e) {
+    document.getElementById('blindToggle').checked = !enabled;
+    showToast('Failed to toggle blind review','error');
+  }
+}
+
+function openAssign(id) {
+  const a = abstracts.find(x=>x.id===id);
+  document.getElementById('assignAbsId').value = id;
+  document.getElementById('assignTitle').textContent = `Assign: ID ${id}`;
+  
+  // Try to pre-select existing reviewer
+  const sel = document.getElementById('reviewerSelect');
+  sel.value = '';
+  if (a.reviewer_name) {
+    const r = reviewers.find(rev => `${rev.last_name}, ${rev.first_name}`.includes(a.reviewer_name.split(' ')[0]));
+    if (r) sel.value = r.id;
+  }
+  
+  document.getElementById('assignModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('assignModal').classList.remove('open'); }
+
+async function saveAssignment() {
+  const absId = document.getElementById('assignAbsId').value;
+  const revId = document.getElementById('reviewerSelect').value;
+  if(!revId) { showToast('Select a reviewer','error'); return; }
+
+  const btn = document.getElementById('assignBtn');
+  btn.disabled=true; btn.textContent='Saving...';
+  try {
+    await apiFetch('/admin/assignments', {
+      method:'PATCH', body:JSON.stringify({ abstract_id:absId, reviewer_id:revId })
+    });
+    showToast('Reviewer assigned');
+    closeModal();
+    init(); // reload
+  } catch(e) {
+    showToast(e.message,'error');
+  }
+  btn.disabled=false; btn.textContent='Save Assignment';
+}
+
+async function finalizeAll() {
+  const pending = abstracts.filter(a => a.status === 'Under Review');
+  if (!pending.length) { showToast('No reviewed abstracts ready to finalize','info'); return; }
+
+  if (!confirm(`This will finalize ${pending.length} abstracts, change their status to Accepted/Refused, and send automated email blasts to the authors. Proceed?`)) return;
+
+  try {
+    const res = await apiFetch('/admin/finalize', { method:'POST', body:JSON.stringify({}) });
+    showToast(res.message);
+    init(); // reload
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+}
+
+init();
+</script>
+</body>
+</html>

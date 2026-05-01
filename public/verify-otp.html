@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Verify Email – TTSA</title>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    body { background:linear-gradient(135deg,#e8f2fc 0%,#f9fafb 100%); min-height:100vh; display:flex; flex-direction:column; }
+    .auth-page { flex:1; display:flex; align-items:center; justify-content:center; padding:40px 24px; }
+    .auth-card { background:var(--white); border-radius:var(--radius-xl); box-shadow:var(--shadow-lg); width:100%; max-width:420px; overflow:hidden; }
+    .auth-header { background:var(--blue); padding:28px; text-align:center; }
+    .auth-header img { height:48px; margin:0 auto 12px; filter:brightness(0) invert(1); }
+    .auth-header h1 { color:#fff; font-size:1.3rem; margin:0; }
+    .auth-header p  { color:rgba(255,255,255,.7); font-size:.82rem; margin-top:4px; }
+    .auth-body { padding:28px; text-align:center; }
+    .email-badge { background:var(--blue-light); color:var(--blue); border-radius:20px; padding:6px 16px; font-size:.85rem; font-weight:600; display:inline-block; margin-bottom:24px; }
+    .resend-timer { font-size:.82rem; color:var(--gray-500); margin-top:16px; }
+    .resend-timer a { font-weight:600; }
+    .resend-timer a.disabled { color:var(--gray-400); pointer-events:none; }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <h1>Verify Your Email</h1>
+      <p>Enter the 4-digit code we sent you</p>
+    </div>
+    <div class="auth-body">
+      <div id="errBox" class="alert alert-error" style="display:none;margin-bottom:16px"></div>
+      <div id="successBox" class="alert alert-success" style="display:none;margin-bottom:16px"></div>
+      <div style="font-size:.9rem;color:var(--gray-600);margin-bottom:12px">We sent a verification code to:</div>
+      <div class="email-badge" id="emailDisplay">—</div>
+      <div class="otp-inputs" id="otpInputs">
+        <input type="text" maxlength="1" id="otp0" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" id="otp1" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" id="otp2" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" id="otp3" inputmode="numeric" pattern="[0-9]"/>
+      </div>
+      <button class="btn btn-primary" style="width:100%;margin-top:24px" id="verifyBtn" onclick="verifyOTP()">Verify Email</button>
+      <div class="resend-timer" id="resendRow">
+        Didn't receive it? <a href="#" id="resendLink" onclick="resendOTP(event)">Resend code</a>
+        <span id="timerSpan"></span>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/api.js"></script>
+<script>
+const params = new URLSearchParams(location.search);
+const email  = params.get('email') || '';
+document.getElementById('emailDisplay').textContent = email;
+
+// OTP auto-advance
+document.querySelectorAll('#otpInputs input').forEach((inp,i,arr) => {
+  inp.addEventListener('input', () => {
+    inp.value = inp.value.replace(/\D/g,'');
+    if (inp.value && i < arr.length-1) arr[i+1].focus();
+    if (getOTP().length===4) verifyOTP();
+  });
+  inp.addEventListener('keydown', e => {
+    if (e.key==='Backspace' && !inp.value && i>0) arr[i-1].focus();
+  });
+  inp.addEventListener('paste', e => {
+    const text = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,4);
+    text.split('').forEach((c,j)=>{ if(arr[j]) arr[j].value=c; });
+    e.preventDefault();
+    if (text.length===4) verifyOTP();
+  });
+});
+
+function getOTP() { return [0,1,2,3].map(i=>document.getElementById('otp'+i).value).join(''); }
+
+async function verifyOTP() {
+  const otp = getOTP();
+  if (otp.length<4) return;
+  const btn=document.getElementById('verifyBtn');
+  const err=document.getElementById('errBox');
+  err.style.display='none';
+  btn.disabled=true; btn.textContent='Verifying…';
+  try {
+    const data = await apiFetch('/auth/verify-otp',{method:'POST',body:JSON.stringify({email,otp})});
+    setAuth(data.token,'member',data.user.first_name);
+    document.getElementById('successBox').textContent='Email verified! Redirecting…';
+    document.getElementById('successBox').style.display='flex';
+    setTimeout(()=>location.href='/member/dashboard.html',1200);
+  } catch(ex){
+    err.textContent=ex.message||'Invalid OTP';
+    err.style.display='flex';
+    btn.disabled=false; btn.textContent='Verify Email';
+    [0,1,2,3].forEach(i=>document.getElementById('otp'+i).value='');
+    document.getElementById('otp0').focus();
+  }
+}
+
+let resendCooldown=60;
+function startCooldown(){
+  const link=document.getElementById('resendLink');
+  const timer=document.getElementById('timerSpan');
+  link.classList.add('disabled');
+  const iv=setInterval(()=>{
+    resendCooldown--;
+    timer.textContent=` (${resendCooldown}s)`;
+    if(resendCooldown<=0){ clearInterval(iv); link.classList.remove('disabled'); timer.textContent=''; resendCooldown=60; }
+  },1000);
+}
+startCooldown();
+
+async function resendOTP(e){
+  e.preventDefault();
+  try{
+    await apiFetch('/auth/resend-otp',{method:'POST',body:JSON.stringify({email})});
+    const s=document.getElementById('successBox');
+    s.textContent='New OTP sent to your email!'; s.style.display='flex';
+    setTimeout(()=>s.style.display='none',3000);
+    startCooldown();
+  }catch(ex){ document.getElementById('errBox').textContent=ex.message; document.getElementById('errBox').style.display='flex'; }
+}
+document.getElementById('otp0').focus();
+</script>
+</body>
+</html>

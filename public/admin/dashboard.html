@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Admin Dashboard – TTSA</title>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html" class="active"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Platform Overview</h2>
+    </div>
+    <div class="portal-body">
+      
+      <div class="stat-grid" style="margin-bottom:32px">
+        <div class="stat-card">
+          <div class="stat-label">Total Members</div>
+          <div class="stat-value" id="sMembers">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Abstracts</div>
+          <div class="stat-value" id="sAbstracts">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Submitted</div>
+          <div class="stat-value" id="sSubmitted">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Under Review</div>
+          <div class="stat-value" id="sUnderReview" style="color:var(--warning)">—</div>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="margin-bottom:32px">
+        <div class="stat-card">
+          <div class="stat-label">Accepted</div>
+          <div class="stat-value" id="sAccepted" style="color:var(--success)">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Refused</div>
+          <div class="stat-value" id="sRefused" style="color:var(--error)">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Reviewers</div>
+          <div class="stat-value" id="sReviewers">—</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Files Uploaded</div>
+          <div class="stat-value" id="sFiles">—</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Quick Actions</h3>
+        </div>
+        <div class="card-body" style="display:flex;gap:16px;flex-wrap:wrap">
+          <a href="/admin/abstracts.html" class="btn btn-outline">Manage Abstracts →</a>
+          <a href="/admin/export.html" class="btn btn-primary">Export Data →</a>
+          <a href="/admin/settings.html" class="btn btn-ghost">Update Deadlines →</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+
+async function init() {
+  const [me, stats] = await Promise.all([
+    apiFetch('/auth/me'),
+    apiFetch('/admin/stats')
+  ]);
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+
+  document.getElementById('sMembers').textContent = stats.total_members;
+  document.getElementById('sAbstracts').textContent = stats.total_abstracts;
+  document.getElementById('sSubmitted').textContent = stats.submitted;
+  document.getElementById('sUnderReview').textContent = stats.under_review;
+  document.getElementById('sAccepted').textContent = stats.accepted;
+  document.getElementById('sRefused').textContent = stats.refused;
+  document.getElementById('sReviewers').textContent = stats.total_reviewers;
+  document.getElementById('sFiles').textContent = stats.files_uploaded;
+}
+
+init();
+</script>
+</body>
+</html>

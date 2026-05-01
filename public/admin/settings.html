@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Settings – TTSA</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html" class="active"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Platform Settings</h2>
+    </div>
+    <div class="portal-body">
+      <div id="errBox" class="alert alert-error" style="display:none;margin-bottom:20px"></div>
+
+      <form id="settingsForm">
+        
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header"><h3>⏰ Deadlines & Congress Info</h3></div>
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Congress Name</label>
+              <input type="text" id="congress_name" class="form-control" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Stage 1: Abstract Submission Deadline</label>
+                <input type="datetime-local" id="submission_deadline" class="form-control" />
+                <div class="form-hint">Participants cannot submit or edit texts after this date.</div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Stage 2: File Upload Deadline</label>
+                <input type="datetime-local" id="upload_deadline" class="form-control" />
+                <div class="form-hint">Accepted authors cannot upload PPT/Posters after this date.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header"><h3>📏 Limits & Constraints</h3></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Max Abstracts per Participant</label>
+                <input type="number" id="max_abstracts_per_user" class="form-control" min="1" max="10"/>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Max Words per Abstract</label>
+                <input type="number" id="max_words_per_abstract" class="form-control" min="100" max="1000"/>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header"><h3>📝 Review Criteria Labels</h3></div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Criteria 1 (0-5 pts)</label><input type="text" id="criteria1_label" class="form-control"/></div>
+              <div class="form-group"><label class="form-label">Criteria 2 (0-5 pts)</label><input type="text" id="criteria2_label" class="form-control"/></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Criteria 3 (0-5 pts)</label><input type="text" id="criteria3_label" class="form-control"/></div>
+              <div class="form-group"><label class="form-label">Criteria 4 (0-5 pts)</label><input type="text" id="criteria4_label" class="form-control"/></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end">
+          <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">💾 Save Settings</button>
+        </div>
+      </form>
+      
+    </div>
+  </main>
+</div>
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+
+async function init() {
+  const [me, settings] = await Promise.all([
+    apiFetch('/auth/me'),
+    apiFetch('/admin/settings')
+  ]);
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+
+  ['congress_name','max_abstracts_per_user','max_words_per_abstract','criteria1_label','criteria2_label','criteria3_label','criteria4_label'].forEach(k => {
+    if(document.getElementById(k) && settings[k]) document.getElementById(k).value = settings[k];
+  });
+
+  if (settings.submission_deadline) document.getElementById('submission_deadline').value = settings.submission_deadline.substring(0,16);
+  if (settings.upload_deadline) document.getElementById('upload_deadline').value = settings.upload_deadline.substring(0,16);
+}
+
+document.getElementById('settingsForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('saveBtn');
+  btn.disabled=true; btn.textContent='Saving...';
+  
+  const updates = {
+    congress_name: document.getElementById('congress_name').value,
+    max_abstracts_per_user: document.getElementById('max_abstracts_per_user').value,
+    max_words_per_abstract: document.getElementById('max_words_per_abstract').value,
+    criteria1_label: document.getElementById('criteria1_label').value,
+    criteria2_label: document.getElementById('criteria2_label').value,
+    criteria3_label: document.getElementById('criteria3_label').value,
+    criteria4_label: document.getElementById('criteria4_label').value,
+  };
+
+  const sd = document.getElementById('submission_deadline').value;
+  if(sd) updates.submission_deadline = sd.length===16 ? sd+':00' : sd;
+  
+  const ud = document.getElementById('upload_deadline').value;
+  if(ud) updates.upload_deadline = ud.length===16 ? ud+':00' : ud;
+
+  try {
+    await apiFetch('/admin/settings', { method:'PUT', body:JSON.stringify(updates) });
+    showToast('Settings saved successfully!');
+  } catch(err) {
+    document.getElementById('errBox').textContent = err.message;
+    document.getElementById('errBox').style.display = 'flex';
+  }
+  btn.disabled=false; btn.textContent='💾 Save Settings';
+});
+
+init();
+</script>
+</body>
+</html>

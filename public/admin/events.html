@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Events Management – TTSA</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .event-card { border:1px solid var(--gray-200); border-radius:var(--radius); padding:16px; margin-bottom:16px; display:flex; justify-content:space-between; align-items:center; background:var(--white); }
+    .event-card .title { font-weight:600; font-size:1.05rem; margin-bottom:4px; }
+    .event-card .meta { font-size:.85rem; color:var(--gray-500); }
+    .event-actions { display:flex; gap:8px; }
+  </style>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/events.html" class="active"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Manage Events</h2>
+      <button class="btn btn-primary btn-sm" onclick="openModal()">+ Add Event</button>
+    </div>
+    <div class="portal-body">
+      <div id="eventsList"><div class="loading-center"><div class="spinner"></div></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <form id="eventForm">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Event</h3>
+        <button type="button" class="modal-close" onclick="closeModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="eventId"/>
+        <div class="form-group">
+          <label class="form-label">Title <span class="required">*</span></label>
+          <input type="text" id="evTitle" class="form-control" required/>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="form-group">
+            <label class="form-label">Start Date & Time</label>
+            <input type="datetime-local" id="evDate" class="form-control"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">End Date & Time</label>
+            <input type="datetime-local" id="evEndDate" class="form-control"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Location</label>
+          <input type="text" id="evLoc" class="form-control"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Event Poster (JPEG)</label>
+          <input type="file" id="evPoster" class="form-control" accept=".jpg,.jpeg"/>
+          <div id="evPosterPreview" style="margin-top:8px"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea id="evDesc" class="form-control" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer">
+            <input type="checkbox" id="evPub" checked style="width:16px;height:16px"/> Published (visible to public)
+          </label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Save Event</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+let events = [];
+
+async function loadEvents() {
+  const me = await apiFetch('/auth/me');
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+
+  try {
+    events = await apiFetch('/admin/events');
+    const el = document.getElementById('eventsList');
+    if (!events.length) { el.innerHTML = '<div class="empty-state"><div class="icon">📅</div><h3>No events</h3></div>'; return; }
+    el.innerHTML = events.map(e => `
+      <div class="event-card">
+        <div>
+          <div class="title">${e.title} ${e.is_published?'':'<span class="badge badge-gray" style="margin-left:8px">Draft</span>'}</div>
+          <div class="meta">
+            ${formatDateRange(e.event_date, e.event_end_date)} 
+            ${e.location?'· '+e.location:''}
+            ${e.poster_url ? ' · <span style="color:var(--blue)">🖼️ Poster attached</span>' : ''}
+          </div>
+        </div>
+        <div class="event-actions">
+          <button class="btn btn-outline btn-sm" onclick="editEvent(${e.id})">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="delEvent(${e.id})">Delete</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(err) { showToast(err.message,'error'); }
+}
+
+function formatDateRange(start, end) {
+  if (!start) return 'TBD';
+  const s = new Date(start);
+  if (!end) return s.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  const e = new Date(end);
+  
+  const sStr = s.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  const eStr = e.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  
+  if (sStr === eStr) {
+    return s.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' }) + ' - ' + e.toLocaleString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  }
+  return s.toLocaleString('en-GB', { day:'2-digit', month:'short' }) + ' - ' + e.toLocaleString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+}
+
+function openModal(id=null) {
+  document.getElementById('eventForm').reset();
+  if (id) {
+    const e = events.find(x=>x.id===id);
+    document.getElementById('modalTitle').textContent = 'Edit Event';
+    document.getElementById('eventId').value = e.id;
+    document.getElementById('evTitle').value = e.title;
+    if(e.event_date) document.getElementById('evDate').value = e.event_date;
+    if(e.event_end_date) document.getElementById('evEndDate').value = e.event_end_date;
+    document.getElementById('evLoc').value = e.location||'';
+    document.getElementById('evDesc').value = e.description||'';
+    if(e.poster_url) document.getElementById('evPosterPreview').innerHTML = `<img src="${e.poster_url}" style="height:60px;border-radius:4px;border:1px solid var(--gray-200)"/>`;
+    else document.getElementById('evPosterPreview').innerHTML = '';
+    document.getElementById('evPub').checked = !!e.is_published;
+  } else {
+    document.getElementById('modalTitle').textContent = 'Add Event';
+    document.getElementById('eventId').value = '';
+    document.getElementById('evPub').checked = true;
+    document.getElementById('evPosterPreview').innerHTML = '';
+  }
+  document.getElementById('eventModal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('eventModal').classList.remove('open'); }
+
+document.getElementById('eventForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const id = document.getElementById('eventId').value;
+  const btn = document.getElementById('saveBtn');
+  btn.disabled=true; btn.textContent='Saving...';
+  
+  const formData = new FormData();
+  formData.append('title', document.getElementById('evTitle').value);
+  formData.append('event_date', document.getElementById('evDate').value);
+  formData.append('event_end_date', document.getElementById('evEndDate').value);
+  formData.append('location', document.getElementById('evLoc').value);
+  formData.append('description', document.getElementById('evDesc').value);
+  formData.append('is_published', document.getElementById('evPub').checked);
+  
+  const posterFile = document.getElementById('evPoster').files[0];
+  if (posterFile) formData.append('poster', posterFile);
+
+  try {
+    const path = id ? '/admin/events/' + id : '/admin/events';
+    await apiUpload(path, formData, id ? 'PUT' : 'POST');
+
+    showToast('Event saved');
+    closeModal();
+    loadEvents();
+  } catch(err) { showToast(err.message,'error'); }
+  btn.disabled=false; btn.textContent='Save Event';
+});
+
+function editEvent(id) { openModal(id); }
+
+async function delEvent(id) {
+  if(!confirm('Delete this event?')) return;
+  try {
+    await apiFetch('/admin/events/'+id, { method:'DELETE' });
+    showToast('Event deleted');
+    loadEvents();
+  } catch(err) { showToast(err.message,'error'); }
+}
+
+loadEvents();
+</script>
+</body>
+</html>

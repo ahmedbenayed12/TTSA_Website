@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>About – TTSA</title>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .page-header { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); color: var(--white); padding: 80px 0; text-align: center; }
+    .page-header h1 { color: #fff; margin-bottom: 12px; font-size: 2.5rem; }
+    .page-header p { color: rgba(255,255,255,.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
+    .content-box { background: var(--white); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow); margin-top: -40px; position: relative; border: 1px solid var(--gray-100); }
+    .guidelines-content { white-space: pre-wrap; line-height: 1.8; color: var(--gray-800); font-size: 1.05rem; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-brand">
+      <img src="/img/logo.svg" alt="TTSA Logo" onerror="this.style.display='none'"/>
+    </a>
+    <div class="navbar-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/events.html">Events</a>
+      <a href="/about.html" class="active">About</a>
+      <a href="/register.html" class="btn-nav-red">Register</a>
+      <a href="/login.html" class="btn-nav"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Login</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-header">
+  <div class="container">
+    <h1>About TTSA</h1>
+    <p>Learn more about the Tunisian Thoracic Surgery Association and our annual congress.</p>
+  </div>
+</header>
+
+<main class="container" style="padding-bottom: 80px;">
+  <div class="content-box">
+    <div id="aboutContent" class="guidelines-content">
+      <div class="loading-center"><div class="spinner"></div></div>
+    </div>
+    
+    <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--gray-200); text-align: center;">
+      <h3 style="margin-bottom: 16px;">Ready to submit your abstract?</h3>
+      <a href="/register.html" class="btn btn-primary btn-lg">Create Account & Submit</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-bottom container" style="border:none">
+    <p>&copy; 2026 Tunisian Thoracic Surgery Association. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+fetch('/api/settings').then(r=>r.json()).then(data => {
+  const el = document.getElementById('aboutContent');
+  if (data.about_text) {
+    el.textContent = data.about_text;
+  } else {
+    el.innerHTML = '<div class="alert alert-info">Information has not been published yet. Please check back later.</div>';
+  }
+}).catch(console.error);
+</script>
+</body>
+</html>

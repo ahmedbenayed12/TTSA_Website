@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>My Dashboard – TTSA Participant Portal</title>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .slot-card { cursor:pointer; }
+    .slot-card:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
+    .slot-card .slot-title { font-size:.88rem; font-weight:600; color:var(--gray-700); margin-top:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .slot-card .slot-status { margin-top:6px; }
+    .status-timeline { display:flex; flex-direction:column; gap:0; }
+    .timeline-item { display:flex; gap:16px; }
+    .timeline-dot { display:flex; flex-direction:column; align-items:center; }
+    .timeline-dot .dot { width:12px; height:12px; border-radius:50%; background:var(--gray-300); flex-shrink:0; margin-top:4px; }
+    .timeline-dot .line { width:2px; flex:1; background:var(--gray-200); margin:4px 0; }
+    .timeline-content { padding-bottom:20px; }
+    .timeline-content h4 { font-size:.88rem; margin-bottom:2px; }
+    .timeline-content p  { font-size:.78rem; }
+    .timeline-item.done .dot { background:var(--blue); }
+    .timeline-item.active .dot { background:var(--red); box-shadow:0 0 0 4px var(--red-light); }
+  </style>
+</head>
+<body>
+<div class="portal-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">Submission Portal</div><div class="t2">Participant Area</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Main</div>
+      <a href="/member/dashboard.html" class="active" style="justify-content:center;">Dashboard</a>
+      <a href="/member/submit.html" id="navNewAbsBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;margin:12px 0;border-radius:var(--radius);background:var(--red);color:#fff;font-weight:700;font-size:.88rem;text-decoration:none;box-shadow:var(--shadow-sm);"><span style="font-size:1.2rem;line-height:1;margin-bottom:2px;">+</span> New Abstract</a>
+      <div class="sidebar-nav-label" style="margin-top:8px">My Submissions</div>
+      <div id="sidebarAbstracts"></div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
+        <div class="sidebar-user-info">
+          <div class="u-name" id="sidebarName">Loading…</div>
+          <div class="u-role">Participant</div>
+        </div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,0.1);color:#fff;font-weight:600;font-size:.82rem;border-radius:var(--radius-sm);margin-top:12px;text-decoration:none;transition:var(--transition);border:1px solid rgba(255,255,255,0.15);">
+        Sign Out
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>My Dashboard</h2>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="deadlineBadge" class="badge"></span>
+        <a href="/member/submit.html" id="topNewAbsBtn" class="btn btn-danger btn-sm">+ New Abstract</a>
+      </div>
+    </div>
+    <div class="portal-body">
+
+      <!-- Deadline alert -->
+      <div id="deadlineAlert" class="alert alert-info" style="margin-bottom:24px">
+        <span id="deadlineText">Loading deadline…</span>
+      </div>
+
+      <!-- Integrated Submission Slots -->
+      <div style="margin-bottom:32px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <h3>My Submission Slots</h3>
+          <span style="font-size:.82rem;color:var(--gray-500)">Max 3 abstracts per participant</span>
+        </div>
+        <div id="slotList" style="display:flex;flex-direction:column;gap:14px">
+          <div class="loading-center"><div class="spinner"></div></div>
+        </div>
+      </div>
+
+      <!-- Timeline -->
+      <div class="card" style="margin-top:24px">
+        <div class="card-header"><h3>Abstract Workflow</h3></div>
+        <div class="card-body">
+          <div class="status-timeline">
+            <div class="timeline-item done">
+              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+              <div class="timeline-content"><h4>Register & Verify Email</h4><p>Create your account and confirm with OTP.</p></div>
+            </div>
+            <div class="timeline-item active" id="tl-submit">
+              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+              <div class="timeline-content"><h4>Submit Abstract</h4><p>Submit up to 3 abstracts before the deadline.</p></div>
+            </div>
+            <div class="timeline-item" id="tl-review">
+              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+              <div class="timeline-content"><h4>Peer Review</h4><p>Assigned reviewers evaluate your submission.</p></div>
+            </div>
+            <div class="timeline-item" id="tl-result">
+              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+              <div class="timeline-content"><h4>Receive Verdict</h4><p>You'll be notified by email with the decision.</p></div>
+            </div>
+            <div class="timeline-item" id="tl-upload">
+              <div class="timeline-dot"><div class="dot"></div></div>
+              <div class="timeline-content"><h4>Upload Presentation</h4><p>Accepted authors upload their final PPT/Poster.</p></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['member'])) throw '';
+
+const statusColors = { Draft:'badge-gray', Submitted:'badge-blue', 'Under Review':'badge-yellow', Accepted:'badge-green', Refused:'badge-red' };
+
+async function loadDashboard() {
+  try {
+    const [me, abstracts, settings] = await Promise.all([
+      apiFetch('/auth/me'),
+      apiFetch('/abstracts'),
+      fetch('/api/settings').then(r=>r.json())
+    ]);
+
+    // Sidebar user
+    document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+    // document.getElementById('sidebarAvatar').textContent = me.first_name[0].toUpperCase();
+
+    // Deadline
+    let passed = false;
+    if (settings.submission_deadline) {
+      const d = new Date(settings.submission_deadline);
+      passed = new Date() > d;
+      document.getElementById('deadlineText').innerHTML = passed
+        ? '⚠️ Submission deadline has <strong>passed</strong>.'
+        : `Submission deadline: <strong>${d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
+      if (passed) document.getElementById('deadlineAlert').className='alert alert-warning';
+      document.getElementById('deadlineBadge').textContent = passed ? 'Deadline Passed' : 'Submissions Open';
+      document.getElementById('deadlineBadge').className = passed ? 'badge badge-red' : 'badge badge-green';
+    }
+
+    const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
+    const isFull = abstracts.length >= maxSlots;
+    
+    // Disable New Abstract buttons if deadline passed or slots full
+    if (passed || isFull) {
+      const topBtn = document.getElementById('topNewAbsBtn');
+      const navBtn = document.getElementById('navNewAbsBtn');
+      if (topBtn) {
+        topBtn.style.pointerEvents = 'none';
+        topBtn.style.opacity = '0.5';
+        topBtn.title = passed ? 'Deadline has passed' : 'Maximum abstracts reached';
+      }
+      if (navBtn) {
+        navBtn.style.pointerEvents = 'none';
+        navBtn.style.opacity = '0.5';
+        navBtn.title = passed ? 'Deadline has passed' : 'Maximum abstracts reached';
+      }
+    }
+
+    // Sidebar abstract links
+    const sideLinks = document.getElementById('sidebarAbstracts');
+    sideLinks.innerHTML = abstracts.map((a,i)=>`
+      <a href="/member/edit.html?id=${a.id}">
+        <span class="nav-icon">📄</span>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Abstract ${i+1}</span>
+      </a>`).join('');
+
+    // Integrated slot list
+    const slotList = document.getElementById('slotList');
+    slotList.innerHTML = '';
+    for (let i = 0; i < maxSlots; i++) {
+      const abs = abstracts[i];
+      const slotNum = i + 1;
+      if (abs) {
+        slotList.innerHTML += `
+          <div class="card" style="border-left:4px solid var(--blue);">
+            <div class="card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+              <!-- Slot number badge -->
+              <div style="flex:0 0 48px;height:48px;border-radius:50%;background:var(--blue-light);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:var(--blue);">${slotNum}</div>
+              <!-- Info -->
+              <div style="flex:1;min-width:0;">
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px;">
+                  <span style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray-400);letter-spacing:.05em;">Slot ${slotNum}</span>
+                  <span class="badge ${statusColors[abs.status] || 'badge-gray'}">${abs.status}</span>
+                  ${abs.is_locked ? '<span class="badge badge-gray" style="display:inline-flex;align-items:center;gap:4px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Locked</span>' : ''}
+                  ${abs.submission_number ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;font-weight:700;">#${abs.submission_number}</span>` : ''}
+                </div>
+                <div style="font-weight:600;font-size:.97rem;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px;">${abs.title}</div>
+                <div style="font-size:.78rem;color:var(--gray-500);margin-top:3px;">${abs.word_count} words &middot; ${abs.preference} presentation &middot; ${abs.author_count} author(s)</div>
+              </div>
+              <!-- Actions -->
+              <div style="display:flex;gap:8px;flex-shrink:0;">
+                ${abs.status === 'Accepted' && !abs.file_path ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-success btn-sm">📤 Upload File</a>` : ''}
+                ${!abs.is_locked && !passed
+                  ? `<a href="/member/edit.html?id=${abs.id}" class="btn btn-outline btn-sm">Edit</a>
+                     <button class="btn btn-danger btn-sm" onclick="delAbstract(${abs.id})">Delete</button>`
+                  : `<a href="/member/edit.html?id=${abs.id}" class="btn btn-ghost btn-sm">View</a>`
+                }
+              </div>
+            </div>
+          </div>`;
+      } else {
+        slotList.innerHTML += `
+          <div class="card" style="border-left:4px solid var(--gray-200);border:2px dashed var(--gray-200);background:var(--gray-50);">
+            <div class="card-body" style="display:flex;align-items:center;gap:20px;">
+              <div style="flex:0 0 48px;height:48px;border-radius:50%;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:1.3rem;font-weight:800;color:var(--gray-300);">${slotNum}</div>
+              <div style="flex:1;">
+                <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray-400);letter-spacing:.05em;margin-bottom:4px;">Slot ${slotNum}</div>
+                <div style="font-size:.9rem;color:var(--gray-400);">Available &mdash; no abstract submitted yet</div>
+              </div>
+              ${!passed ? `<a href="/member/submit.html" class="btn btn-danger btn-sm">+ New Abstract</a>` : ''}
+            </div>
+          </div>`;
+      }
+    }
+
+  } catch(e) { console.error(e); showToast('Failed to load dashboard','error'); }
+}
+
+async function delAbstract(id) {
+  if (!confirm('Are you sure you want to delete this abstract? This action cannot be undone.')) return;
+  try {
+    await apiFetch('/abstracts/' + id, { method: 'DELETE' });
+    showToast('Abstract deleted successfully');
+    loadDashboard();
+  } catch(err) {
+    showToast(err.message, 'error');
+  }
+}
+
+loadDashboard();
+</script>
+</body>
+</html>

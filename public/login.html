@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Sign In – TTSA</title>
+  <meta name="description" content="Sign in to the TTSA participant portal to manage your abstract submissions."/>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    body { background: linear-gradient(135deg,#e8f2fc 0%,#f9fafb 100%); min-height:100vh; display:flex; flex-direction:column; }
+    .auth-page { flex:1; display:flex; align-items:center; justify-content:center; padding: 40px 24px; }
+    .auth-card { background:var(--white); border-radius:var(--radius-xl); box-shadow:var(--shadow-lg); width:100%; max-width:420px; overflow:hidden; }
+    .auth-header { background:var(--blue); padding:28px; text-align:center; }
+    .auth-header img { height:48px; margin:0 auto 12px; filter:brightness(0) invert(1); }
+    .auth-header h1 { color:#fff; font-size:1.3rem; margin:0; }
+    .auth-header p  { color:rgba(255,255,255,.7); font-size:.82rem; margin-top:4px; }
+    .auth-body { padding:28px; }
+    .divider { display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--gray-400); font-size:.8rem; }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--gray-200); }
+    .role-hint { text-align:center; font-size:.8rem; color:var(--gray-500); margin-top:16px; }
+    .role-hint a { font-weight:600; }
+  </style>
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h1>Welcome Back</h1>
+      <p>Sign in to your TTSA account</p>
+    </div>
+    <div class="auth-body">
+      <div id="errBox" class="alert alert-error" style="display:none"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="email">Email Address<span class="required">*</span></label>
+          <input id="email" type="email" class="form-control" placeholder="youremail@domain.com" required/>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="password" style="display:flex; justify-content:space-between;">
+            <span>Password<span class="required">*</span></span>
+            <a href="/forgot-password.html" style="font-weight:400; font-size:.8rem;">Forgot password?</a>
+          </label>
+          <input id="password" type="password" class="form-control" placeholder="••••••••" required/>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;" id="loginBtn">Login</button>
+      </form>
+      <div class="divider">or</div>
+      <div style="display:flex; flex-direction:column; gap:12px; margin-top:20px;">
+        <a href="/register.html" class="btn btn-outline" style="width:100%; justify-content:center;">Register as Participant</a>
+        <a href="/" class="btn btn-ghost" style="width:100%; justify-content:center;">← Back to Home</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/api.js?v=2"></script>
+<script>
+// Redirect if already logged in
+if (getToken() && getRole()) {
+  const r = getRole();
+  if (r==='admin') location.href='/admin/dashboard.html';
+  else if (r==='reviewer') location.href='/reviewer/dashboard.html';
+  else location.href='/member/dashboard.html';
+}
+
+document.getElementById('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  const err = document.getElementById('errBox');
+  err.style.display='none';
+  btn.disabled=true; btn.textContent='Logging in…';
+  try {
+    const data = await apiFetch('/auth/login',{
+      method:'POST',
+      body: JSON.stringify({ email: document.getElementById('email').value, password: document.getElementById('password').value })
+    });
+    setAuth(data.token, data.role, data.name);
+    if (data.role==='admin') location.href='/admin/dashboard.html';
+    else if (data.role==='reviewer') location.href='/reviewer/dashboard.html';
+    else location.href='/member/dashboard.html';
+  } catch(ex) {
+    if (ex.message && ex.message.includes('not verified')) {
+      location.href='/verify-otp.html?email='+encodeURIComponent(document.getElementById('email').value);
+      return;
+    }
+    err.textContent = ex.message || 'Login failed';
+    err.style.display='flex';
+    btn.disabled=false; btn.textContent='Login';
+  }
+});
+</script>
+</body>
+</html>

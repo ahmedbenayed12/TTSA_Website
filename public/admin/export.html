@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Export Data – TTSA</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html" class="active"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Export Data</h2>
+    </div>
+    <div class="portal-body">
+
+      <div class="card" style="margin-bottom:24px; max-width:600px">
+        <div class="card-header">
+          <h3>📊 Export Abstracts Database</h3>
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom:20px;color:var(--gray-600)">Download a comprehensive Excel spreadsheet containing all submitted abstracts, author details, review scores, verdicts, and presentation types.</p>
+          <button class="btn btn-primary" onclick="exportExcel()" id="btnExcel" style="width:100%;justify-content:center">📥 Download Excel (.xlsx)</button>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px; max-width:600px">
+        <div class="card-header">
+          <h3>📂 Download Presentation Files</h3>
+        </div>
+        <div class="card-body">
+          <p style="margin-bottom:20px;color:var(--gray-600)">Bulk download all uploaded PPT and Poster files from accepted authors in a single ZIP archive.</p>
+          <button class="btn btn-outline" onclick="exportFiles()" id="btnFiles" style="width:100%;justify-content:center">📥 Download All Files (.zip)</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+
+async function init() {
+  const me = await apiFetch('/auth/me');
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+}
+
+async function exportExcel() {
+  const btn = document.getElementById('btnExcel');
+  btn.disabled = true; btn.textContent = 'Generating...';
+  try {
+    const res = await fetch('/api/admin/export', { headers:{'Authorization':'Bearer '+getToken()} });
+    if (!res.ok) throw new Error('Export failed');
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = `TTSA_Abstracts_${new Date().toISOString().slice(0,10)}.xlsx`;
+    document.body.appendChild(a); a.click(); a.remove();
+    window.URL.revokeObjectURL(url);
+    showToast('Download started');
+  } catch(e) { showToast(e.message,'error'); }
+  btn.disabled = false; btn.textContent = '📥 Download Excel (.xlsx)';
+}
+
+async function exportFiles() {
+  const btn = document.getElementById('btnFiles');
+  btn.disabled = true; btn.textContent = 'Preparing ZIP archive (this may take a while)...';
+  try {
+    const res = await fetch('/api/admin/export/files', { headers:{'Authorization':'Bearer '+getToken()} });
+    if (!res.ok) {
+      if(res.status===404) throw new Error('No files have been uploaded yet');
+      throw new Error('ZIP generation failed');
+    }
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = `TTSA_Presentations_${new Date().toISOString().slice(0,10)}.zip`;
+    document.body.appendChild(a); a.click(); a.remove();
+    window.URL.revokeObjectURL(url);
+    showToast('Download started');
+  } catch(e) { showToast(e.message,'error'); }
+  btn.disabled = false; btn.textContent = '📥 Download All Files (.zip)';
+}
+
+init();
+</script>
+</body>
+</html>

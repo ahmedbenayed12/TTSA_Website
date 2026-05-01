@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Manage About Page – TTSA</title>
+  <link rel="stylesheet" href="/css/global.css"/>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><span class="nav-icon">📊</span> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html" class="active"><span class="nav-icon">📖</span> About</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Edit About Page</h2>
+      <a href="/about.html" target="_blank" class="btn btn-outline btn-sm">Preview Public Page ↗</a>
+    </div>
+    <div class="portal-body">
+      <div id="errBox" class="alert alert-error" style="display:none;margin-bottom:20px"></div>
+      
+      <form id="aboutForm">
+        <div class="card">
+          <div class="card-body">
+            <p style="font-size:.85rem;color:var(--gray-600);margin-bottom:16px">This text is displayed on the public <a href="/about.html" target="_blank">About page</a>. You can use standard text. Markdown/HTML is not supported in this simplified editor.</p>
+            <textarea id="aboutText" class="form-control" rows="20" placeholder="Enter association information..."></textarea>
+          </div>
+          <div class="card-footer" style="display:flex;justify-content:flex-end">
+            <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">💾 Save About Page</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+
+async function init() {
+  const [me, settings] = await Promise.all([
+    apiFetch('/auth/me'),
+    apiFetch('/admin/settings')
+  ]);
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+
+  if (settings.about_text) {
+    document.getElementById('aboutText').value = settings.about_text;
+  }
+}
+
+document.getElementById('aboutForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('saveBtn');
+  btn.disabled=true; btn.textContent='Saving...';
+  
+  try {
+    await apiFetch('/admin/settings', { 
+      method:'PUT', 
+      body:JSON.stringify({ about_text: document.getElementById('aboutText').value }) 
+    });
+    showToast('About page saved successfully!');
+  } catch(err) {
+    document.getElementById('errBox').textContent = err.message;
+    document.getElementById('errBox').style.display = 'flex';
+  }
+  btn.disabled=false; btn.textContent='💾 Save About Page';
+});
+
+init();
+</script>
+</body>
+</html>
