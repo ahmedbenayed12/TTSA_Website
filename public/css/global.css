@@ -5,6 +5,9 @@
   --blue:        #0C589A;
   --blue-dark:   #094a82;
   --blue-light:  #e8f2fc;
+  --green:       #065f46;
+  --green-dark:  #044e3a;
+  --green-light: #ecfdf5;
   --red:         #B82538;
   --red-dark:    #9a1e2f;
   --red-light:   #fdeaed;
@@ -262,6 +265,7 @@ tbody tr:last-child td { border-bottom: none; }
   display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh;
   overflow-y: auto;
 }
+.sidebar-green { background: var(--green) !important; }
 .sidebar-logo {
   padding: 24px 20px; border-bottom: 1px solid rgba(255,255,255,.1);
   display: flex; align-items: center; gap: 12px;

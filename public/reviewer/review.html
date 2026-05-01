@@ -4,23 +4,52 @@
   <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Grade Abstract – TTSA</title>
   <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .verdict-options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 8px; }
+    .verdict-options input[type="radio"] { display: none; }
+    .verdict-options label {
+      display: flex; align-items: center; justify-content: center;
+      padding: 14px; border: 1px solid var(--gray-200); border-radius: var(--radius);
+      cursor: pointer; font-weight: 700; transition: var(--transition);
+      background: var(--white); color: var(--gray-500); font-size: .9rem;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .verdict-btn-admit:hover { border-color: var(--success); color: var(--success); background: var(--success-bg); }
+    input[name="verdict"][value="Admitted"]:checked + .verdict-btn-admit {
+      background: var(--success); border-color: var(--success); color: #fff;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
+    }
+    .verdict-btn-refuse:hover { border-color: var(--red); color: var(--red); background: var(--red-light); }
+    input[name="verdict"][value="Refused"]:checked + .verdict-btn-refuse {
+      background: var(--red); border-color: var(--red); color: #fff;
+      box-shadow: 0 4px 12px rgba(184, 37, 56, 0.25);
+    }
+    .score-slider { width: 100%; height: 6px; background: var(--gray-200); border-radius: 3px; outline: none; appearance: none; }
+    .score-slider::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 2px solid #fff; box-shadow: var(--shadow-sm); }
+    .score-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--blue); cursor: pointer; border: 2px solid #fff; box-shadow: var(--shadow-sm); }
+  </style>
 </head>
 <body>
 <div class="portal-layout">
-  <aside class="sidebar">
+  <aside class="sidebar sidebar-green">
     <div class="sidebar-logo">
       <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
-      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Reviewer Area</div></div>
+      <div class="sidebar-logo-text"><div class="t1">Submission Portal</div><div class="t2">Reviewer Area</div></div>
     </div>
     <nav class="sidebar-nav">
-      <a href="/reviewer/dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Assignments</a>
+      <a href="/reviewer/dashboard.html" style="justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Assignments List</a>
     </nav>
     <div class="sidebar-footer">
       <div class="sidebar-user">
-        <div class="sidebar-avatar" id="sidebarAvatar">?</div>
-        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Reviewer</div></div>
+        <div class="sidebar-avatar" id="sidebarAvatar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:#fff;"><circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-2-2 2 2 0 0 0-2 2"/><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2"/><path d="M21.5 13 19 7c-.7-1.3-1.4-2-3-2"/></svg>
+        </div>
+        <div class="sidebar-user-info">
+          <div class="u-name"><span id="sidebarName">Loading…</span></div>
+          <div class="u-role">Reviewer</div>
+        </div>
       </div>
-      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;background:rgba(255,255,255,0.12);color:#fff;font-weight:600;font-size:.82rem;border-radius:var(--radius-sm);margin-top:12px;text-decoration:none;transition:var(--transition);border:1px solid rgba(255,255,255,0.2);">Sign Out</a>
     </div>
   </aside>
   <main class="portal-main">
@@ -96,9 +125,12 @@
             <div class="card-body" style="border-top:1px solid var(--gray-100)">
               <div class="form-group">
                 <label class="form-label">Final Verdict <span class="required">*</span></label>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-                  <label style="display:flex;align-items:center;gap:8px;padding:12px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);cursor:pointer"><input type="radio" name="verdict" value="Admitted" required/> ✅ Admitted</label>
-                  <label style="display:flex;align-items:center;gap:8px;padding:12px;border:1px solid var(--gray-200);border-radius:var(--radius-sm);cursor:pointer"><input type="radio" name="verdict" value="Refused" required/> ❌ Refused</label>
+                <div class="verdict-options">
+                  <input type="radio" name="verdict" value="Admitted" id="v_admit" required/>
+                  <label for="v_admit" class="verdict-btn-admit">Admitted</label>
+                  
+                  <input type="radio" name="verdict" value="Refused" id="v_refuse" required/>
+                  <label for="v_refuse" class="verdict-btn-refuse">Refused</label>
                 </div>
               </div>
               <div class="form-group">
@@ -141,7 +173,7 @@ async function init() {
     ]);
 
     document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
-    document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+    // Avatar is now a static glasses icon for reviewers
 
     // Labels
     if(settings.criteria1_label) document.getElementById('lbl_c1').textContent = settings.criteria1_label;
@@ -175,7 +207,8 @@ async function init() {
       document.getElementById('c2').value = abstract.review.criteria2;
       document.getElementById('c3').value = abstract.review.criteria3;
       document.getElementById('c4').value = abstract.review.criteria4;
-      document.querySelector(`input[name="verdict"][value="${abstract.review.verdict}"]`).checked = true;
+      const r = document.querySelector(`input[name="verdict"][value="${abstract.review.verdict}"]`);
+      if(r) r.checked = true;
       document.getElementById('ptype').value = abstract.review.presentation_type;
       document.getElementById('comments').value = abstract.review.comments || '';
       updateTotal();
