@@ -129,9 +129,43 @@ async function sendVerdict(toEmail, firstName, abstractTitle, verdict, presentat
   });
 }
 
+async function sendFileUploadReminder(toEmail, firstName, abstractTitle, uploadDeadline) {
+  const transporter = createTransporter();
+  const deadlineStr = uploadDeadline ? new Date(uploadDeadline * 1000).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }) : 'soon';
+  await transporter.sendMail({
+    from: FROM,
+    to: toEmail,
+    subject: 'TTSA – Reminder: Please Upload Your Presentation File',
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden">
+        <div style="background:#0C589A;padding:24px;text-align:center">
+          <h1 style="color:#fff;margin:0;font-size:22px">TTSA</h1>
+          <p style="color:#cfe2ff;margin:4px 0 0">Tunisian Thoracic Surgery Association</p>
+        </div>
+        <div style="padding:32px">
+          <p>Dear <strong>${firstName}</strong>,</p>
+          <p>This is a friendly reminder that your abstract has been <strong style="color:#166534">accepted</strong> by the scientific committee, but we have not yet received your final presentation file.</p>
+          <div style="background:#f0f7ff;border-left:4px solid #0C589A;padding:16px;border-radius:4px;margin:16px 0">
+            <strong>Abstract:</strong> ${abstractTitle}
+          </div>
+          <div style="background:#fff7ed;border-left:4px solid #f97316;padding:16px;border-radius:4px;margin:16px 0">
+            ⏰ <strong>Upload deadline:</strong> ${deadlineStr}
+          </div>
+          <p>Please log in to your participant portal and upload your presentation file (PowerPoint or PDF) before the deadline.</p>
+          <div style="text-align:center;margin:24px 0">
+            <a href="${process.env.APP_URL || 'http://localhost:3000'}/member/dashboard.html" style="display:inline-block;background:#0C589A;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:700">Go to My Portal →</a>
+          </div>
+          <p style="color:#aaa;font-size:12px;text-align:center;margin-top:32px">Tunisian Thoracic Surgery Association &copy; 2026</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 module.exports = {
   sendOTP,
   sendPasswordResetOTP,
   sendAbstractConfirmation,
   sendVerdict,
+  sendFileUploadReminder,
 };

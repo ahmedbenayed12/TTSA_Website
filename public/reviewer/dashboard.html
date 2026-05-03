@@ -58,8 +58,18 @@
       </div>
 
       <div class="card">
-        <div class="card-header">
-          <h3>To Be Reviewed</h3>
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center">
+          <h3 style="margin:0">To Be Reviewed</h3>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:.85rem; font-weight:600; color:var(--gray-500);">Sort by:</span>
+            <select id="sortSelect" class="form-control" style="width:auto; padding:4px 8px; font-size:.85rem;" onchange="applySort()">
+              <option value="id_asc">ID (Oldest first)</option>
+              <option value="id_desc">ID (Newest first)</option>
+              <option value="title_asc">Title (A-Z)</option>
+              <option value="score_desc">Score (Highest first)</option>
+              <option value="score_asc">Score (Lowest first)</option>
+            </select>
+          </div>
         </div>
         <div class="card-body">
           <div id="assignmentsList" style="display:flex;flex-direction:column;gap:16px">
@@ -74,6 +84,8 @@
 <script src="/js/api.js"></script>
 <script>
 if (!requireAuth(['reviewer'])) throw '';
+
+let globalAssignments = [];
 
 async function loadAssignments() {
   try {
@@ -93,60 +105,80 @@ async function loadAssignments() {
     document.getElementById('statPending').textContent = pending;
     document.getElementById('statDone').textContent = done;
 
-    const list = document.getElementById('assignmentsList');
-    if (assignments.length === 0) {
-      list.innerHTML = '<div class="empty-state"><div class="icon">📫</div><h3>No assignments yet</h3><p>You have not been assigned any abstracts to review.</p></div>';
-      return;
-    }
-
-    list.innerHTML = assignments.map(a => {
-      const isDone = a.review_id != null;
-      let authorStr = '';
-      if (!a.blind && a.authors && a.authors.length) {
-        authorStr = `<div style="font-size:.8rem;color:var(--gray-500);margin-bottom:8px">Authors: ${a.authors.map(au=>au.last_name).join(', ')}</div>`;
-      } else if (a.blind) {
-        authorStr = `<div style="font-size:.8rem;color:var(--gray-500);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Blind Review Mode Active</div>`;
-      }
-
-      const scoreHtml = isDone 
-        ? `<div style="display:flex;flex-direction:column;align-items:center"><div class="score-badge graded">${a.total_score}</div><div class="score-label">/ 20</div></div>`
-        : `<div style="display:flex;flex-direction:column;align-items:center"><div class="score-badge pending">-</div><div class="score-label">Pending</div></div>`;
-
-      let verdictBadge = '';
-      if (isDone) {
-        if (a.verdict==='Admitted') verdictBadge = '<span class="badge badge-green" style="margin-top:8px">Admitted</span>';
-        else verdictBadge = '<span class="badge badge-red" style="margin-top:8px">Refused</span>';
-      }
-
-      return `
-        <div class="card assigned-card" style="border:1px solid ${isDone?'var(--gray-200)':'var(--blue-light)'}">
-          <div class="card-body" style="display:flex;gap:20px;align-items:flex-start">
-            <div style="flex:1;min-width:0">
-              <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
-                ${a.submission_number ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">Abstract #${a.submission_number}</span>` : `<span class="badge badge-gray">ID: ${a.id}</span>`}
-                <h4 style="margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.title}</h4>
-              </div>
-              ${authorStr}
-              <p style="font-size:.85rem;color:var(--gray-600);margin-bottom:12px">${a.main_text.substring(0,140)}...</p>
-              <div style="display:flex;gap:16px;font-size:.8rem;color:var(--gray-500)">
-                <span>${a.word_count} words</span>
-                <span>Pref: ${a.preference}</span>
-              </div>
-            </div>
-            <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;border-left:1px solid var(--gray-100);padding-left:20px">
-              ${scoreHtml}
-              ${verdictBadge}
-              <a href="/reviewer/review.html?id=${a.id}" class="btn ${isDone?'btn-ghost':'btn-primary'} btn-sm" style="margin-top:16px;width:100%;justify-content:center">${isDone?'Edit Review':'Grade'}</a>
-            </div>
-          </div>
-        </div>
-      `;
-    }).join('');
+    globalAssignments = assignments;
+    applySort();
 
   } catch (err) {
     console.error(err);
     showToast('Failed to load assignments', 'error');
   }
+}
+
+function applySort() {
+  const sortBy = document.getElementById('sortSelect').value;
+  globalAssignments.sort((a, b) => {
+    switch (sortBy) {
+      case 'id_desc': return b.id - a.id;
+      case 'id_asc': return a.id - b.id;
+      case 'title_asc': return a.title.localeCompare(b.title);
+      case 'score_desc': return (b.total_score || -1) - (a.total_score || -1);
+      case 'score_asc': return (a.total_score || -1) - (b.total_score || -1);
+      default: return a.id - b.id;
+    }
+  });
+  renderAssignments();
+}
+
+function renderAssignments() {
+  const list = document.getElementById('assignmentsList');
+  if (globalAssignments.length === 0) {
+    list.innerHTML = '<div class="empty-state"><div class="icon">📫</div><h3>No assignments yet</h3><p>You have not been assigned any abstracts to review.</p></div>';
+    return;
+  }
+
+  list.innerHTML = globalAssignments.map(a => {
+    const isDone = a.review_id != null;
+    let authorStr = '';
+    if (!a.blind && a.authors && a.authors.length) {
+      authorStr = `<div style="font-size:.8rem;color:var(--gray-500);margin-bottom:8px">Authors: ${a.authors.map(au=>au.last_name).join(', ')}</div>`;
+    } else if (a.blind) {
+      authorStr = `<div style="font-size:.8rem;color:var(--gray-500);margin-bottom:8px;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>Blind Review Mode Active</div>`;
+    }
+
+    const scoreHtml = isDone 
+      ? `<div style="display:flex;flex-direction:column;align-items:center"><div class="score-badge graded">${a.total_score}</div><div class="score-label">/ 20</div></div>`
+      : `<div style="display:flex;flex-direction:column;align-items:center"><div class="score-badge pending">-</div><div class="score-label">Pending</div></div>`;
+
+    let verdictBadge = '';
+    if (isDone) {
+      if (a.verdict==='Admitted') verdictBadge = '<span class="badge badge-green" style="margin-top:8px">Admitted</span>';
+      else verdictBadge = '<span class="badge badge-red" style="margin-top:8px">Refused</span>';
+    }
+
+    return `
+      <div class="card assigned-card" style="border:1px solid ${isDone?'var(--gray-200)':'var(--blue-light)'}">
+        <div class="card-body" style="display:flex;gap:20px;align-items:flex-start">
+          <div style="flex:1;min-width:0">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+              ${a.submission_number ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">Abstract #${a.submission_number}</span>` : `<span class="badge badge-gray">ID: ${a.id}</span>`}
+              <h4 style="margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.title}</h4>
+            </div>
+            ${authorStr}
+            <p style="font-size:.85rem;color:var(--gray-600);margin-bottom:12px">${a.main_text.substring(0,140)}...</p>
+            <div style="display:flex;gap:16px;font-size:.8rem;color:var(--gray-500)">
+              <span>${a.word_count} words</span>
+              <span>Pref: ${a.preference}</span>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;border-left:1px solid var(--gray-100);padding-left:20px">
+            ${scoreHtml}
+            ${verdictBadge}
+            <a href="/reviewer/review.html?id=${a.id}" class="btn ${isDone?'btn-ghost':'btn-primary'} btn-sm" style="margin-top:16px;width:100%;justify-content:center">${isDone?'Edit Review':'Grade'}</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
 }
 
 loadAssignments();

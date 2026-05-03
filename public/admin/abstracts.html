@@ -10,8 +10,40 @@
     .table-container th, .table-container td { padding:12px 16px; border-bottom:1px solid var(--gray-100); }
     .table-container th { background:var(--gray-50); font-size:.8rem; color:var(--gray-600); text-transform:uppercase; white-space:nowrap; }
     .table-container tbody tr:hover { background:var(--gray-50); }
+    .table-container tbody tr.selected { background:#eff6ff; }
     .status-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:12px; font-size:.75rem; font-weight:600; }
     .score-box { background:var(--blue-light); color:var(--blue); font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block; }
+
+    /* ── Eye Toggle ───────────────── */
+    .eye-toggle {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 20px; border-radius: 50px;
+      border: 2px solid var(--gray-300); background: var(--white);
+      cursor: pointer; font-weight: 700; font-size: .875rem;
+      color: var(--gray-600); transition: all 0.25s ease; user-select: none;
+    }
+    .eye-toggle:hover { border-color: var(--blue); color: var(--blue); }
+    .eye-toggle.active { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 4px 14px rgba(184,37,56,.3); }
+    .eye-toggle .eye-icon { width: 22px; height: 22px; flex-shrink: 0; }
+    .eye-toggle .toggle-label { white-space: nowrap; }
+
+    /* ── Bulk Action Toolbar ──────── */
+    #bulkBar {
+      display: none;
+      align-items: center; gap: 12px; flex-wrap: wrap;
+      background: #eff6ff; border: 1.5px solid var(--blue);
+      border-radius: var(--radius); padding: 10px 16px;
+      margin-bottom: 14px;
+    }
+    #bulkBar.visible { display: flex; }
+    #bulkBar .sel-count {
+      font-weight: 700; color: var(--blue); font-size: .9rem; margin-right: 4px;
+    }
+    #bulkBar .bulk-divider { width: 1px; height: 24px; background: var(--gray-300); }
+
+    /* checkbox styling */
+    .row-check { width: 16px; height: 16px; cursor: pointer; accent-color: var(--blue); }
+    #checkAll  { width: 16px; height: 16px; cursor: pointer; accent-color: var(--blue); }
   </style>
 </head>
 <body>
@@ -25,7 +57,7 @@
       <div class="sidebar-nav-label">Overview</div>
       <a href="/admin/dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Dashboard</a>
       <div class="sidebar-nav-label">Management</div>
-      <a href="/admin/abstracts.html" class="active"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/abstracts.html" class="active"><span class="nav-icon">📑</span> Abstracts &amp; Reviews</a>
       <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
       <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
       <div class="sidebar-nav-label">Configuration</div>
@@ -42,47 +74,79 @@
   </aside>
   <main class="portal-main">
     <div class="portal-topbar">
-      <h2>Abstracts & Reviews</h2>
-      <div style="display:flex;gap:12px">
-        <button class="btn btn-outline btn-sm" onclick="finalizeAll()">📧 Finalize & Send Emails</button>
-      </div>
+      <h2>Abstracts &amp; Reviews</h2>
     </div>
     <div class="portal-body">
-      
+
+      <!-- Blind Review Toggle -->
       <div class="card" style="margin-bottom:24px">
         <div class="card-header" style="background:var(--blue-light);border-bottom:none">
-          <div style="display:flex;align-items:center;gap:16px">
-            <span style="font-size:1.5rem">🕵️‍♂️</span>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
             <div>
               <h4 style="color:var(--blue);margin-bottom:4px">Blind Review Mode</h4>
-              <p style="font-size:.85rem;color:var(--gray-600);margin:0">When enabled, reviewers will not see author names or affiliations.</p>
+              <p style="font-size:.85rem;color:var(--gray-600);margin:0" id="blindDesc">Currently <strong>OFF</strong> — Reviewers can see author names and affiliations.</p>
             </div>
             <div style="margin-left:auto">
-              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-weight:600">
-                <input type="checkbox" id="blindToggle" onchange="toggleBlind()" style="width:18px;height:18px;accent-color:var(--blue)">
-                Enable Blind Review
-              </label>
+              <button id="blindToggle" onclick="toggleBlind()" class="eye-toggle" title="Toggle Blind Review">
+                <svg class="eye-icon" id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                </svg>
+                <span class="toggle-label" id="toggleLabel">Enable Blind Review</span>
+              </button>
             </div>
           </div>
         </div>
       </div>
 
+      <!-- Bulk Action Toolbar -->
+      <div id="bulkBar">
+        <span class="sel-count"><span id="selCount">0</span> selected</span>
+        <div class="bulk-divider"></div>
+        <button class="btn btn-primary btn-sm" onclick="bulkAssign()" id="btnBulkAssign">
+          👤 Assign Reviewer
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="bulkFinalize()" id="btnBulkFinalize">
+          📧 Finalize &amp; Send Email
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="bulkRemind()" id="btnBulkRemind">
+          ⏰ Send Upload Reminder
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="clearSelection()">
+          ✕ Clear
+        </button>
+      </div>
+
+      <!-- Sort Controls -->
+      <div style="display:flex; justify-content:flex-end; margin-bottom:12px; align-items:center; gap:12px;">
+        <span style="font-size:.85rem; font-weight:600; color:var(--gray-500);">Sort by:</span>
+        <select id="sortSelect" class="form-control" style="width:200px; padding:4px 8px; font-size:.85rem;" onchange="applySort()">
+          <option value="id_desc">Newest First</option>
+          <option value="id_asc">Oldest First</option>
+          <option value="score_desc">Score (Highest first)</option>
+          <option value="score_asc">Score (Lowest first)</option>
+          <option value="title_asc">Title (A-Z)</option>
+          <option value="status_asc">Status</option>
+        </select>
+      </div>
+
+      <!-- Abstracts Table -->
       <div class="table-container">
         <table id="abstractsTable">
           <thead>
             <tr>
+              <th style="width:36px"><input type="checkbox" id="checkAll" title="Select all" onchange="toggleSelectAll(this)"/></th>
               <th>ID</th>
               <th>Title</th>
               <th>Submitter</th>
               <th>Status</th>
               <th>Reviewer</th>
               <th>Score</th>
+              <th>Presentation</th>
               <th>Verdict</th>
-              <th>Action</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="8" style="text-align:center;padding:40px">Loading abstracts...</td></tr>
+            <tr><td colspan="9" style="text-align:center;padding:40px">Loading abstracts...</td></tr>
           </tbody>
         </table>
       </div>
@@ -91,7 +155,7 @@
   </main>
 </div>
 
-<!-- Assign Modal -->
+<!-- Assign Modal (single or bulk) -->
 <div class="modal-overlay" id="assignModal">
   <div class="modal">
     <div class="modal-header">
@@ -99,7 +163,7 @@
       <button class="modal-close" onclick="closeModal()">×</button>
     </div>
     <div class="modal-body">
-      <input type="hidden" id="assignAbsId"/>
+      <p id="assignSummary" style="font-size:.85rem;color:var(--gray-600);margin-bottom:16px"></p>
       <div class="form-group">
         <label class="form-label">Select Reviewer</label>
         <select id="reviewerSelect" class="form-control">
@@ -120,30 +184,93 @@ if (!requireAuth(['admin'])) throw '';
 
 let abstracts = [];
 let reviewers = [];
+let pendingAbstractIds = []; // IDs queued for bulk assign
 
-const statusColors = { Draft:'badge-gray', Submitted:'badge-blue', 'Under Review':'badge-yellow', Accepted:'badge-green', Refused:'badge-red' };
+const FINALIZED = ['Waiting for File Upload', 'Final File Uploaded', 'Refused', 'Accepted'];
+
+const statusColors = {
+  Draft: 'badge-gray',
+  Submitted: 'badge-blue',
+  'Waiting for Review': 'badge-yellow',
+  Accepted: 'badge-green',
+  Refused: 'badge-red',
+  'Waiting for File Upload': 'badge-orange',
+  'Final File Uploaded': 'badge-purple'
+};
+
+// ─── Init ────────────────────────────────────────────────────────────────────
 
 async function init() {
-  const [me, abs, revs, settings] = await Promise.all([
+  const [me, abs, revs, adminSettings] = await Promise.all([
     apiFetch('/auth/me'),
     apiFetch('/admin/abstracts'),
     apiFetch('/admin/reviewers'),
-    fetch('/api/settings').then(r=>r.json())
+    apiFetch('/admin/settings')
   ]);
 
   document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
-  
+
   abstracts = abs;
   reviewers = revs;
-  document.getElementById('blindToggle').checked = settings.blind_review === 'true';
 
-  renderTable();
+  setBlindUI(adminSettings.blind_review === 'true');
+  applySort();
 
-  // Populate select
   document.getElementById('reviewerSelect').innerHTML = '<option value="">-- Select Reviewer --</option>' +
-    reviewers.map(r=>`<option value="${r.id}">${r.last_name}, ${r.first_name}</option>`).join('');
+    reviewers.map(r => `<option value="${r.id}">${r.last_name}, ${r.first_name}</option>`).join('');
 }
+
+// ─── Eye Toggle ──────────────────────────────────────────────────────────────
+
+const SVG_EYE_OPEN   = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+const SVG_EYE_CLOSED = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+
+function setBlindUI(isBlind) {
+  const btn  = document.getElementById('blindToggle');
+  const icon = document.getElementById('eyeIcon');
+  icon.innerHTML = isBlind ? SVG_EYE_CLOSED : SVG_EYE_OPEN;
+  if (isBlind) {
+    btn.classList.add('active');
+    document.getElementById('toggleLabel').textContent = 'Disable Blind Review';
+    document.getElementById('blindDesc').innerHTML = 'Currently <strong>ON</strong> — Author details are hidden from reviewers.';
+  } else {
+    btn.classList.remove('active');
+    document.getElementById('toggleLabel').textContent = 'Enable Blind Review';
+    document.getElementById('blindDesc').innerHTML = 'Currently <strong>OFF</strong> — Reviewers can see author names and affiliations.';
+  }
+}
+
+async function toggleBlind() {
+  const enabled = !document.getElementById('blindToggle').classList.contains('active');
+  try {
+    await apiFetch('/admin/blind-review', { method:'PATCH', body:JSON.stringify({enabled}) });
+    setBlindUI(enabled);
+    showToast(`Blind review ${enabled ? 'enabled — authors hidden' : 'disabled — authors visible'}`);
+  } catch(e) {
+    showToast('Failed to toggle blind review','error');
+  }
+}
+
+// ─── Sorting ─────────────────────────────────────────────────────────────────
+
+function applySort() {
+  const sortBy = document.getElementById('sortSelect').value;
+  abstracts.sort((a, b) => {
+    switch (sortBy) {
+      case 'id_desc': return b.id - a.id;
+      case 'id_asc': return a.id - b.id;
+      case 'title_asc': return a.title.localeCompare(b.title);
+      case 'status_asc': return a.status.localeCompare(b.status);
+      case 'score_desc': return (b.total_score || -1) - (a.total_score || -1);
+      case 'score_asc': return (a.total_score || -1) - (b.total_score || -1);
+      default: return b.id - a.id;
+    }
+  });
+  renderTable();
+}
+
+// ─── Table Rendering ─────────────────────────────────────────────────────────
 
 function renderTable() {
   const tbody = document.querySelector('#abstractsTable tbody');
@@ -153,103 +280,222 @@ function renderTable() {
   }
 
   tbody.innerHTML = abstracts.map(a => {
-    const isSubmitted = a.status !== 'Draft';
-    let btnHtml = '';
-    if (a.status === 'Draft') {
-      btnHtml = '<span style="color:var(--gray-400);font-size:.8rem">Locked by user</span>';
-    } else {
-      btnHtml = `<button class="btn btn-outline btn-sm" onclick="openAssign(${a.id})">${a.reviewer_name?'Reassign':'Assign'}</button>`;
-    }
-
     let verdictHtml = '—';
-    if (a.verdict==='Admitted') verdictHtml = '<span style="color:var(--success);font-weight:700">Admitted</span>';
-    else if (a.verdict==='Refused') verdictHtml = '<span style="color:var(--red);font-weight:700">Refused</span>';
+    if (a.verdict === 'Admitted') verdictHtml = '<span style="color:var(--success);font-weight:700">Admitted</span>';
+    else if (a.verdict === 'Refused') verdictHtml = '<span style="color:var(--red);font-weight:700">Refused</span>';
+
+    const isSelectable = ['Submitted', 'Waiting for Review', 'Waiting for File Upload'].includes(a.status);
 
     return `
-      <tr>
+      <tr data-id="${a.id}" onclick="handleRowClick(event, ${a.id})" style="cursor:pointer">
+        <td onclick="event.stopPropagation()">
+          ${isSelectable
+            ? `<input type="checkbox" class="row-check" value="${a.id}" onchange="onCheckChange()">`
+            : `<span style="display:inline-block;width:16px;text-align:center;color:var(--gray-300)" title="Not selectable">—</span>`}
+        </td>
         <td style="font-weight:600;color:var(--gray-500)">
-          ${a.submission_number ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">#${a.submission_number}</span>` : `<span class="badge badge-gray">ID: ${a.id}</span>`}
+          ${a.submission_number
+            ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">#${a.submission_number}</span>`
+            : `<span class="badge badge-gray">ID: ${a.id}</span>`}
         </td>
         <td>
-          <div style="max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${a.title}">${a.title}</div>
+          <div style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${a.title}">${a.title}</div>
           <div style="font-size:.75rem;color:var(--gray-500)">${a.word_count} words</div>
         </td>
         <td>
           <div style="font-weight:500">${a.submitter_name}</div>
           <div style="font-size:.75rem;color:var(--gray-500)">${a.submitter_email}</div>
         </td>
-        <td><span class="status-badge ${statusColors[a.status]}">${a.status}</span></td>
+        <td><span class="status-badge ${statusColors[a.status] || 'badge-gray'}">${a.status}</span></td>
         <td>${a.reviewer_name ? a.reviewer_name : '<span style="color:var(--gray-400)">Unassigned</span>'}</td>
-        <td>${a.total_score!=null ? `<span class="score-box">${a.total_score}/20</span>` : '—'}</td>
+        <td>${a.total_score != null ? `<span class="score-box">${a.total_score}/20</span>` : '—'}</td>
+        <td>${a.presentation_type ? `<span style="font-weight:600;color:var(--gray-700)">${a.presentation_type}</span>` : '—'}</td>
         <td>${verdictHtml}</td>
-        <td>${btnHtml}</td>
       </tr>
     `;
   }).join('');
+
+  updateBulkBar();
 }
 
-async function toggleBlind() {
-  const enabled = document.getElementById('blindToggle').checked;
+// ─── Selection ───────────────────────────────────────────────────────────────
+
+function getChecked() {
+  return [...document.querySelectorAll('.row-check:checked')].map(c => +c.value);
+}
+
+function onCheckChange() {
+  const all  = document.querySelectorAll('.row-check');
+  const chk  = document.querySelectorAll('.row-check:checked');
+  document.getElementById('checkAll').indeterminate = chk.length > 0 && chk.length < all.length;
+  document.getElementById('checkAll').checked = chk.length === all.length && all.length > 0;
+
+  // Highlight selected rows
+  all.forEach(cb => {
+    cb.closest('tr').classList.toggle('selected', cb.checked);
+  });
+
+  updateBulkBar();
+}
+
+function toggleSelectAll(master) {
+  document.querySelectorAll('.row-check').forEach(cb => {
+    cb.checked = master.checked;
+    cb.closest('tr').classList.toggle('selected', master.checked);
+  });
+  updateBulkBar();
+}
+
+function clearSelection() {
+  document.querySelectorAll('.row-check').forEach(cb => {
+    cb.checked = false;
+    cb.closest('tr').classList.remove('selected');
+  });
+  document.getElementById('checkAll').checked = false;
+  document.getElementById('checkAll').indeterminate = false;
+  updateBulkBar();
+}
+
+function handleRowClick(e, id) {
+  // clicking row body (not checkbox) toggles checkbox
+  const cb = document.querySelector(`.row-check[value="${id}"]`);
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  cb.closest('tr').classList.toggle('selected', cb.checked);
+  onCheckChange();
+}
+
+// ─── Bulk Bar ────────────────────────────────────────────────────────────────
+
+function updateBulkBar() {
+  const ids = getChecked();
+  const bar = document.getElementById('bulkBar');
+  document.getElementById('selCount').textContent = ids.length;
+
+  if (ids.length === 0) {
+    bar.classList.remove('visible');
+    return;
+  }
+  bar.classList.add('visible');
+
+  // Determine which actions make sense for the selection
+  const selAbs = abstracts.filter(a => ids.includes(a.id));
+  // 'Finalize' only valid for abstracts currently waiting for review that have a verdict
+  const canFinalize = selAbs.some(a => a.status === 'Waiting for Review' && (a.verdict === 'Admitted' || a.verdict === 'Refused'));
+  const canAssign   = selAbs.some(a => !FINALIZED.includes(a.status) && a.status !== 'Draft');
+  const canRemind   = selAbs.some(a => a.status === 'Waiting for File Upload');
+
+  document.getElementById('btnBulkAssign').disabled   = !canAssign;
+  document.getElementById('btnBulkFinalize').disabled = !canFinalize;
+  document.getElementById('btnBulkRemind').disabled   = !canRemind;
+}
+
+// ─── Bulk Actions ────────────────────────────────────────────────────────────
+
+function bulkAssign() {
+  const ids = getChecked();
+  if (!ids.length) return;
+  const selAbs = abstracts.filter(a => ids.includes(a.id) && !FINALIZED.includes(a.status) && a.status !== 'Draft');
+  if (!selAbs.length) { showToast('No assignable abstracts in selection', 'error'); return; }
+
+  pendingAbstractIds = selAbs.map(a => a.id);
+  document.getElementById('assignTitle').textContent = `Assign Reviewer`;
+  document.getElementById('assignSummary').textContent =
+    `Will assign to ${pendingAbstractIds.length} abstract(s): ${selAbs.map(a => `#${a.submission_number || a.id}`).join(', ')}`;
+  document.getElementById('reviewerSelect').value = '';
+  document.getElementById('assignModal').classList.add('open');
+}
+
+async function bulkFinalize() {
+  const ids = getChecked();
+  if (!ids.length) return;
+  // Only finalize abstracts that are Waiting for Review and have a reviewer verdict
+  const selAbs = abstracts.filter(a => ids.includes(a.id) && a.status === 'Waiting for Review' && (a.verdict === 'Admitted' || a.verdict === 'Refused'));
+  if (!selAbs.length) { showToast('No valid abstracts to finalize in selection', 'error'); return; }
+
+  if (!confirm(`Finalize ${selAbs.length} abstract(s) and send email notifications to authors?\n\nIDs: ${selAbs.map(a => `#${a.submission_number || a.id}`).join(', ')}`)) return;
+
   try {
-    await apiFetch('/admin/blind-review', { method:'PATCH', body:JSON.stringify({enabled}) });
-    showToast(`Blind review ${enabled?'enabled':'disabled'}`);
+    const res = await apiFetch('/admin/finalize', {
+      method: 'POST',
+      body: JSON.stringify({ abstract_ids: selAbs.map(a => a.id) })
+    });
+    showToast(res.message);
+    clearSelection();
+    init();
   } catch(e) {
-    document.getElementById('blindToggle').checked = !enabled;
-    showToast('Failed to toggle blind review','error');
+    showToast(e.message, 'error');
   }
 }
+
+async function bulkRemind() {
+  const ids = getChecked();
+  if (!ids.length) return;
+  const selAbs = abstracts.filter(a => ids.includes(a.id) && a.status === 'Waiting for File Upload');
+  if (!selAbs.length) { showToast('None of the selected abstracts are waiting for a file upload', 'error'); return; }
+
+  if (!confirm(`Send reminder emails to ${selAbs.length} author(s) to upload their presentation files?\n\nIDs: ${selAbs.map(a => `#${a.submission_number || a.id}`).join(', ')}`)) return;
+
+  const btn = document.getElementById('btnBulkRemind');
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  try {
+    const res = await apiFetch('/admin/remind-upload', {
+      method: 'POST',
+      body: JSON.stringify({ abstract_ids: selAbs.map(a => a.id) })
+    });
+    showToast(res.message);
+    clearSelection();
+  } catch(e) {
+    showToast(e.message, 'error');
+  }
+  
+  btn.disabled = false; btn.textContent = '⏰ Send Upload Reminder';
+}
+
+// ─── Assign Modal ────────────────────────────────────────────────────────────
 
 function openAssign(id) {
-  const a = abstracts.find(x=>x.id===id);
-  document.getElementById('assignAbsId').value = id;
-  document.getElementById('assignTitle').textContent = `Assign: ID ${id}`;
-  
-  // Try to pre-select existing reviewer
+  // Single row assign (kept for legacy compatibility)
+  pendingAbstractIds = [id];
+  const a = abstracts.find(x => x.id === id);
+  document.getElementById('assignTitle').textContent = `Assign Reviewer`;
+  document.getElementById('assignSummary').textContent = `Abstract: ${a ? a.title : `ID ${id}`}`;
   const sel = document.getElementById('reviewerSelect');
   sel.value = '';
-  if (a.reviewer_name) {
-    const r = reviewers.find(rev => `${rev.last_name}, ${rev.first_name}`.includes(a.reviewer_name.split(' ')[0]));
-    if (r) sel.value = r.id;
-  }
-  
   document.getElementById('assignModal').classList.add('open');
 }
 
 function closeModal() { document.getElementById('assignModal').classList.remove('open'); }
 
 async function saveAssignment() {
-  const absId = document.getElementById('assignAbsId').value;
   const revId = document.getElementById('reviewerSelect').value;
-  if(!revId) { showToast('Select a reviewer','error'); return; }
+  if (!revId) { showToast('Please select a reviewer', 'error'); return; }
 
   const btn = document.getElementById('assignBtn');
-  btn.disabled=true; btn.textContent='Saving...';
-  try {
-    await apiFetch('/admin/assignments', {
-      method:'PATCH', body:JSON.stringify({ abstract_id:absId, reviewer_id:revId })
-    });
-    showToast('Reviewer assigned');
-    closeModal();
-    init(); // reload
-  } catch(e) {
-    showToast(e.message,'error');
+  btn.disabled = true; btn.textContent = 'Saving…';
+
+  let successCount = 0, failCount = 0;
+  for (const absId of pendingAbstractIds) {
+    try {
+      await apiFetch('/admin/assignments', {
+        method: 'PATCH',
+        body: JSON.stringify({ abstract_id: absId, reviewer_id: revId })
+      });
+      successCount++;
+    } catch(e) {
+      failCount++;
+    }
   }
-  btn.disabled=false; btn.textContent='Save Assignment';
-}
 
-async function finalizeAll() {
-  const pending = abstracts.filter(a => a.status === 'Under Review');
-  if (!pending.length) { showToast('No reviewed abstracts ready to finalize','info'); return; }
+  btn.disabled = false; btn.textContent = 'Save Assignment';
+  closeModal();
+  clearSelection();
 
-  if (!confirm(`This will finalize ${pending.length} abstracts, change their status to Accepted/Refused, and send automated email blasts to the authors. Proceed?`)) return;
+  if (successCount > 0) showToast(`Assigned ${successCount} abstract(s) successfully` + (failCount ? `, ${failCount} failed` : ''));
+  else showToast('Assignment failed', 'error');
 
-  try {
-    const res = await apiFetch('/admin/finalize', { method:'POST', body:JSON.stringify({}) });
-    showToast(res.message);
-    init(); // reload
-  } catch(e) {
-    showToast(e.message, 'error');
-  }
+  init();
 }
 
 init();

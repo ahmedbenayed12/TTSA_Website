@@ -59,7 +59,7 @@ function initSchema() {
       word_count INTEGER NOT NULL DEFAULT 0,
       preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either')),
       status TEXT NOT NULL DEFAULT 'Draft'
-        CHECK(status IN ('Draft','Submitted','Under Review','Accepted','Refused','Revision')),
+        CHECK(status IN ('Draft','Submitted','Waiting for Review','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
       is_locked INTEGER NOT NULL DEFAULT 0,
       file_path TEXT,
       file_name TEXT,

@@ -237,7 +237,7 @@ router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
 
     const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
     if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
-    if (abstract.status !== 'Accepted') return res.status(403).json({ error: 'Only accepted abstracts can upload files' });
+    if (abstract.status !== 'Waiting for File Upload') return res.status(403).json({ error: 'Only accepted abstracts awaiting file upload can upload files' });
 
     if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
 
@@ -247,7 +247,7 @@ router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
     }
 
     db.prepare(`
-      UPDATE abstracts SET file_path=?, file_name=?, file_uploaded_at=unixepoch(), updated_at=unixepoch()
+      UPDATE abstracts SET file_path=?, file_name=?, file_uploaded_at=unixepoch(), status='Final File Uploaded', updated_at=unixepoch()
       WHERE id=?
     `).run(req.file.path, req.file.originalname, abstract.id);
 

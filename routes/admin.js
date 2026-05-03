@@ -7,7 +7,7 @@ const archiver = require('archiver');
 const db = require('../db/database');
 const multer = require('multer');
 const { requireAdmin } = require('../middleware/auth');
-const { sendVerdict } = require('../services/email');
+const { sendVerdict, sendFileUploadReminder } = require('../services/email');
 const { generateAbstractsExcel } = require('../services/export');
 
 // Multer config for event posters
@@ -120,8 +120,14 @@ router.patch('/assignments', requireAdmin, (req, res) => {
   const { abstract_id, reviewer_id } = req.body;
   if (!abstract_id || !reviewer_id) return res.status(400).json({ error: 'abstract_id and reviewer_id required' });
 
-  const abstract = db.prepare('SELECT id FROM abstracts WHERE id = ?').get(abstract_id);
+  const abstract = db.prepare('SELECT id, status FROM abstracts WHERE id = ?').get(abstract_id);
   if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
+
+  // Block assignment once a verdict has been finalized and email sent
+  const FINALIZED = ['Waiting for File Upload', 'Final File Uploaded', 'Refused', 'Accepted'];
+  if (FINALIZED.includes(abstract.status)) {
+    return res.status(403).json({ error: 'Cannot reassign a finalized abstract. The verdict has already been sent to the author.' });
+  }
 
   const reviewer = db.prepare('SELECT id FROM reviewers WHERE id = ?').get(reviewer_id);
   if (!reviewer) return res.status(404).json({ error: 'Reviewer not found' });
@@ -129,7 +135,8 @@ router.patch('/assignments', requireAdmin, (req, res) => {
   // Remove old assignment if exists
   db.prepare('DELETE FROM reviewer_assignments WHERE abstract_id = ?').run(abstract_id);
   db.prepare('INSERT INTO reviewer_assignments(abstract_id, reviewer_id) VALUES(?,?)').run(abstract_id, reviewer_id);
-  db.prepare("UPDATE abstracts SET status='Submitted', updated_at=unixepoch() WHERE id=? AND status='Draft'").run(abstract_id);
+  // Always set to 'Waiting for Review' on any assignment or reassignment
+  db.prepare("UPDATE abstracts SET status='Waiting for Review', updated_at=unixepoch() WHERE id=?").run(abstract_id);
 
   res.json({ message: 'Reviewer assigned successfully' });
 });
@@ -162,7 +169,7 @@ router.post('/finalize', requireAdmin, async (req, res) => {
       FROM abstracts a
       JOIN reviews r ON r.abstract_id = a.id
       JOIN users u ON u.id = a.user_id
-      WHERE a.status = 'Under Review'
+      WHERE a.status = 'Waiting for Review'
     `;
     let params = [];
     if (abstract_ids && abstract_ids.length > 0) {
@@ -174,8 +181,8 @@ router.post('/finalize', requireAdmin, async (req, res) => {
     let sent = 0, failed = 0;
 
     for (const abs of abstracts) {
-      // Update status
-      const newStatus = abs.verdict === 'Admitted' ? 'Accepted' : 'Refused';
+      // Update status: Accepted → Waiting for File Upload; Refused → Refused
+      const newStatus = abs.verdict === 'Admitted' ? 'Waiting for File Upload' : 'Refused';
       db.prepare("UPDATE abstracts SET status=?, updated_at=unixepoch() WHERE id=?").run(newStatus, abs.id);
 
       // Send email
@@ -192,6 +199,43 @@ router.post('/finalize', requireAdmin, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Finalization failed' });
+  }
+});
+
+// POST /api/admin/remind-upload — send reminder email to upload presentation
+router.post('/remind-upload', requireAdmin, async (req, res) => {
+  try {
+    const { abstract_ids } = req.body;
+    if (!abstract_ids || !abstract_ids.length) return res.status(400).json({ error: 'No abstracts selected' });
+
+    let query = `
+      SELECT a.id, a.title, u.email, u.first_name
+      FROM abstracts a
+      JOIN users u ON u.id = a.user_id
+      WHERE a.status = 'Waiting for File Upload'
+        AND a.id IN (${abstract_ids.map(() => '?').join(',')})
+    `;
+    const abstracts = db.prepare(query).all(...abstract_ids);
+    
+    // Get upload deadline setting
+    const settingsRow = db.prepare("SELECT value FROM settings WHERE key='upload_deadline'").get();
+    const deadline = settingsRow ? settingsRow.value : null;
+
+    let sent = 0, failed = 0;
+    for (const abs of abstracts) {
+      try {
+        await sendFileUploadReminder(abs.email, abs.first_name, abs.title, deadline);
+        sent++;
+      } catch (err) {
+        console.error(`Reminder failed for abstract ${abs.id}:`, err.message);
+        failed++;
+      }
+    }
+
+    res.json({ message: `Reminders sent: ${sent}, failed: ${failed}`, total: abstracts.length });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to send reminders' });
   }
 });
 
@@ -336,8 +380,8 @@ router.get('/stats', requireAdmin, (req, res) => {
     total_members: db.prepare('SELECT COUNT(*) as c FROM users WHERE is_verified = 1').get().c,
     total_abstracts: db.prepare('SELECT COUNT(*) as c FROM abstracts').get().c,
     submitted: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status NOT IN ('Draft')").get().c,
-    under_review: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Under Review'").get().c,
-    accepted: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Accepted'").get().c,
+    under_review: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review'").get().c,
+    accepted: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status IN ('Accepted','Waiting for File Upload','Final File Uploaded')").get().c,
     refused: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Refused'").get().c,
     total_reviewers: db.prepare('SELECT COUNT(*) as c FROM reviewers').get().c,
     files_uploaded: db.prepare('SELECT COUNT(*) as c FROM abstracts WHERE file_path IS NOT NULL').get().c,

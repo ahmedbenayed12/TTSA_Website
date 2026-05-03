@@ -126,7 +126,15 @@ let authors = [];
 let isLocked = false;
 let maxWords = 300;
 
-const statusColors = { Draft:'badge-gray', Submitted:'badge-blue', 'Under Review':'badge-yellow', Accepted:'badge-green', Refused:'badge-red' };
+const statusColors = {
+  Draft: 'badge-gray',
+  Submitted: 'badge-blue',
+  'Waiting for Review': 'badge-yellow',
+  Accepted: 'badge-green',
+  Refused: 'badge-red',
+  'Waiting for File Upload': 'badge-orange',
+  'Final File Uploaded': 'badge-purple'
+};
 
 async function init() {
   try {

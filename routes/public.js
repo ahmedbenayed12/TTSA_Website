@@ -17,7 +17,7 @@ router.get('/guidelines', (req, res) => {
 // GET /api/settings (public deadline/congress info)
 router.get('/settings', (req, res) => {
   const rows = db.prepare(
-    "SELECT key, value FROM settings WHERE key IN ('congress_name','submission_deadline','upload_deadline','max_abstracts_per_user','max_words_per_abstract','about_text')"
+    "SELECT key, value FROM settings WHERE key IN ('congress_name','submission_deadline','upload_deadline','max_abstracts_per_user','max_words_per_abstract','about_text','blind_review','criteria1_label','criteria2_label','criteria3_label','criteria4_label')"
   ).all();
   const settings = {};
   rows.forEach(r => { settings[r.key] = r.value; });

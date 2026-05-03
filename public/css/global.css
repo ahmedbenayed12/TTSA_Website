@@ -185,7 +185,8 @@ select.form-control { cursor: pointer; }
 .badge-green   { background: var(--success-bg); color: var(--success); }
 .badge-yellow  { background: var(--warning-bg); color: var(--warning); }
 .badge-gray    { background: var(--gray-100);   color: var(--gray-600); }
-
+.badge-orange  { background: #fff3e0;            color: #e65100; }
+.badge-purple  { background: #f3e5f5;            color: #7b1fa2; }
 /* ─── TABLES ──────────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: .875rem; }

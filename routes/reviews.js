@@ -73,7 +73,13 @@ router.post('/', requireReviewer, (req, res) => {
       if (score < 0 || score > 5) return res.status(400).json({ error: 'Each criterion must be between 0 and 5' });
     }
     if (!['Admitted', 'Refused'].includes(verdict)) return res.status(400).json({ error: 'Verdict must be Admitted or Refused' });
-    if (!['Oral', 'Poster'].includes(presentation_type)) return res.status(400).json({ error: 'Presentation type must be Oral or Poster' });
+    
+    let finalPresentationType = presentation_type;
+    if (verdict === 'Admitted') {
+      if (!['Oral', 'Poster'].includes(finalPresentationType)) return res.status(400).json({ error: 'Presentation type must be Oral or Poster for admitted abstracts' });
+    } else {
+      finalPresentationType = null; // No presentation type for refused
+    }
 
     const existing = db.prepare('SELECT id FROM reviews WHERE abstract_id = ? AND reviewer_id = ?').get(abstract_id, req.user.id);
 
@@ -81,16 +87,16 @@ router.post('/', requireReviewer, (req, res) => {
       db.prepare(`
         UPDATE reviews SET criteria1=?,criteria2=?,criteria3=?,criteria4=?,verdict=?,presentation_type=?,comments=?,updated_at=unixepoch()
         WHERE abstract_id=? AND reviewer_id=?
-      `).run(criteria1, criteria2, criteria3, criteria4, verdict, presentation_type, comments || '', abstract_id, req.user.id);
+      `).run(criteria1, criteria2, criteria3, criteria4, verdict, finalPresentationType, comments || '', abstract_id, req.user.id);
     } else {
       db.prepare(`
         INSERT INTO reviews(abstract_id, reviewer_id, criteria1, criteria2, criteria3, criteria4, verdict, presentation_type, comments)
         VALUES(?,?,?,?,?,?,?,?,?)
-      `).run(abstract_id, req.user.id, criteria1, criteria2, criteria3, criteria4, verdict, presentation_type, comments || '');
+      `).run(abstract_id, req.user.id, criteria1, criteria2, criteria3, criteria4, verdict, finalPresentationType, comments || '');
     }
 
     // Update abstract status
-    db.prepare("UPDATE abstracts SET status='Under Review', updated_at=unixepoch() WHERE id=? AND status='Submitted'").run(abstract_id);
+    db.prepare("UPDATE abstracts SET status='Waiting for Review', updated_at=unixepoch() WHERE id=? AND status='Submitted'").run(abstract_id);
 
     res.json({ message: 'Review submitted successfully' });
   } catch (err) {

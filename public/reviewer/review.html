@@ -133,7 +133,7 @@
                   <label for="v_refuse" class="verdict-btn-refuse">Refused</label>
                 </div>
               </div>
-              <div class="form-group">
+              <div class="form-group" id="presentationTypeGroup">
                 <label class="form-label">Presentation Type <span class="required">*</span></label>
                 <select id="ptype" class="form-control" required>
                   <option value="" disabled selected>Select presentation type...</option>
@@ -208,8 +208,12 @@ async function init() {
       document.getElementById('c3').value = abstract.review.criteria3;
       document.getElementById('c4').value = abstract.review.criteria4;
       const r = document.querySelector(`input[name="verdict"][value="${abstract.review.verdict}"]`);
-      if(r) r.checked = true;
-      document.getElementById('ptype').value = abstract.review.presentation_type;
+      if(r) {
+        r.checked = true;
+        // Trigger change event to update presentation type visibility
+        r.dispatchEvent(new Event('change'));
+      }
+      document.getElementById('ptype').value = abstract.review.presentation_type || '';
       document.getElementById('comments').value = abstract.review.comments || '';
       updateTotal();
     }
@@ -230,6 +234,23 @@ function updateTotal() {
   document.getElementById('val_c4').textContent = c4;
   document.getElementById('totalScore').textContent = c1+c2+c3+c4;
 }
+
+// Watch for verdict changes to show/hide presentation type
+document.querySelectorAll('input[name="verdict"]').forEach(r => {
+  r.addEventListener('change', (e) => {
+    const isRefused = e.target.value === 'Refused';
+    const pTypeGroup = document.getElementById('presentationTypeGroup');
+    const pTypeSelect = document.getElementById('ptype');
+    if (isRefused) {
+      pTypeGroup.style.display = 'none';
+      pTypeSelect.required = false;
+      pTypeSelect.value = '';
+    } else {
+      pTypeGroup.style.display = 'block';
+      pTypeSelect.required = true;
+    }
+  });
+});
 
 function showErr(msg) {
   const e=document.getElementById('errBox'); e.textContent=msg; e.style.display='flex';
