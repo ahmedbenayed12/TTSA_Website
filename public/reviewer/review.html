@@ -92,7 +92,7 @@
             <div class="card-body" style="padding-bottom:16px">
               
               <div class="criteria-row">
-                <div class="criteria-label" id="lbl_c1">Originality</div>
+                <div class="criteria-label" id="lbl_c1">Relevance</div>
                 <div class="criteria-slider"><input type="range" id="c1" class="score-slider" min="0" max="5" value="0" step="1" oninput="updateTotal()"/></div>
                 <div class="score-display" id="val_c1">0</div>
               </div>
@@ -110,7 +110,7 @@
               </div>
 
               <div class="criteria-row">
-                <div class="criteria-label" id="lbl_c4">Clinical Relevance</div>
+                <div class="criteria-label" id="lbl_c4">Practical Impact</div>
                 <div class="criteria-slider"><input type="range" id="c4" class="score-slider" min="0" max="5" value="0" step="1" oninput="updateTotal()"/></div>
                 <div class="score-display" id="val_c4">0</div>
               </div>
@@ -134,11 +134,12 @@
                 </div>
               </div>
               <div class="form-group" id="presentationTypeGroup">
-                <label class="form-label">Presentation Type <span class="required">*</span></label>
+                <label class="form-label">Presentation Form <span class="required">*</span></label>
                 <select id="ptype" class="form-control" required>
-                  <option value="" disabled selected>Select presentation type...</option>
-                  <option value="Oral">Oral Presentation</option>
-                  <option value="Poster">Poster</option>
+                  <option value="" disabled selected>Select presentation form...</option>
+                  <option value="Oral Communication">Oral Communication</option>
+                  <option value="Commented E-Poster">Commented E-Poster</option>
+                  <option value="Non-Commented E-Poster">Non-Commented E-Poster</option>
                 </select>
               </div>
               <div class="form-group">
@@ -148,7 +149,7 @@
             </div>
 
             <div class="card-footer" style="display:flex;justify-content:flex-end">
-              <button type="submit" class="btn btn-primary btn-lg" id="submitBtn" style="width:100%;justify-content:center">Submit Evaluation</button>
+              <button type="button" class="btn btn-primary btn-lg" id="submitBtn" style="width:100%;justify-content:center" onclick="submitReview()">Submit Evaluation</button>
             </div>
           </form>
         </div>
@@ -164,6 +165,8 @@ if (!requireAuth(['reviewer'])) throw '';
 const absId = new URLSearchParams(location.search).get('id');
 if (!absId) location.href = '/reviewer/dashboard.html';
 
+let currentAbstract = null;
+
 async function init() {
   try {
     const [me, abstract, settings] = await Promise.all([
@@ -171,6 +174,8 @@ async function init() {
       apiFetch('/reviews/abstract/'+absId),
       fetch('/api/settings').then(r=>r.json())
     ]);
+    
+    currentAbstract = abstract;
 
     document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
     // Avatar is now a static glasses icon for reviewers
@@ -202,6 +207,9 @@ async function init() {
       el.style.display = 'block';
     }
 
+    // Filter presentation type options based on abstract's preference BEFORE setting review values
+    filterPresentationOptions(abstract.preference);
+
     if (abstract.review) {
       document.getElementById('c1').value = abstract.review.criteria1;
       document.getElementById('c2').value = abstract.review.criteria2;
@@ -213,7 +221,11 @@ async function init() {
         // Trigger change event to update presentation type visibility
         r.dispatchEvent(new Event('change'));
       }
-      document.getElementById('ptype').value = abstract.review.presentation_type || '';
+      let ptypeVal = abstract.review.presentation_type || '';
+      // Map legacy values if needed
+      if (ptypeVal === 'Oral') ptypeVal = 'Oral Communication';
+      if (ptypeVal === 'Poster') ptypeVal = 'Commented E-Poster';
+      document.getElementById('ptype').value = ptypeVal;
       document.getElementById('comments').value = abstract.review.comments || '';
       updateTotal();
     }
@@ -235,16 +247,56 @@ function updateTotal() {
   document.getElementById('totalScore').textContent = c1+c2+c3+c4;
 }
 
+// Filter presentation type <select> options based on abstract preference
+function filterPresentationOptions(preference) {
+  const pTypeGroup = document.getElementById('presentationTypeGroup');
+  const pTypeSelect = document.getElementById('ptype');
+
+  if (preference === 'Video') {
+    // Video submissions: reviewer doesn't choose a presentation form
+    pTypeGroup.style.display = 'none';
+    pTypeSelect.required = false;
+    return;
+  }
+
+  // Build allowed options depending on preference
+  // Oral  → Oral Communication + Commented E-Poster + Non-Commented E-Poster
+  // Poster → Commented E-Poster + Non-Commented E-Poster
+  const ALL_OPTS = [
+    { value: 'Oral Communication',     label: 'Oral Communication' },
+    { value: 'Commented E-Poster',     label: 'Commented E-Poster' },
+    { value: 'Non-Commented E-Poster', label: 'Non-Commented E-Poster' },
+    { value: 'Video',                  label: 'Video' }
+  ];
+
+  let allowed;
+  if (preference === 'Oral' || preference === 'Poster') {
+    allowed = ['Oral Communication', 'Commented E-Poster', 'Non-Commented E-Poster'];
+  } else if (preference === 'Video') {
+    allowed = ['Video'];
+  } else {
+    allowed = ALL_OPTS.map(o => o.value);
+  }
+
+  // Rebuild options
+  const currentVal = pTypeSelect.value;
+  pTypeSelect.innerHTML = '<option value="" disabled selected>Select presentation form...</option>' +
+    ALL_OPTS
+      .filter(o => allowed.includes(o.value))
+      .map(o => `<option value="${o.value}"${o.value === currentVal ? ' selected' : ''}>${o.label}</option>`)
+      .join('');
+}
+
 // Watch for verdict changes to show/hide presentation type
 document.querySelectorAll('input[name="verdict"]').forEach(r => {
   r.addEventListener('change', (e) => {
     const isRefused = e.target.value === 'Refused';
     const pTypeGroup = document.getElementById('presentationTypeGroup');
     const pTypeSelect = document.getElementById('ptype');
-    if (isRefused) {
+    if (isRefused || (currentAbstract && currentAbstract.preference === 'Video')) {
       pTypeGroup.style.display = 'none';
       pTypeSelect.required = false;
-      pTypeSelect.value = '';
+      if (isRefused) pTypeSelect.value = '';
     } else {
       pTypeGroup.style.display = 'block';
       pTypeSelect.required = true;
@@ -257,20 +309,36 @@ function showErr(msg) {
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-document.getElementById('reviewForm').addEventListener('submit', async e => {
-  e.preventDefault();
+async function submitReview() {
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Submitting...';
   document.getElementById('errBox').style.display = 'none';
 
+  const verdictEl = document.querySelector('input[name="verdict"]:checked');
+  if (!verdictEl) {
+    showErr('Please select a verdict (Admitted or Refused)');
+    btn.disabled = false; btn.textContent = 'Submit Evaluation';
+    return;
+  }
+
+  const verdict = verdictEl.value;
+  const ptype = document.getElementById('ptype').value;
+
+  // Validation: If admitted and not video, ptype is required
+  if (verdict === 'Admitted' && (!currentAbstract || currentAbstract.preference !== 'Video') && !ptype) {
+    showErr('Please select a Presentation Form');
+    btn.disabled = false; btn.textContent = 'Submit Evaluation';
+    return;
+  }
+
   const data = {
     abstract_id: absId,
-    criteria1: parseInt(document.getElementById('c1').value),
-    criteria2: parseInt(document.getElementById('c2').value),
-    criteria3: parseInt(document.getElementById('c3').value),
-    criteria4: parseInt(document.getElementById('c4').value),
-    verdict: document.querySelector('input[name="verdict"]:checked').value,
-    presentation_type: document.getElementById('ptype').value,
+    criteria1: parseInt(document.getElementById('c1').value)||0,
+    criteria2: parseInt(document.getElementById('c2').value)||0,
+    criteria3: parseInt(document.getElementById('c3').value)||0,
+    criteria4: parseInt(document.getElementById('c4').value)||0,
+    verdict: verdict,
+    presentation_type: (currentAbstract && currentAbstract.preference === 'Video') ? 'Video' : (ptype || null),
     comments: document.getElementById('comments').value.trim()
   };
 
@@ -282,7 +350,7 @@ document.getElementById('reviewForm').addEventListener('submit', async e => {
     showErr(err.message);
     btn.disabled = false; btn.textContent = 'Submit Evaluation';
   }
-});
+}
 
 init();
 </script>

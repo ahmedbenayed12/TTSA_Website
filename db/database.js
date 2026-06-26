@@ -57,7 +57,7 @@ function initSchema() {
       topic TEXT,
       main_text TEXT NOT NULL,
       word_count INTEGER NOT NULL DEFAULT 0,
-      preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either')),
+      preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either','Video')),
       status TEXT NOT NULL DEFAULT 'Draft'
         CHECK(status IN ('Draft','Submitted','Waiting for Review','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
       is_locked INTEGER NOT NULL DEFAULT 0,
@@ -106,7 +106,7 @@ function initSchema() {
       criteria4 INTEGER NOT NULL DEFAULT 0 CHECK(criteria4 BETWEEN 0 AND 5),
       total_score INTEGER GENERATED ALWAYS AS (criteria1+criteria2+criteria3+criteria4) STORED,
       verdict TEXT CHECK(verdict IN ('Admitted','Refused')),
-      presentation_type TEXT CHECK(presentation_type IN ('Oral','Poster')),
+      presentation_type TEXT CHECK(presentation_type IN ('Oral Communication','Commented E-Poster','Non-Commented E-Poster','Video')),
       comments TEXT,
       created_at INTEGER NOT NULL DEFAULT (unixepoch()),
       updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
@@ -151,14 +151,15 @@ function initSchema() {
   const defaultSettings = [
     ['congress_name', 'TTSA Annual Congress 2026'],
     ['submission_deadline', '2026-08-31T23:59:59'],
+    ['submission_start',    '2026-07-01T00:00:00'],
     ['upload_deadline', '2026-10-15T23:59:59'],
     ['blind_review', 'false'],
     ['max_abstracts_per_user', '3'],
     ['max_words_per_abstract', '300'],
-    ['criteria1_label', 'Originality'],
+    ['criteria1_label', 'Relevance'],
     ['criteria2_label', 'Methodology'],
     ['criteria3_label', 'Clarity'],
-    ['criteria4_label', 'Clinical Relevance'],
+    ['criteria4_label', 'Practical Impact'],
   ];
 
   const insertSetting = db.prepare(
@@ -175,6 +176,79 @@ function initSchema() {
   if (!cols.includes('submission_number')) {
     db.exec('ALTER TABLE abstracts ADD COLUMN submission_number INTEGER');
     console.log('✅ Migration: submission_number column added');
+  }
+
+  // Migration: update CHECK constraints for 'preference' and 'presentation_type' to include 'Video'
+  const abstractsTableInfo = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='abstracts'").get();
+  if (abstractsTableInfo && !abstractsTableInfo.sql.includes("'Video'")) {
+    console.log('🔄 Migrating abstracts table to include Video preference...');
+    db.exec(`
+      PRAGMA foreign_keys=off;
+      BEGIN TRANSACTION;
+      CREATE TABLE IF NOT EXISTS abstracts_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        title TEXT NOT NULL,
+        topic TEXT,
+        main_text TEXT NOT NULL,
+        word_count INTEGER NOT NULL DEFAULT 0,
+        preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either','Video')),
+        status TEXT NOT NULL DEFAULT 'Draft'
+          CHECK(status IN ('Draft','Submitted','Waiting for Review','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
+        is_locked INTEGER NOT NULL DEFAULT 0,
+        file_path TEXT,
+        file_name TEXT,
+        file_uploaded_at INTEGER,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        submission_number INTEGER,
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+      INSERT INTO abstracts_new (id, user_id, submission_number, title, topic, main_text, word_count, preference, status, is_locked, file_path, file_name, file_uploaded_at, created_at, updated_at)
+      SELECT id, user_id, submission_number, title, topic, main_text, word_count, preference, status, is_locked, file_path, file_name, file_uploaded_at, created_at, updated_at FROM abstracts;
+      DROP TABLE abstracts;
+      ALTER TABLE abstracts_new RENAME TO abstracts;
+      COMMIT;
+      PRAGMA foreign_keys=on;
+    `);
+    console.log('✅ Migration: abstracts table updated for Video preference');
+  }
+
+  // Migration: update presentation_type CHECK constraint to new values
+  // New allowed values: 'Oral Communication', 'Commented E-Poster', 'Non-Commented Poster', 'Video'
+  const reviewsTableInfo2 = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='reviews'").get();
+  const hasNewPresentationTypes = reviewsTableInfo2 && reviewsTableInfo2.sql.includes("'Non-Commented E-Poster'");
+  if (!hasNewPresentationTypes) {
+    console.log('🔄 Migrating reviews table to new presentation_type values...');
+    db.exec(`
+      PRAGMA foreign_keys=off;
+      BEGIN TRANSACTION;
+      CREATE TABLE IF NOT EXISTS reviews_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        abstract_id INTEGER NOT NULL,
+        reviewer_id INTEGER NOT NULL,
+        criteria1 INTEGER NOT NULL DEFAULT 0 CHECK(criteria1 BETWEEN 0 AND 5),
+        criteria2 INTEGER NOT NULL DEFAULT 0 CHECK(criteria2 BETWEEN 0 AND 5),
+        criteria3 INTEGER NOT NULL DEFAULT 0 CHECK(criteria3 BETWEEN 0 AND 5),
+        criteria4 INTEGER NOT NULL DEFAULT 0 CHECK(criteria4 BETWEEN 0 AND 5),
+        total_score INTEGER GENERATED ALWAYS AS (criteria1+criteria2+criteria3+criteria4) STORED,
+        verdict TEXT CHECK(verdict IN ('Admitted','Refused')),
+        presentation_type TEXT CHECK(presentation_type IN ('Oral Communication','Commented E-Poster','Non-Commented E-Poster','Video')),
+        comments TEXT,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        UNIQUE(abstract_id, reviewer_id),
+        FOREIGN KEY(abstract_id) REFERENCES abstracts(id) ON DELETE CASCADE,
+        FOREIGN KEY(reviewer_id) REFERENCES reviewers(id) ON DELETE CASCADE
+      );
+      INSERT INTO reviews_new (id, abstract_id, reviewer_id, criteria1, criteria2, criteria3, criteria4, verdict, comments, created_at, updated_at)
+      SELECT id, abstract_id, reviewer_id, criteria1, criteria2, criteria3, criteria4, verdict, comments, created_at, updated_at FROM reviews;
+      DROP TABLE reviews;
+      ALTER TABLE reviews_new RENAME TO reviews;
+      COMMIT;
+      PRAGMA foreign_keys=on;
+    `);
+    console.log('✅ Migration: reviews presentation_type updated to new values');
   }
 }
 

@@ -19,6 +19,7 @@
       <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
       <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
       <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <a href="/admin/quick-actions.html"><span class="nav-icon">⚡</span> Quick Actions</a>
       <div class="sidebar-nav-label">Configuration</div>
       <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
       <a href="/admin/settings.html" class="active"><span class="nav-icon">⚙️</span> Settings</a>
@@ -49,10 +50,17 @@
             </div>
             <div class="form-row">
               <div class="form-group">
+                <label class="form-label">Submission Opening Date</label>
+                <input type="datetime-local" id="submission_start" class="form-control" />
+                <div class="form-hint">Portal opens for new submissions from this date.</div>
+              </div>
+              <div class="form-group">
                 <label class="form-label">Stage 1: Abstract Submission Deadline</label>
                 <input type="datetime-local" id="submission_deadline" class="form-control" />
                 <div class="form-hint">Participants cannot submit or edit texts after this date.</div>
               </div>
+            </div>
+            <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Stage 2: File Upload Deadline</label>
                 <input type="datetime-local" id="upload_deadline" class="form-control" />
@@ -116,8 +124,9 @@ async function init() {
     if(document.getElementById(k) && settings[k]) document.getElementById(k).value = settings[k];
   });
 
+  if (settings.submission_start)    document.getElementById('submission_start').value    = settings.submission_start.substring(0,16);
   if (settings.submission_deadline) document.getElementById('submission_deadline').value = settings.submission_deadline.substring(0,16);
-  if (settings.upload_deadline) document.getElementById('upload_deadline').value = settings.upload_deadline.substring(0,16);
+  if (settings.upload_deadline)     document.getElementById('upload_deadline').value     = settings.upload_deadline.substring(0,16);
 }
 
 document.getElementById('settingsForm').addEventListener('submit', async e => {
@@ -134,6 +143,9 @@ document.getElementById('settingsForm').addEventListener('submit', async e => {
     criteria3_label: document.getElementById('criteria3_label').value,
     criteria4_label: document.getElementById('criteria4_label').value,
   };
+
+  const ss = document.getElementById('submission_start').value;
+  if(ss) updates.submission_start = ss.length===16 ? ss+':00' : ss;
 
   const sd = document.getElementById('submission_deadline').value;
   if(sd) updates.submission_deadline = sd.length===16 ? sd+':00' : sd;

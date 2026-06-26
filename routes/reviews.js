@@ -76,7 +76,10 @@ router.post('/', requireReviewer, (req, res) => {
     
     let finalPresentationType = presentation_type;
     if (verdict === 'Admitted') {
-      if (!['Oral', 'Poster'].includes(finalPresentationType)) return res.status(400).json({ error: 'Presentation type must be Oral or Poster for admitted abstracts' });
+      const validTypes = ['Oral Communication', 'Commented E-Poster', 'Non-Commented E-Poster', 'Video'];
+      if (!validTypes.includes(finalPresentationType)) {
+        return res.status(400).json({ error: 'Presentation type must be Oral Communication, Commented E-Poster, Non-Commented E-Poster, or Video' });
+      }
     } else {
       finalPresentationType = null; // No presentation type for refused
     }

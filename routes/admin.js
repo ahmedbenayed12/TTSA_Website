@@ -376,17 +376,43 @@ router.get('/export/files', requireAdmin, (req, res) => {
 
 // GET /api/admin/stats
 router.get('/stats', requireAdmin, (req, res) => {
+  // Helper to get count by status + presentation_type
+  const countByStatusAndType = (status, type) =>
+    db.prepare(`SELECT COUNT(*) as c FROM abstracts a
+      LEFT JOIN reviews r ON r.abstract_id = a.id
+      WHERE a.status = ? AND r.presentation_type = ?`).get(status, type).c;
+
+  const countByStatusesAndType = (statuses, type) =>
+    db.prepare(`SELECT COUNT(*) as c FROM abstracts a
+      LEFT JOIN reviews r ON r.abstract_id = a.id
+      WHERE a.status IN (${statuses.map(() => '?').join(',')}) AND r.presentation_type = ?`).get(...statuses, type).c;
+
   const stats = {
-    total_members: db.prepare('SELECT COUNT(*) as c FROM users WHERE is_verified = 1').get().c,
-    total_abstracts: db.prepare('SELECT COUNT(*) as c FROM abstracts').get().c,
-    submitted: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status NOT IN ('Draft')").get().c,
-    under_review: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review'").get().c,
-    accepted: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status IN ('Accepted','Waiting for File Upload','Final File Uploaded')").get().c,
-    refused: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Refused'").get().c,
-    total_reviewers: db.prepare('SELECT COUNT(*) as c FROM reviewers').get().c,
-    files_uploaded: db.prepare('SELECT COUNT(*) as c FROM abstracts WHERE file_path IS NOT NULL').get().c,
+    total_members:       db.prepare("SELECT COUNT(*) as c FROM users WHERE is_verified = 1").get().c,
+    total_abstracts:     db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status != 'Draft'").get().c,
+    total_reviewers:     db.prepare("SELECT COUNT(*) as c FROM reviewers").get().c,
+
+    waiting_for_review:        db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review'").get().c,
+    waiting_for_review_oral:   countByStatusAndType('Waiting for Review', 'Oral'),
+    waiting_for_review_poster: countByStatusAndType('Waiting for Review', 'Poster'),
+
+    accepted:            db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status IN ('Waiting for File Upload','Final File Uploaded')").get().c,
+    accepted_oral:       countByStatusesAndType(['Waiting for File Upload','Final File Uploaded'], 'Oral'),
+    accepted_poster:     countByStatusesAndType(['Waiting for File Upload','Final File Uploaded'], 'Poster'),
+
+    refused:             db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Refused'").get().c,
+
+    waiting_for_upload:        db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for File Upload'").get().c,
+    waiting_for_upload_oral:   countByStatusAndType('Waiting for File Upload', 'Oral'),
+    waiting_for_upload_poster: countByStatusAndType('Waiting for File Upload', 'Poster'),
+
+    final_file_uploaded:        db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Final File Uploaded'").get().c,
+    final_file_uploaded_oral:   countByStatusAndType('Final File Uploaded', 'Oral'),
+    final_file_uploaded_poster: countByStatusAndType('Final File Uploaded', 'Poster'),
   };
   res.json(stats);
+
 });
+
 
 module.exports = router;

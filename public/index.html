@@ -81,6 +81,7 @@
       <a href="/" class="active">Home</a>
       <a href="/events.html">Events</a>
       <a href="/about.html">About</a>
+      <a href="/abstract-submission.html">Abstract Submission</a>
       <a href="/register.html" class="btn-nav-red">Register</a>
       <a href="/login.html" class="btn-nav"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Login</a>
     </div>
@@ -95,7 +96,7 @@
       <h1>The 5th National Thoracic Surgery Congress</h1>
       <p>Sfax November, 6-7 2026</p>
       <div class="hero-actions">
-        <a href="/register.html" class="btn btn-lg" style="background:var(--red);color:#fff">Submit Abstract</a>
+        <a href="/abstract-submission.html" class="btn btn-lg" style="background:var(--red);color:#fff">Submit Abstract</a>
         <a href="/events.html" class="btn btn-lg btn-outline-white">View Events</a>
       </div>
     </div>
@@ -220,15 +221,24 @@ async function loadPublicData() {
     ]);
 
     // Deadline display
-    if (settings.submission_deadline) {
-      const d = new Date(settings.submission_deadline);
-      const heroDeadlineEl = document.getElementById('heroDeadline');
-      if (heroDeadlineEl) heroDeadlineEl.textContent = d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
-      
-      const dynamicDeadlineEl = document.getElementById('dynamicDeadline');
-      if (dynamicDeadlineEl) dynamicDeadlineEl.textContent = d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+    const now = new Date();
+    const startDate = settings.submission_start ? new Date(settings.submission_start) : null;
+    const deadlineDate = settings.submission_deadline ? new Date(settings.submission_deadline) : null;
 
-      startCountdown(d);
+    if (startDate && now < startDate) {
+      const bannerTitleEl = document.querySelector('.deadline-banner h3');
+      if (bannerTitleEl) bannerTitleEl.textContent = 'Abstract Submission Opening Soon';
+      const dynamicDeadlineEl = document.getElementById('dynamicDeadline');
+      if (dynamicDeadlineEl) {
+        dynamicDeadlineEl.parentElement.innerHTML = `Submission starts on <span id="dynamicDeadline">${startDate.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</span>`;
+      }
+    } else if (deadlineDate) {
+      const dynamicDeadlineEl = document.getElementById('dynamicDeadline');
+      if (dynamicDeadlineEl) dynamicDeadlineEl.textContent = deadlineDate.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+    }
+
+    if (deadlineDate) {
+      startCountdown(startDate, deadlineDate);
     }
 
     function formatDateRange(start, end) {
@@ -266,10 +276,31 @@ async function loadPublicData() {
   } catch(e) { console.error(e); }
 }
 
-function startCountdown(deadline) {
+function startCountdown(startDate, deadlineDate) {
+  const container = document.getElementById('countdown');
+  if (!container) return;
+
   function tick() {
-    const diff = deadline - new Date();
-    if (diff <= 0) { document.getElementById('countdown').innerHTML = '<span style="color:#fff;font-weight:700">Deadline passed</span>'; return; }
+    const now = new Date();
+    let target = deadlineDate;
+    let label = 'deadline';
+    
+    if (startDate && now < startDate) {
+      target = startDate;
+      label = 'start';
+    }
+
+    const diff = target - now;
+    if (diff <= 0) {
+      if (label === 'start') {
+        location.reload();
+        return;
+      } else {
+        container.innerHTML = '<span style="color:#fff;font-weight:700">Deadline passed</span>';
+        return;
+      }
+    }
+    
     const d = Math.floor(diff/86400000);
     const h = Math.floor((diff%86400000)/3600000);
     const m = Math.floor((diff%3600000)/60000);

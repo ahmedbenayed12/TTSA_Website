@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Quick Actions – TTSA Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .action-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      transition: box-shadow .2s, transform .15s;
+    }
+    .action-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.10); transform: translateY(-2px); }
+    .action-icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .action-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--gray-900);
+    }
+    .action-desc {
+      font-size: .85rem;
+      color: var(--gray-500);
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts &amp; Reviews</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <a href="/admin/quick-actions.html" class="active"><span class="nav-icon">⚡</span> Quick Actions</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Quick Actions</h2>
+    </div>
+    <div class="portal-body">
+
+      <div class="action-grid">
+
+        <div class="action-card">
+          <div class="action-icon">📑</div>
+          <div class="action-title">Manage Abstracts &amp; Reviews</div>
+          <div class="action-desc">View, assign, finalize abstracts and send verdict emails to authors.</div>
+          <a href="/admin/abstracts.html" class="btn btn-primary btn-sm" style="align-self:flex-start">Open →</a>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📥</div>
+          <div class="action-title">Export Data</div>
+          <div class="action-desc">Download abstracts, reviews, and member data as Excel or ZIP archives.</div>
+          <a href="/admin/export.html" class="btn btn-primary btn-sm" style="align-self:flex-start">Open →</a>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">⚙️</div>
+          <div class="action-title">Update Deadlines &amp; Settings</div>
+          <div class="action-desc">Configure submission deadlines, upload deadlines, and review criteria labels.</div>
+          <a href="/admin/settings.html" class="btn btn-primary btn-sm" style="align-self:flex-start">Open →</a>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📅</div>
+          <div class="action-title">Manage Events</div>
+          <div class="action-desc">Create and publish congress events visible to all members on the public portal.</div>
+          <a href="/admin/events.html" class="btn btn-primary btn-sm" style="align-self:flex-start">Open →</a>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📖</div>
+          <div class="action-title">Edit About Page</div>
+          <div class="action-desc">Update the association's information and guidelines shown on the public portal.</div>
+          <a href="/admin/about.html" class="btn btn-primary btn-sm" style="align-self:flex-start">Open →</a>
+        </div>
+
+        <div class="action-card">
+          <div class="action-icon">📊</div>
+          <div class="action-title">Platform Overview</div>
+          <div class="action-desc">View live statistics on members, abstracts, reviewers and presentation breakdown.</div>
+          <a href="/admin/dashboard.html" class="btn btn-outline btn-sm" style="align-self:flex-start">Open →</a>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+apiFetch('/auth/me').then(me => {
+  document.getElementById('sidebarName').textContent  = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+});
+</script>
+</body>
+</html>

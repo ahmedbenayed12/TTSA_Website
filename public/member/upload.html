@@ -122,23 +122,32 @@ async function init() {
   const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
   const isFull = allAbstracts.length >= maxSlots;
   let passed = false;
+  let notStarted = false;
+  const now = new Date();
+  if (settings.submission_start) {
+    notStarted = now < new Date(settings.submission_start);
+  }
   if (settings.submission_deadline) {
     const d = new Date(settings.submission_deadline);
-    passed = new Date() > d;
+    passed = now > d;
   }
   
-  if (passed || isFull) {
+  if (passed || notStarted || isFull) {
     const navBtn = document.getElementById('navNewAbsBtn');
     if (navBtn) {
       navBtn.style.pointerEvents = 'none';
       navBtn.style.opacity = '0.5';
-      navBtn.title = passed ? 'Deadline has passed' : 'Maximum abstracts reached';
+      let titleText = '';
+      if (passed) titleText = 'Deadline has passed';
+      else if (notStarted) titleText = 'Submission has not started yet';
+      else if (isFull) titleText = 'Maximum abstracts reached';
+      navBtn.title = titleText;
     }
   }
   document.getElementById('sidebarName').textContent = me.first_name+' '+me.last_name;
   // document.getElementById('sidebarAvatar').textContent = me.first_name[0];
 
-  if (abstract.status !== 'Accepted') {
+  if (!['Waiting for File Upload', 'Final File Uploaded'].includes(abstract.status)) {
     alert('Only accepted abstracts can upload presentations.');
     location.href = '/member/dashboard.html';
     return;

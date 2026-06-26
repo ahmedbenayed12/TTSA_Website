@@ -139,33 +139,55 @@ async function loadDashboard() {
 
     // Deadline
     let passed = false;
+    let notStarted = false;
+    const now = new Date();
+
+    if (settings.submission_start) {
+      const start = new Date(settings.submission_start);
+      notStarted = now < start;
+    }
+
     if (settings.submission_deadline) {
       const d = new Date(settings.submission_deadline);
-      passed = new Date() > d;
-      document.getElementById('deadlineText').innerHTML = passed
-        ? '⚠️ Submission deadline has <strong>passed</strong>.'
-        : `Submission deadline: <strong>${d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
-      if (passed) document.getElementById('deadlineAlert').className='alert alert-warning';
-      document.getElementById('deadlineBadge').textContent = passed ? 'Deadline Passed' : 'Submissions Open';
-      document.getElementById('deadlineBadge').className = passed ? 'badge badge-red' : 'badge badge-green';
+      passed = now > d;
+      
+      if (notStarted) {
+        const start = new Date(settings.submission_start);
+        document.getElementById('deadlineText').innerHTML = `⏳ Submission has not started yet. Opens on: <strong>${start.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</strong>`;
+        document.getElementById('deadlineAlert').className = 'alert alert-info';
+        document.getElementById('deadlineBadge').textContent = 'Submission Not Started';
+        document.getElementById('deadlineBadge').className = 'badge badge-gray';
+      } else {
+        document.getElementById('deadlineText').innerHTML = passed
+          ? '⚠️ Submission deadline has <strong>passed</strong>.'
+          : `Submission deadline: <strong>${d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
+        if (passed) document.getElementById('deadlineAlert').className='alert alert-warning';
+        document.getElementById('deadlineBadge').textContent = passed ? 'Deadline Passed' : 'Submissions Open';
+        document.getElementById('deadlineBadge').className = passed ? 'badge badge-red' : 'badge badge-green';
+      }
     }
 
     const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
     const isFull = abstracts.length >= maxSlots;
     
-    // Disable New Abstract buttons if deadline passed or slots full
-    if (passed || isFull) {
+    // Disable New Abstract buttons if deadline passed, not started yet, or slots full
+    if (passed || notStarted || isFull) {
       const topBtn = document.getElementById('topNewAbsBtn');
       const navBtn = document.getElementById('navNewAbsBtn');
+      let titleText = '';
+      if (passed) titleText = 'Deadline has passed';
+      else if (notStarted) titleText = 'Submission has not started yet';
+      else if (isFull) titleText = 'Maximum abstracts reached';
+
       if (topBtn) {
         topBtn.style.pointerEvents = 'none';
         topBtn.style.opacity = '0.5';
-        topBtn.title = passed ? 'Deadline has passed' : 'Maximum abstracts reached';
+        topBtn.title = titleText;
       }
       if (navBtn) {
         navBtn.style.pointerEvents = 'none';
         navBtn.style.opacity = '0.5';
-        navBtn.title = passed ? 'Deadline has passed' : 'Maximum abstracts reached';
+        navBtn.title = titleText;
       }
     }
 
@@ -202,11 +224,12 @@ async function loadDashboard() {
               </div>
               <!-- Actions -->
               <div style="display:flex;gap:8px;flex-shrink:0;">
-                ${abs.status === 'Accepted' && !abs.file_path ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-success btn-sm">📤 Upload File</a>` : ''}
-                ${!abs.is_locked && !passed
+                ${abs.status === 'Waiting for File Upload' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-primary btn-sm" style="background:#e65100;border-color:#e65100;">📤 Upload File</a>` : ''}
+                ${abs.status === 'Final File Uploaded' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;">📤 Re-upload File</a>` : ''}
+                ${!abs.is_locked && !passed && !['Waiting for File Upload', 'Final File Uploaded'].includes(abs.status)
                   ? `<a href="/member/edit.html?id=${abs.id}" class="btn btn-outline btn-sm">Edit</a>
                      <button class="btn btn-danger btn-sm" onclick="delAbstract(${abs.id})">Delete</button>`
-                  : `<a href="/member/edit.html?id=${abs.id}" class="btn btn-ghost btn-sm">View</a>`
+                  : `<a href="/member/edit.html?id=${abs.id}" class="btn btn-ghost btn-sm">View (Locked)</a>`
                 }
               </div>
             </div>

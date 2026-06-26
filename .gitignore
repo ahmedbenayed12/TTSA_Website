@@ -2,4 +2,8 @@ node_modules/
 .env
 uploads/
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
+check_db.js
+migrate.js

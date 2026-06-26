@@ -5,6 +5,110 @@
   <title>Admin Dashboard – TTSA</title>
   <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
   <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .ov-card {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-left: 5px solid;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      transition: box-shadow .2s;
+    }
+    .ov-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,.10); }
+    .ov-label {
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--gray-500);
+    }
+    .ov-value {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+      margin: 4px 0 2px;
+    }
+    .ov-pct {
+      font-size: .8rem;
+      font-weight: 500;
+      color: var(--gray-400);
+      margin-bottom: 10px;
+    }
+    .ov-pct span { font-weight: 700; color: var(--gray-600); }
+    .ov-sub {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      border-top: 1px solid var(--gray-100);
+      padding-top: 10px;
+    }
+    .ov-sub-item {
+      flex: 1;
+      background: var(--gray-50);
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ov-sub-label {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      color: var(--gray-400);
+    }
+    .ov-sub-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+    .ov-sub-pct {
+      font-size: .7rem;
+      color: var(--gray-400);
+      font-weight: 600;
+    }
+    /* colour tokens */
+    .ov-blue   { border-color: #0C589A; }
+    .ov-blue   .ov-value { color: #0C589A; }
+    .ov-blue   .ov-sub-value { color: #0C589A; }
+    .ov-gray   { border-color: var(--gray-400); }
+    .ov-gray   .ov-value { color: var(--gray-600); }
+    .ov-teal   { border-color: #0891b2; }
+    .ov-teal   .ov-value { color: #0891b2; }
+    .ov-yellow { border-color: #d97706; }
+    .ov-yellow .ov-value { color: #d97706; }
+    .ov-yellow .ov-sub-value { color: #d97706; }
+    .ov-green  { border-color: #166534; }
+    .ov-green  .ov-value { color: #166534; }
+    .ov-green  .ov-sub-value { color: #166534; }
+    .ov-red    { border-color: #B82538; }
+    .ov-red    .ov-value { color: #B82538; }
+    .ov-orange { border-color: #ea580c; }
+    .ov-orange .ov-value { color: #ea580c; }
+    .ov-orange .ov-sub-value { color: #ea580c; }
+    .ov-purple { border-color: #7c3aed; }
+    .ov-purple .ov-value { color: #7c3aed; }
+    .ov-purple .ov-sub-value { color: #7c3aed; }
+
+    .section-title {
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-400);
+      margin: 0 0 12px;
+    }
+  </style>
 </head>
 <body>
 <div class="portal-layout">
@@ -17,9 +121,10 @@
       <div class="sidebar-nav-label">Overview</div>
       <a href="/admin/dashboard.html" class="active"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Dashboard</a>
       <div class="sidebar-nav-label">Management</div>
-      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts & Reviews</a>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts &amp; Reviews</a>
       <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
       <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <a href="/admin/quick-actions.html"><span class="nav-icon">⚡</span> Quick Actions</a>
       <div class="sidebar-nav-label">Configuration</div>
       <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
       <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
@@ -37,54 +142,114 @@
       <h2>Platform Overview</h2>
     </div>
     <div class="portal-body">
-      
-      <div class="stat-grid" style="margin-bottom:32px">
-        <div class="stat-card">
-          <div class="stat-label">Total Members</div>
-          <div class="stat-value" id="sMembers">—</div>
+
+      <!-- Platform Totals -->
+      <p class="section-title">Platform totals</p>
+      <div class="overview-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:28px">
+        <div class="ov-card ov-blue">
+          <div class="ov-label">Total Members</div>
+          <div class="ov-value" id="sMembers">—</div>
+          <div class="ov-pct">Verified registered users</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Abstracts</div>
-          <div class="stat-value" id="sAbstracts">—</div>
+        <div class="ov-card ov-gray">
+          <div class="ov-label">Total Abstracts</div>
+          <div class="ov-value" id="sAbstracts">—</div>
+          <div class="ov-pct">Submitted (non-draft)</div>
         </div>
-        <div class="stat-card">
-          <div class="stat-label">Submitted</div>
-          <div class="stat-value" id="sSubmitted">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Under Review</div>
-          <div class="stat-value" id="sUnderReview" style="color:var(--warning)">—</div>
+        <div class="ov-card ov-teal">
+          <div class="ov-label">Total Reviewers</div>
+          <div class="ov-value" id="sReviewers">—</div>
+          <div class="ov-pct">Active reviewer accounts</div>
         </div>
       </div>
 
-      <div class="stat-grid" style="margin-bottom:32px">
-        <div class="stat-card">
-          <div class="stat-label">Accepted</div>
-          <div class="stat-value" id="sAccepted" style="color:var(--success)">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Refused</div>
-          <div class="stat-value" id="sRefused" style="color:var(--error)">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Total Reviewers</div>
-          <div class="stat-value" id="sReviewers">—</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-label">Files Uploaded</div>
-          <div class="stat-value" id="sFiles">—</div>
-        </div>
-      </div>
+      <!-- Abstract Lifecycle -->
+      <p class="section-title">Abstract lifecycle</p>
+      <div class="overview-grid">
 
-      <div class="card">
-        <div class="card-header">
-          <h3>Quick Actions</h3>
+        <!-- Waiting for Review -->
+        <div class="ov-card ov-yellow">
+          <div class="ov-label">Waiting for Review</div>
+          <div class="ov-value" id="sWaitingReview">—</div>
+          <div class="ov-pct" id="pWaitingReview">— of abstracts</div>
+          <div class="ov-sub">
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎤 Oral</div>
+              <div class="ov-sub-value" id="sWRO">—</div>
+              <div class="ov-sub-pct" id="pWRO">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🖼 Poster</div>
+              <div class="ov-sub-value" id="sWRP">—</div>
+              <div class="ov-sub-pct" id="pWRP">—</div>
+            </div>
+          </div>
         </div>
-        <div class="card-body" style="display:flex;gap:16px;flex-wrap:wrap">
-          <a href="/admin/abstracts.html" class="btn btn-outline">Manage Abstracts →</a>
-          <a href="/admin/export.html" class="btn btn-primary">Export Data →</a>
-          <a href="/admin/settings.html" class="btn btn-ghost">Update Deadlines →</a>
+
+        <!-- Accepted -->
+        <div class="ov-card ov-green">
+          <div class="ov-label">Accepted</div>
+          <div class="ov-value" id="sAccepted">—</div>
+          <div class="ov-pct" id="pAccepted">— of abstracts</div>
+          <div class="ov-sub">
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎤 Oral</div>
+              <div class="ov-sub-value" id="sAO">—</div>
+              <div class="ov-sub-pct" id="pAO">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🖼 Poster</div>
+              <div class="ov-sub-value" id="sAP">—</div>
+              <div class="ov-sub-pct" id="pAP">—</div>
+            </div>
+          </div>
         </div>
+
+        <!-- Refused (no Oral/Poster split - reviewer didn't assign type) -->
+        <div class="ov-card ov-red">
+          <div class="ov-label">Refused</div>
+          <div class="ov-value" id="sRefused">—</div>
+          <div class="ov-pct" id="pRefused">— of abstracts</div>
+        </div>
+
+        <!-- Waiting for File Upload -->
+        <div class="ov-card ov-orange">
+          <div class="ov-label">Waiting for File Upload</div>
+          <div class="ov-value" id="sWaitingUpload">—</div>
+          <div class="ov-pct" id="pWaitingUpload">— of accepted</div>
+          <div class="ov-sub">
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎤 Oral</div>
+              <div class="ov-sub-value" id="sWUO">—</div>
+              <div class="ov-sub-pct" id="pWUO">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🖼 Poster</div>
+              <div class="ov-sub-value" id="sWUP">—</div>
+              <div class="ov-sub-pct" id="pWUP">—</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Final File Uploaded -->
+        <div class="ov-card ov-purple">
+          <div class="ov-label">Final File Uploaded</div>
+          <div class="ov-value" id="sFinalUploaded">—</div>
+          <div class="ov-pct" id="pFinalUploaded">— of accepted</div>
+          <div class="ov-sub">
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎤 Oral</div>
+              <div class="ov-sub-value" id="sFUO">—</div>
+              <div class="ov-sub-pct" id="pFUO">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🖼 Poster</div>
+              <div class="ov-sub-value" id="sFUP">—</div>
+              <div class="ov-sub-pct" id="pFUP">—</div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -94,22 +259,59 @@
 <script>
 if (!requireAuth(['admin'])) throw '';
 
+function pct(part, total) {
+  if (!total || total === 0) return '—';
+  return (part / total * 100).toFixed(1) + '%';
+}
+
+function setSub(idVal, idPct, val, total) {
+  document.getElementById(idVal).textContent = val;
+  document.getElementById(idPct).textContent  = pct(val, total);
+}
+
 async function init() {
-  const [me, stats] = await Promise.all([
+  const [me, s] = await Promise.all([
     apiFetch('/auth/me'),
     apiFetch('/admin/stats')
   ]);
-  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarName').textContent  = me.first_name + ' ' + me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
 
-  document.getElementById('sMembers').textContent = stats.total_members;
-  document.getElementById('sAbstracts').textContent = stats.total_abstracts;
-  document.getElementById('sSubmitted').textContent = stats.submitted;
-  document.getElementById('sUnderReview').textContent = stats.under_review;
-  document.getElementById('sAccepted').textContent = stats.accepted;
-  document.getElementById('sRefused').textContent = stats.refused;
-  document.getElementById('sReviewers').textContent = stats.total_reviewers;
-  document.getElementById('sFiles').textContent = stats.files_uploaded;
+  const T = s.total_abstracts;
+  const A = s.accepted;
+
+  // Platform totals
+  document.getElementById('sMembers').textContent   = s.total_members;
+  document.getElementById('sAbstracts').textContent = T;
+  document.getElementById('sReviewers').textContent = s.total_reviewers;
+
+  // Waiting for Review
+  document.getElementById('sWaitingReview').textContent = s.waiting_for_review;
+  document.getElementById('pWaitingReview').innerHTML   = `<span>${pct(s.waiting_for_review, T)}</span> of abstracts`;
+  setSub('sWRO','pWRO', s.waiting_for_review_oral,   s.waiting_for_review);
+  setSub('sWRP','pWRP', s.waiting_for_review_poster, s.waiting_for_review);
+
+  // Accepted
+  document.getElementById('sAccepted').textContent = A;
+  document.getElementById('pAccepted').innerHTML   = `<span>${pct(A, T)}</span> of abstracts`;
+  setSub('sAO','pAO', s.accepted_oral,   A);
+  setSub('sAP','pAP', s.accepted_poster, A);
+
+  // Refused
+  document.getElementById('sRefused').textContent = s.refused;
+  document.getElementById('pRefused').innerHTML   = `<span>${pct(s.refused, T)}</span> of abstracts`;
+
+  // Waiting for File Upload
+  document.getElementById('sWaitingUpload').textContent = s.waiting_for_upload;
+  document.getElementById('pWaitingUpload').innerHTML   = `<span>${pct(s.waiting_for_upload, A)}</span> of accepted — awaiting file`;
+  setSub('sWUO','pWUO', s.waiting_for_upload_oral,   s.waiting_for_upload);
+  setSub('sWUP','pWUP', s.waiting_for_upload_poster, s.waiting_for_upload);
+
+  // Final File Uploaded
+  document.getElementById('sFinalUploaded').textContent = s.final_file_uploaded;
+  document.getElementById('pFinalUploaded').innerHTML   = `<span>${pct(s.final_file_uploaded, A)}</span> of accepted — file received`;
+  setSub('sFUO','pFUO', s.final_file_uploaded_oral,   s.final_file_uploaded);
+  setSub('sFUP','pFUP', s.final_file_uploaded_poster, s.final_file_uploaded);
 }
 
 init();
