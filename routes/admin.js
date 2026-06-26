@@ -414,5 +414,70 @@ router.get('/stats', requireAdmin, (req, res) => {
 
 });
 
+// PUT /api/admin/profile — update super admin profile
+router.put('/profile', requireAdmin, async (req, res) => {
+  try {
+    const { email, first_name, last_name, password } = req.body;
+    const adminId = req.user.id;
+
+    if (!email || !first_name || !last_name) {
+      return res.status(400).json({ error: 'Email, first name, and last name are required' });
+    }
+
+    const lEmail = email.toLowerCase();
+
+    // Check if email already exists for another admin
+    const existing = db.prepare('SELECT id FROM admins WHERE email = ? AND id != ?').get(lEmail);
+    if (existing) {
+      return res.status(409).json({ error: 'Email is already in use by another admin' });
+    }
+
+    if (password) {
+      if (password.length < 8) {
+        return res.status(400).json({ error: 'Password must be at least 8 characters' });
+      }
+      const hash = await bcrypt.hash(password, 12);
+      db.prepare('UPDATE admins SET email = ?, first_name = ?, last_name = ?, password_hash = ? WHERE id = ?')
+        .run(lEmail, first_name, last_name, hash, adminId);
+    } else {
+      db.prepare('UPDATE admins SET email = ?, first_name = ?, last_name = ? WHERE id = ?')
+        .run(lEmail, first_name, last_name, adminId);
+    }
+
+    res.json({ message: 'Profile updated successfully' });
+  } catch (err) {
+    console.error('Failed to update admin profile:', err);
+    res.status(500).json({ error: 'Failed to update profile' });
+  }
+});
+
+// GET /api/admin/users — list all registered participants (users)
+router.get('/users', requireAdmin, (req, res) => {
+  try {
+    const users = db.prepare('SELECT id, email, first_name, last_name, nationality, profession, specialty, seniority, is_blocked, created_at FROM users ORDER BY created_at DESC').all();
+    res.json(users);
+  } catch (err) {
+    console.error('Failed to list users:', err);
+    res.status(500).json({ error: 'Failed to list users' });
+  }
+});
+
+// PATCH /api/admin/users/:id/block — block/unblock participant
+router.patch('/users/:id/block', requireAdmin, (req, res) => {
+  try {
+    const { blocked } = req.body;
+    const userId = req.params.id;
+
+    if (blocked === undefined) {
+      return res.status(400).json({ error: 'blocked status is required' });
+    }
+
+    db.prepare('UPDATE users SET is_blocked = ? WHERE id = ?').run(blocked ? 1 : 0, userId);
+    res.json({ message: `User account ${blocked ? 'blocked' : 'unblocked'} successfully` });
+  } catch (err) {
+    console.error('Failed to update block status:', err);
+    res.status(500).json({ error: 'Failed to update block status' });
+  }
+});
 
 module.exports = router;

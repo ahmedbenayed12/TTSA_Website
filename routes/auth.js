@@ -3,7 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const db = require('../db/database');
-const { sendOTP } = require('../services/email');
+const { sendOTP, sendReviewerLoginOTP } = require('../services/email');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'ttsa_jwt_secret_key_2026';
 
@@ -69,7 +69,41 @@ router.post('/verify-otp', (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) return res.status(400).json({ error: 'Email and OTP required' });
 
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
+  const lEmail = email.toLowerCase();
+
+  // Check reviewer first
+  const reviewer = db.prepare('SELECT * FROM reviewers WHERE email = ?').get(lEmail);
+  if (reviewer) {
+    const now = Math.floor(Date.now() / 1000);
+    if (reviewer.otp !== otp) return res.status(400).json({ error: 'Invalid OTP' });
+    if (reviewer.otp_expires_at < now) return res.status(400).json({ error: 'OTP has expired. Request a new one.' });
+
+    // Clear OTP
+    db.prepare('UPDATE reviewers SET otp = NULL, otp_expires_at = NULL WHERE id = ?').run(reviewer.id);
+
+    // If reviewer must change password (first time login)
+    if (reviewer.must_change_password) {
+      const tempToken = generateToken({ id: reviewer.id, email: reviewer.email, role: 'reviewer_temp', name: reviewer.first_name });
+      return res.json({
+        message: 'OTP verified. Password change required.',
+        token: tempToken,
+        role: 'reviewer',
+        mustChangePassword: true,
+        user: { id: reviewer.id, email: reviewer.email, first_name: reviewer.first_name, last_name: reviewer.last_name }
+      });
+    }
+
+    const token = generateToken({ id: reviewer.id, email: reviewer.email, role: 'reviewer', name: reviewer.first_name });
+    return res.json({
+      message: 'Email verified successfully',
+      token,
+      role: 'reviewer',
+      user: { id: reviewer.id, email: reviewer.email, first_name: reviewer.first_name, last_name: reviewer.last_name }
+    });
+  }
+
+  // Check normal user
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(lEmail);
   if (!user) return res.status(404).json({ error: 'User not found' });
   if (user.is_verified) return res.status(400).json({ error: 'Email already verified' });
 
@@ -88,7 +122,26 @@ router.post('/resend-otp', async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
 
-  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase());
+  const lEmail = email.toLowerCase();
+
+  // Check reviewer
+  const reviewer = db.prepare('SELECT * FROM reviewers WHERE email = ?').get(lEmail);
+  if (reviewer) {
+    const otp = generateOTP();
+    const otpExpires = Math.floor((Date.now() + 15 * 60 * 1000) / 1000);
+    db.prepare('UPDATE reviewers SET otp = ?, otp_expires_at = ? WHERE id = ?').run(otp, otpExpires, reviewer.id);
+
+    try {
+      await sendReviewerLoginOTP(reviewer.email, reviewer.first_name, otp);
+      return res.json({ message: 'New OTP sent to your email' });
+    } catch (err) {
+      console.error('Resend OTP failed for reviewer:', err.message);
+      return res.status(500).json({ error: 'Failed to send OTP' });
+    }
+  }
+
+  // Check normal user
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(lEmail);
   if (!user) return res.status(404).json({ error: 'User not found' });
   if (user.is_verified) return res.status(400).json({ error: 'Email already verified' });
 
@@ -121,13 +174,25 @@ router.post('/login', async (req, res) => {
     return res.json({ token, role: 'admin', name: admin.first_name });
   }
 
-  // Check reviewer
+  // Check reviewer (requires OTP verification)
   const reviewer = db.prepare('SELECT * FROM reviewers WHERE email = ?').get(lEmail);
   if (reviewer) {
     const match = await bcrypt.compare(password, reviewer.password_hash);
     if (!match) return res.status(401).json({ error: 'Invalid credentials' });
-    const token = generateToken({ id: reviewer.id, email: reviewer.email, role: 'reviewer', name: reviewer.first_name });
-    return res.json({ token, role: 'reviewer', name: reviewer.first_name });
+
+    // Generate and send OTP for 2FA
+    const otp = generateOTP();
+    const otpExpires = Math.floor((Date.now() + 15 * 60 * 1000) / 1000);
+    db.prepare('UPDATE reviewers SET otp = ?, otp_expires_at = ? WHERE id = ?').run(otp, otpExpires, reviewer.id);
+
+    try {
+      await sendReviewerLoginOTP(reviewer.email, reviewer.first_name, otp);
+    } catch (err) {
+      console.error('Failed to send reviewer OTP:', err);
+      return res.status(500).json({ error: 'Failed to send login verification email. Please contact administrator.' });
+    }
+
+    return res.json({ requiresOTP: true, email: reviewer.email, role: 'reviewer' });
   }
 
   // Check member
@@ -135,12 +200,41 @@ router.post('/login', async (req, res) => {
   if (user) {
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) return res.status(401).json({ error: 'Invalid credentials' });
+    if (user.is_blocked) return res.status(403).json({ error: 'Your account has been blocked by the administrator.' });
     if (!user.is_verified) return res.status(403).json({ error: 'Email not verified. Check your inbox for the OTP.', requiresOTP: true, email: lEmail });
     const token = generateToken({ id: user.id, email: user.email, role: 'member', name: user.first_name });
     return res.json({ token, role: 'member', name: user.first_name });
   }
 
   return res.status(401).json({ error: 'Invalid credentials' });
+});
+
+// POST /api/auth/reviewer/change-password — force initial password change for reviewer
+router.post('/reviewer/change-password', require('../middleware/auth').verifyToken, async (req, res) => {
+  const { role, id } = req.user;
+  if (role !== 'reviewer_temp') {
+    return res.status(403).json({ error: 'Access denied: Must verify OTP first' });
+  }
+
+  const { newPassword } = req.body;
+  if (!newPassword || newPassword.length < 8) {
+    return res.status(400).json({ error: 'Password must be at least 8 characters long' });
+  }
+
+  try {
+    const hash = await bcrypt.hash(newPassword, 12);
+    db.prepare('UPDATE reviewers SET password_hash = ?, must_change_password = 0 WHERE id = ?').run(hash, id);
+
+    // Fetch reviewer details to sign them in with permanent token
+    const reviewer = db.prepare('SELECT * FROM reviewers WHERE id = ?').get(id);
+    if (!reviewer) return res.status(404).json({ error: 'Reviewer not found' });
+
+    const token = generateToken({ id: reviewer.id, email: reviewer.email, role: 'reviewer', name: reviewer.first_name });
+    res.json({ message: 'Password updated successfully', token, role: 'reviewer', name: reviewer.first_name });
+  } catch (err) {
+    console.error('Failed to change reviewer password:', err);
+    res.status(500).json({ error: 'Failed to change password' });
+  }
 });
 
 // POST /api/auth/forgot-password

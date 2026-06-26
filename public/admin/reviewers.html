@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Reviewer Management – TTSA Admin</title>
+  <link rel="icon" type="image/svg+xml" href="/img/logo.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    .reviewer-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      border: 1px solid var(--gray-200);
+      margin-top: 16px;
+    }
+    .reviewer-table th, .reviewer-table td {
+      padding: 14px 20px;
+      text-align: left;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .reviewer-table th {
+      background: var(--gray-50);
+      font-weight: 700;
+      color: var(--gray-700);
+      font-size: .85rem;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+    .reviewer-table td {
+      font-size: .9rem;
+      color: var(--gray-600);
+    }
+    .reviewer-table tr:last-child td {
+      border-bottom: none;
+    }
+    .reviewer-table tr:hover td {
+      background: var(--gray-50);
+    }
+    .empty-state {
+      padding: 60px 20px;
+      text-align: center;
+      background: var(--white);
+      border: 1px dashed var(--gray-300);
+      border-radius: var(--radius);
+      margin-top: 16px;
+    }
+    .empty-state .icon {
+      font-size: 3rem;
+      margin-bottom: 12px;
+    }
+    .empty-state h3 {
+      margin: 0 0 6px;
+      color: var(--gray-800);
+    }
+    .empty-state p {
+      margin: 0;
+      color: var(--gray-500);
+      font-size: .88rem;
+    }
+  </style>
+</head>
+<body>
+<div class="portal-layout">
+  <aside class="sidebar" style="background:var(--gray-900)">
+    <div class="sidebar-logo">
+      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
+      <div class="sidebar-logo-text"><div class="t1">TTSA Portal</div><div class="t2">Super Admin</div></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-nav-label">Overview</div>
+      <a href="/admin/dashboard.html"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg> Dashboard</a>
+      <div class="sidebar-nav-label">Management</div>
+      <a href="/admin/abstracts.html"><span class="nav-icon">📑</span> Abstracts &amp; Reviews</a>
+      <a href="/admin/reviewers.html" class="active"><span class="nav-icon">👥</span> Reviewers</a>
+      <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
+      <a href="/admin/about.html"><span class="nav-icon">📖</span> About</a>
+      <a href="/admin/quick-actions.html"><span class="nav-icon">⚡</span> Quick Actions</a>
+      <div class="sidebar-nav-label">Configuration</div>
+      <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
+      <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="sidebarAvatar" style="background:var(--blue)">?</div>
+        <div class="sidebar-user-info"><div class="u-name" id="sidebarName">Loading…</div><div class="u-role">Admin</div></div>
+      </div>
+      <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
+    </div>
+  </aside>
+  <main class="portal-main">
+    <div class="portal-topbar">
+      <h2>Reviewer Management</h2>
+      <button class="btn btn-primary" onclick="openModal()">➕ Add Reviewer</button>
+    </div>
+    <div class="portal-body">
+      <div id="errBox" class="alert alert-error" style="display:none;margin-bottom:20px"></div>
+      
+      <div id="reviewersContainer">
+        <!-- Reviewer table or empty state goes here -->
+        <div class="empty-state">
+          <div class="icon">👥</div>
+          <h3>Loading Reviewers...</h3>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Add Reviewer Modal -->
+<div class="modal-overlay" id="reviewerModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <h3 id="modalTitle">Add Reviewer</h3>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <form id="reviewerForm">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name<span class="required">*</span></label>
+            <input type="text" id="revFirstName" class="form-control" required placeholder="e.g. Jean"/>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name<span class="required">*</span></label>
+            <input type="text" id="revLastName" class="form-control" required placeholder="e.g. Dupont"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Login Email<span class="required">*</span></label>
+          <input type="email" id="revEmail" class="form-control" required placeholder="e.g. reviewer@domain.com"/>
+          <div class="form-hint">This will be the login username for the reviewer.</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Initial Password<span class="required">*</span></label>
+          <input type="password" id="revPassword" class="form-control" required minlength="8" placeholder="••••••••"/>
+          <div class="form-hint">At least 8 characters. The reviewer will be forced to change this password on their first login.</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="saveBtn">Create Reviewer Account</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="/js/api.js"></script>
+<script>
+if (!requireAuth(['admin'])) throw '';
+let reviewers = [];
+
+async function loadReviewers() {
+  const me = await apiFetch('/auth/me');
+  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarAvatar').textContent = me.first_name[0];
+
+  try {
+    reviewers = await apiFetch('/admin/reviewers');
+    const container = document.getElementById('reviewersContainer');
+    
+    if (!reviewers.length) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="icon">👥</div>
+          <h3>No Reviewers Found</h3>
+          <p>Click "Add Reviewer" to create a new reviewer account.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = `
+      <table class="reviewer-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Added Date</th>
+            <th style="text-align:right">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${reviewers.map(r => `
+            <tr>
+              <td><strong>${r.last_name.toUpperCase()}</strong>, ${r.first_name}</td>
+              <td>${r.email}</td>
+              <td>${formatDate(r.created_at * 1000)}</td>
+              <td style="text-align:right">
+                <button class="btn btn-danger btn-sm" onclick="deleteReviewer(${r.id}, '${r.first_name} ${r.last_name}')">Delete</button>
+              </td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  } catch (err) {
+    document.getElementById('errBox').textContent = err.message;
+    document.getElementById('errBox').style.display = 'flex';
+  }
+}
+
+function openModal() {
+  document.getElementById('reviewerForm').reset();
+  document.getElementById('reviewerModal').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('reviewerModal').classList.remove('open');
+}
+
+document.getElementById('reviewerForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating...';
+  
+  const body = {
+    first_name: document.getElementById('revFirstName').value,
+    last_name: document.getElementById('revLastName').value,
+    email: document.getElementById('revEmail').value,
+    password: document.getElementById('revPassword').value
+  };
+
+  try {
+    await apiFetch('/admin/reviewers', {
+      method: 'POST',
+      body: JSON.stringify(body)
+    });
+    showToast('Reviewer account created successfully!');
+    closeModal();
+    loadReviewers();
+  } catch (err) {
+    alert('Failed to create reviewer: ' + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create Reviewer Account';
+  }
+});
+
+async function deleteReviewer(id, name) {
+  if (!confirm(`Are you sure you want to delete reviewer "${name}"?\nThis will remove their assignments and reviews as well.`)) {
+    return;
+  }
+  try {
+    await apiFetch(`/admin/reviewers/${id}`, { method: 'DELETE' });
+    showToast('Reviewer deleted.');
+    loadReviewers();
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
+}
+
+loadReviewers();
+</script>
+</body>
+</html>

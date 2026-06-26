@@ -24,6 +24,7 @@ function initSchema() {
       specialty_details TEXT,
       seniority TEXT NOT NULL CHECK(seniority IN ('Senior','Resident')),
       is_verified INTEGER NOT NULL DEFAULT 0,
+      is_blocked INTEGER NOT NULL DEFAULT 0,
       otp TEXT,
       otp_expires_at INTEGER,
       created_at INTEGER NOT NULL DEFAULT (unixepoch())
@@ -36,6 +37,9 @@ function initSchema() {
       password_hash TEXT NOT NULL,
       first_name TEXT NOT NULL,
       last_name TEXT NOT NULL,
+      must_change_password INTEGER NOT NULL DEFAULT 1,
+      otp TEXT,
+      otp_expires_at INTEGER,
       created_at INTEGER NOT NULL DEFAULT (unixepoch())
     );
 
@@ -249,6 +253,28 @@ function initSchema() {
       PRAGMA foreign_keys=on;
     `);
     console.log('✅ Migration: reviews presentation_type updated to new values');
+  }
+
+  // Migration: add must_change_password, otp, otp_expires_at to reviewers if not present
+  const reviewerCols = db.prepare("PRAGMA table_info(reviewers)").all().map(c => c.name);
+  if (!reviewerCols.includes('must_change_password')) {
+    db.exec('ALTER TABLE reviewers ADD COLUMN must_change_password INTEGER NOT NULL DEFAULT 1');
+    console.log('✅ Migration: must_change_password column added to reviewers');
+  }
+  if (!reviewerCols.includes('otp')) {
+    db.exec('ALTER TABLE reviewers ADD COLUMN otp TEXT');
+    console.log('✅ Migration: otp column added to reviewers');
+  }
+  if (!reviewerCols.includes('otp_expires_at')) {
+    db.exec('ALTER TABLE reviewers ADD COLUMN otp_expires_at INTEGER');
+    console.log('✅ Migration: otp_expires_at column added to reviewers');
+  }
+
+  // Migration: add is_blocked to users table if not present
+  const userCols = db.prepare("PRAGMA table_info(users)").all().map(c => c.name);
+  if (!userCols.includes('is_blocked')) {
+    db.exec('ALTER TABLE users ADD COLUMN is_blocked INTEGER NOT NULL DEFAULT 0');
+    console.log('✅ Migration: is_blocked column added to users');
   }
 }
 

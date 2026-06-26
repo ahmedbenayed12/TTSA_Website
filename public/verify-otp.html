@@ -82,10 +82,21 @@ async function verifyOTP() {
   btn.disabled=true; btn.textContent='Verifying…';
   try {
     const data = await apiFetch('/auth/verify-otp',{method:'POST',body:JSON.stringify({email,otp})});
-    setAuth(data.token,'member',data.user.first_name);
-    document.getElementById('successBox').textContent='Email verified! Redirecting…';
+    if (data.mustChangePassword) {
+      setAuth(data.token, 'reviewer_temp', data.user.first_name);
+      document.getElementById('successBox').textContent='Verification successful! Redirecting to set your password...';
+      document.getElementById('successBox').style.display='flex';
+      setTimeout(()=>location.href='/reviewer/change-password.html',1200);
+      return;
+    }
+    setAuth(data.token, data.role || 'member', data.user.first_name);
+    document.getElementById('successBox').textContent='Verification successful! Redirecting…';
     document.getElementById('successBox').style.display='flex';
-    setTimeout(()=>location.href='/member/dashboard.html',1200);
+    if (data.role === 'reviewer') {
+      setTimeout(()=>location.href='/reviewer/dashboard.html',1200);
+    } else {
+      setTimeout(()=>location.href='/member/dashboard.html',1200);
+    }
   } catch(ex){
     err.textContent=ex.message||'Invalid OTP';
     err.style.display='flex';
