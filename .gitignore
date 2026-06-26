@@ -7,4 +7,5 @@ uploads/
 *.sqlite
 check_db.js
 migrate.js
-deploy.zip
+*.zip
+zip_full.js
