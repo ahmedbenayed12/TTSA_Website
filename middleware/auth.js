@@ -1,6 +1,9 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'ttsa_jwt_secret_key_2026';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('FATAL: JWT_SECRET environment variable is not set. Server cannot start safely.');
+}
 
 function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -32,6 +35,9 @@ function requireMember(req, res, next) {
 
 function requireReviewer(req, res, next) {
   verifyToken(req, res, () => {
+    if (req.user.role === 'reviewer_temp') {
+      return res.status(403).json({ error: 'You must change your password before accessing reviewer features.' });
+    }
     if (req.user.role !== 'reviewer') {
       return res.status(403).json({ error: 'Reviewer access required' });
     }

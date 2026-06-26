@@ -2,13 +2,55 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const db = require('../db/database');
 const { sendOTP, sendReviewerLoginOTP } = require('../services/email');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'ttsa_jwt_secret_key_2026';
+// ─── Rate Limiters ─────────────────────────────────────────────────────────────
+// 10 login attempts per 15 minutes per IP
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many login attempts. Please try again in 15 minutes.' },
+});
+
+// 5 OTP attempts per 15 minutes per IP
+const otpLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many OTP attempts. Please wait 15 minutes before trying again.' },
+});
+
+// 3 password reset requests per hour per IP
+const forgotPasswordLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many password reset requests. Please wait an hour before trying again.' },
+});
+
+// 20 email checks per hour per IP (limit enumeration)
+const checkEmailLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests. Please slow down.' },
+});
+
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  throw new Error('FATAL: JWT_SECRET environment variable is not set. Server cannot start safely.');
+}
 
 function generateOTP() {
-  return String(Math.floor(1000 + Math.random() * 9000));
+  // 6 digits = 900,000 possible values (vs 9,000 for 4-digit)
+  return String(Math.floor(100000 + Math.random() * 900000));
 }
 
 function generateToken(payload) {
@@ -16,7 +58,7 @@ function generateToken(payload) {
 }
 
 // POST /api/auth/check-email
-router.post('/check-email', (req, res) => {
+router.post('/check-email', checkEmailLimiter, (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email is required' });
   
@@ -28,7 +70,7 @@ router.post('/check-email', (req, res) => {
 });
 
 // POST /api/auth/register
-router.post('/register', async (req, res) => {
+router.post('/register', loginLimiter, async (req, res) => {
   try {
     const { email, password, first_name, last_name, nationality, country, profession, specialty, specialty_details, seniority } = req.body;
     if (!email || !password || !first_name || !last_name || !nationality || !profession || !specialty || !seniority) {
@@ -65,7 +107,7 @@ router.post('/register', async (req, res) => {
 });
 
 // POST /api/auth/verify-otp
-router.post('/verify-otp', (req, res) => {
+router.post('/verify-otp', otpLimiter, (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) return res.status(400).json({ error: 'Email and OTP required' });
 
@@ -118,7 +160,7 @@ router.post('/verify-otp', (req, res) => {
 });
 
 // POST /api/auth/resend-otp
-router.post('/resend-otp', async (req, res) => {
+router.post('/resend-otp', otpLimiter, async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
 
@@ -159,7 +201,7 @@ router.post('/resend-otp', async (req, res) => {
 });
 
 // POST /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
@@ -238,7 +280,7 @@ router.post('/reviewer/change-password', require('../middleware/auth').verifyTok
 });
 
 // POST /api/auth/forgot-password
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
   const { email } = req.body;
   if (!email) return res.status(400).json({ error: 'Email required' });
 
@@ -264,7 +306,7 @@ router.post('/forgot-password', async (req, res) => {
 });
 
 // POST /api/auth/reset-password
-router.post('/reset-password', async (req, res) => {
+router.post('/reset-password', otpLimiter, async (req, res) => {
   const { email, otp, newPassword } = req.body;
   if (!email || !otp || !newPassword) return res.status(400).json({ error: 'Email, OTP, and new password required' });
 

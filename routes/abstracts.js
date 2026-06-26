@@ -240,35 +240,47 @@ router.post('/:id/confirm', requireMember, async (req, res) => {
   }
 });
 
-// POST /api/abstracts/:id/upload — post-acceptance file upload
+// POST /api/abstracts/:id/upload — post-acceptance file upload (and re-upload)
 router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
   try {
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    // Check upload deadline
     if (isDeadlinePassed('upload_deadline')) {
+      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
       return res.status(403).json({ error: 'File upload deadline has passed' });
     }
 
     const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
-    if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
-    if (abstract.status !== 'Waiting for File Upload') return res.status(403).json({ error: 'Only accepted abstracts awaiting file upload can upload files' });
+    if (!abstract) {
+      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      return res.status(404).json({ error: 'Abstract not found' });
+    }
 
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    if (!['Waiting for File Upload', 'Final File Uploaded'].includes(abstract.status)) {
+      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      return res.status(403).json({ error: 'You can only upload files for accepted abstracts.' });
+    }
 
-    // Delete old file if exists
+    // Delete old file if re-uploading
     if (abstract.file_path && fs.existsSync(abstract.file_path)) {
-      fs.unlinkSync(abstract.file_path);
+      try { fs.unlinkSync(abstract.file_path); } catch (e) { console.error('Failed to delete old file', e); }
     }
 
     db.prepare(`
-      UPDATE abstracts SET file_path=?, file_name=?, file_uploaded_at=unixepoch(), status='Final File Uploaded', updated_at=unixepoch()
-      WHERE id=?
+      UPDATE abstracts
+      SET file_path = ?, file_name = ?, file_uploaded_at = unixepoch(), status = 'Final File Uploaded', updated_at = unixepoch()
+      WHERE id = ?
     `).run(req.file.path, req.file.originalname, abstract.id);
 
     res.json({ message: 'File uploaded successfully', filename: req.file.originalname });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: err.message || 'File upload failed' });
+    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    res.status(500).json({ error: 'Failed to process file upload' });
   }
 });
+
 
 // DELETE /api/abstracts/:id — delete abstract
 router.delete('/:id', requireMember, (req, res) => {
@@ -302,49 +314,6 @@ router.delete('/:id', requireMember, (req, res) => {
   }
 });
 
-// POST /api/abstracts/:id/upload
-router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
-  try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
-
-    // Check upload deadline
-    const uploadDeadlineRow = db.prepare("SELECT value FROM settings WHERE key = 'upload_deadline'").get();
-    if (uploadDeadlineRow && uploadDeadlineRow.value) {
-      if (new Date() > new Date(uploadDeadlineRow.value)) {
-        if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-        return res.status(403).json({ error: 'Upload deadline has passed' });
-      }
-    }
-
-    const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
-    if (!abstract) {
-      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-      return res.status(404).json({ error: 'Abstract not found' });
-    }
-
-    if (!['Waiting for File Upload', 'Final File Uploaded'].includes(abstract.status)) {
-      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-      return res.status(403).json({ error: 'You can only upload files for accepted abstracts that are waiting for files.' });
-    }
-
-    // Delete old file if re-uploading
-    if (abstract.file_path && fs.existsSync(abstract.file_path)) {
-      try { fs.unlinkSync(abstract.file_path); } catch (e) { console.error('Failed to delete old file', e); }
-    }
-
-    db.prepare(`
-      UPDATE abstracts 
-      SET file_path = ?, file_name = ?, file_uploaded_at = unixepoch(), status = 'Final File Uploaded', updated_at = unixepoch() 
-      WHERE id = ?
-    `).run(req.file.path, req.file.originalname, abstract.id);
-
-    res.json({ message: 'File uploaded successfully' });
-  } catch (err) {
-    console.error(err);
-    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    res.status(500).json({ error: 'Failed to process file upload' });
-  }
-});
 
 // GET /api/abstracts/:id/file
 router.get('/:id/file', requireMember, (req, res) => {
