@@ -1,12 +1,14 @@
-const Database = require('better-sqlite3');
+const { Database } = require('node-sqlite3-wasm');
 const path = require('path');
 const fs = require('fs');
 
-const DB_PATH = process.env.DATABASE_PATH || path.join(__dirname, '..', 'ttsa.db');
+// Relative path — works on all platforms with node-sqlite3-wasm (Windows + Linux)
+// Server is always started from the app root, so 'ttsa.db' resolves correctly
+const DB_PATH = process.env.DATABASE_PATH || 'ttsa.db';
 
 const db = new Database(DB_PATH);
-db.pragma('journal_mode = WAL');
-db.pragma('foreign_keys = ON');
+db.exec('PRAGMA journal_mode = WAL');
+db.exec('PRAGMA foreign_keys = ON');
 
 function initSchema() {
   db.exec(`
