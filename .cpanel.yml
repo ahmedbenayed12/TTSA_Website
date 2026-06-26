@@ -1,0 +1,6 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/yswgtqev/TTSAapp
+    - /bin/rsync -a --exclude='.git*' --exclude='node_modules' --exclude='.env' --exclude='uploads/' --exclude='*.db*' --exclude='.cpanel.yml' ./ $DEPLOYPATH
+    - touch $DEPLOYPATH/tmp/restart.txt
