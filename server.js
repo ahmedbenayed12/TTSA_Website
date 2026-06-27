@@ -14,6 +14,9 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
+      // Allow inline event handlers (onclick="...", onchange="...", etc.) used across all admin pages
+      // helmet v7+ sets script-src-attr 'none' by default which blocks these — disable it:
+      scriptSrcAttr: false,
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       imgSrc: ["'self'", "data:", "blob:"],
