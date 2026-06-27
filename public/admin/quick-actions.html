@@ -118,6 +118,13 @@
           <a href="/admin/dashboard.html" class="btn btn-outline btn-sm" style="align-self:flex-start">Open →</a>
         </div>
 
+        <div class="action-card">
+          <div class="action-icon">📧</div>
+          <div class="action-title">Test Email System</div>
+          <div class="action-desc">Verify if SMTP credentials work and send a test email to your admin address.</div>
+          <button onclick="testEmailSystem(this)" class="btn btn-primary btn-sm" style="align-self:flex-start">Test Connection</button>
+        </div>
+
       </div>
     </div>
   </main>
@@ -129,6 +136,21 @@ apiFetch('/auth/me').then(me => {
   document.getElementById('sidebarName').textContent  = me.first_name + ' ' + me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
 });
+
+async function testEmailSystem(btn) {
+  const oldText = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Testing...';
+  try {
+    const res = await apiFetch('/admin/test-email');
+    showToast(res.message || 'SMTP verified and test email sent!');
+  } catch(err) {
+    showToast(err.message || 'SMTP test failed', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = oldText;
+  }
+}
 </script>
 </body>
 </html>
