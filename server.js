@@ -43,7 +43,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve uploads from persistent disk on Render, fallback to local path locally
-const uploadsDir = process.env.DATABASE_PATH ? path.join(__dirname, 'public', 'uploads') : '/data/uploads';
+const uploadsDir = process.env.RENDER === 'true' ? '/data/uploads' : path.join(__dirname, 'public', 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 app.use('/uploads', express.static(uploadsDir));
 

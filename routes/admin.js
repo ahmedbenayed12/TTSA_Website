@@ -13,9 +13,9 @@ const { generateAbstractsExcel } = require('../services/export');
 // Multer config for event posters
 const eventPosterStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = process.env.DATABASE_PATH 
-      ? path.join(__dirname, '..', 'public', 'uploads', 'events') 
-      : '/data/uploads/events';
+    const dir = process.env.RENDER === 'true'
+      ? '/data/uploads/events'
+      : path.join(__dirname, '..', 'public', 'uploads', 'events');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },

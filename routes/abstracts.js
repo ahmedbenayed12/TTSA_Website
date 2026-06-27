@@ -10,9 +10,9 @@ const { sendAbstractConfirmation } = require('../services/email');
 // Multer config for presentation files
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const dir = process.env.DATABASE_PATH 
-      ? path.join(__dirname, '..', 'uploads') 
-      : '/data/uploads/abstracts';
+    const dir = process.env.RENDER === 'true'
+      ? '/data/uploads/abstracts'
+      : path.join(__dirname, '..', 'uploads');
     if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
     cb(null, dir);
   },
