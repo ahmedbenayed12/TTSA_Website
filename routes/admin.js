@@ -427,7 +427,7 @@ router.put('/profile', requireAdmin, async (req, res) => {
     const lEmail = email.toLowerCase();
 
     // Check if email already exists for another admin
-    const existing = db.prepare('SELECT id FROM admins WHERE email = ? AND id != ?').get(lEmail);
+    const existing = db.prepare('SELECT id FROM admins WHERE email = ? AND id != ?').get(lEmail, adminId);
     if (existing) {
       return res.status(409).json({ error: 'Email is already in use by another admin' });
     }
