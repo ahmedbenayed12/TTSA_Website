@@ -3,9 +3,9 @@ const path = require('path');
 const fs = require('fs');
 
 // Relative path — works on all platforms
-// On Render: persistent disk is mounted at /var/data — DB survives redeploys
+// On Render: persistent disk is mounted at /data — DB survives redeploys
 // Locally: set DATABASE_PATH in .env to override (e.g. DATABASE_PATH=ttsa.db)
-const DB_PATH = process.env.DATABASE_PATH || '/var/data/ttsa.db';
+const DB_PATH = process.env.DATABASE_PATH || '/data/ttsa.db';
 
 const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');
