@@ -216,6 +216,40 @@ async function sendAdminLoginOTP(toEmail, firstName, otp) {
   });
 }
 
+async function sendReviewerInvitation(toEmail, firstName, tempPassword) {
+  const transporter = createTransporter();
+  await transporter.sendMail({
+    from: FROM,
+    to: toEmail,
+    subject: 'TTSA – Invitation to Join the Scientific Committee as Reviewer',
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden">
+        <div style="background:#0C589A;padding:24px;text-align:center">
+          <h1 style="color:#fff;margin:0;font-size:22px">TTSA</h1>
+          <p style="color:#cfe2ff;margin:4px 0 0">Tunisian Thoracic Surgery Association</p>
+        </div>
+        <div style="padding:32px">
+          <p style="font-size:16px">Dear Dr. <strong>${firstName}</strong>,</p>
+          <p>We are honored to invite you to join the TTSA Scientific Committee as a reviewer for our upcoming congress.</p>
+          <p>Thank you very much for accepting our invitation to contribute your expertise to the evaluation of abstract submissions.</p>
+          <p>Your reviewer account has been created. Here are your credentials to log in for the first time:</p>
+          
+          <div style="background:#f0f7ff;border-left:4px solid #0C589A;padding:16px;border-radius:4px;margin:20px 0;font-size:14px;">
+            <p style="margin:0 0 8px 0;">🌐 <strong>Portal URL:</strong> <a href="${process.env.APP_URL || 'https://ttsa.tn'}/login.html" style="color:#0C589A;font-weight:bold;text-decoration:none;">ttsa.tn/login.html</a></p>
+            <p style="margin:0 0 8px 0;">📧 <strong>Email Address:</strong> ${toEmail}</p>
+            <p style="margin:0;">🔑 <strong>Temporary Password:</strong> <code style="font-family:monospace;background:#e2e8f0;padding:2px 6px;border-radius:4px;font-size:14px;font-weight:bold;color:#1a202c;">${tempPassword}</code></p>
+          </div>
+          
+          <p style="color:#B82538;font-weight:bold;font-size:14px;">⚠️ Note: For security reasons, you will be prompted to change your temporary password immediately upon your first login.</p>
+          
+          <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
+          <p style="color:#aaa;font-size:12px;text-align:center">Tunisian Thoracic Surgery Association &copy; 2026</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 module.exports = {
   sendOTP,
   sendPasswordResetOTP,
@@ -224,4 +258,5 @@ module.exports = {
   sendFileUploadReminder,
   sendReviewerLoginOTP,
   sendAdminLoginOTP,
+  sendReviewerInvitation,
 };

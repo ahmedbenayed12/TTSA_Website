@@ -7,7 +7,7 @@ const archiver = require('archiver');
 const db = require('../db/database');
 const multer = require('multer');
 const { requireAdmin } = require('../middleware/auth');
-const { sendVerdict, sendFileUploadReminder } = require('../services/email');
+const { sendVerdict, sendFileUploadReminder, sendReviewerInvitation } = require('../services/email');
 const { generateAbstractsExcel } = require('../services/export');
 
 // Multer config for event posters
@@ -101,7 +101,20 @@ router.post('/reviewers', requireAdmin, async (req, res) => {
     if (existing) return res.status(409).json({ error: 'Email already exists' });
     const hash = await bcrypt.hash(password, 12);
     const result = db.prepare('INSERT INTO reviewers(email,password_hash,first_name,last_name) VALUES(?,?,?,?)').run(email.toLowerCase(), hash, first_name, last_name);
-    res.status(201).json({ message: 'Reviewer created', id: result.lastInsertRowid });
+    
+    // Send invitation email to the reviewer with their login credentials
+    try {
+      await sendReviewerInvitation(email.toLowerCase(), first_name, password);
+    } catch (emailErr) {
+      console.error('Failed to send reviewer invitation email:', emailErr);
+      return res.status(201).json({ 
+        message: 'Reviewer created, but failed to send invitation email.', 
+        id: result.lastInsertRowid,
+        emailError: emailErr.message 
+      });
+    }
+
+    res.status(201).json({ message: 'Reviewer created and invitation email sent.', id: result.lastInsertRowid });
   } catch (err) {
     res.status(500).json({ error: 'Failed to create reviewer' });
   }
