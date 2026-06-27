@@ -257,6 +257,69 @@
     .tl-dot.upcoming .ico { color:var(--blue); }
     .tl-dot.done .ico { color:#16a34a; }
 
+    /* ── CNN Style Moving Ticker ─────────────────────────────────── */
+    .ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      height: 40px;
+      background: linear-gradient(90deg, var(--red) 0%, #8c1a2a 100%);
+      color: #fff;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 1000;
+      border-bottom: 2px solid rgba(255,255,255,0.1);
+    }
+    .ticker-title {
+      background: var(--blue-dark);
+      padding: 0 20px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      z-index: 2;
+      box-shadow: 4px 0 8px rgba(0,0,0,0.3);
+    }
+    .ticker-container {
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+    .ticker {
+      display: inline-block;
+      white-space: nowrap;
+      padding-right: 100%;
+      box-sizing: content-box;
+      animation: ticker-animation 30s linear infinite;
+    }
+    .ticker-item {
+      display: inline-block;
+      padding: 0 3rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #fff;
+    }
+    .ticker-item a {
+      color: #ffd8d8;
+      text-decoration: underline;
+      font-weight: 700;
+    }
+    @keyframes ticker-animation {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-100%, 0, 0);
+      }
+    }
+
     /* ── Responsive tweaks ───────────────────────────────────────── */
     @media(max-width: 768px) {
       .page-header { padding: 72px 0 100px; }
@@ -267,6 +330,19 @@
   </style>
 </head>
 <body>
+
+<!-- TICKER BAND -->
+<div class="ticker-wrap">
+  <div class="ticker-title">Support ⚡</div>
+  <div class="ticker-container">
+    <div class="ticker">
+      <span class="ticker-item">⚠️ For technical help or encountered problems, please contact technical service through WhatsApp: <a href="https://wa.me/21623935354" target="_blank">+216 23 935 354</a></span>
+      <span class="ticker-item">⚠️ Pour toute assistance technique ou problème rencontré, veuillez contacter le service technique via WhatsApp au <a href="https://wa.me/21623935354" target="_blank">+216 23 935 354</a></span>
+      <span class="ticker-item">⚠️ For technical help or encountered problems, please contact technical service through WhatsApp: <a href="https://wa.me/21623935354" target="_blank">+216 23 935 354</a></span>
+      <span class="ticker-item">⚠️ Pour toute assistance technique ou problème rencontré, veuillez contacter le service technique via WhatsApp au <a href="https://wa.me/21623935354" target="_blank">+216 23 935 354</a></span>
+    </div>
+  </div>
+</div>
 
 <!-- NAVBAR -->
 <nav class="navbar">
