@@ -480,9 +480,10 @@ router.patch('/users/:id/block', requireAdmin, (req, res) => {
   }
 });
 
-// GET /api/admin/test-email — test SMTP connection and send a test email to the logged-in admin
+// GET /api/admin/test-email — test SMTP connection and send a test email to the logged-in admin or custom recipient
 router.get('/test-email', requireAdmin, (req, res) => {
   const nodemailer = require('nodemailer');
+  const targetEmail = req.query.to || req.user.email;
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT) || 587,
@@ -512,7 +513,7 @@ router.get('/test-email', requireAdmin, (req, res) => {
       const fromEmail = process.env.EMAIL_FROM || '"TTSA" <noreply@ttsa.tn>';
       await transporter.sendMail({
         from: fromEmail,
-        to: req.user.email,
+        to: targetEmail,
         subject: 'TTSA – SMTP Connection Test',
         html: `
           <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden">
@@ -521,19 +522,19 @@ router.get('/test-email', requireAdmin, (req, res) => {
               <p style="color:#cfe2ff;margin:4px 0 0">Tunisian Thoracic Surgery Association</p>
             </div>
             <div style="padding:32px">
-              <p style="font-size:16px">Hello <strong>${req.user.name || 'Admin'}</strong>,</p>
+              <p style="font-size:16px">Hello,</p>
               <p>This is a test email to verify that the TTSA email notification system is working correctly.</p>
               <div style="background:#dcfce7;border-left:4px solid #166534;color:#166534;padding:16px;border-radius:4px;margin:16px 0;font-weight:bold">
                 ✅ SMTP system is fully operational!
               </div>
-              <p>Sent from: <code>${fromEmail}</code></p>
+              <p style="font-size:13px;color:#555">This email was successfully sent to <strong>${targetEmail}</strong> from <code>${fromEmail}</code>.</p>
               <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
               <p style="color:#aaa;font-size:12px;text-align:center">Tunisian Thoracic Surgery Association &copy; 2026</p>
             </div>
           </div>
         `,
       });
-      res.json({ message: `SMTP connection verified and test email successfully sent to ${req.user.email}!` });
+      res.json({ message: `SMTP connection verified and test email successfully sent to ${targetEmail}!` });
     } catch (sendErr) {
       console.error('SMTP send failed:', sendErr);
       res.status(500).json({ error: `SMTP verified, but sending email failed: ${sendErr.message}` });

@@ -279,6 +279,17 @@ function initSchema() {
     db.exec('ALTER TABLE users ADD COLUMN is_blocked INTEGER NOT NULL DEFAULT 0');
     console.log('✅ Migration: is_blocked column added to users');
   }
+
+  // Migration: add otp, otp_expires_at to admins table if not present
+  const adminCols = db.prepare("PRAGMA table_info(admins)").all().map(c => c.name);
+  if (!adminCols.includes('otp')) {
+    db.exec('ALTER TABLE admins ADD COLUMN otp TEXT');
+    console.log('✅ Migration: otp column added to admins');
+  }
+  if (!adminCols.includes('otp_expires_at')) {
+    db.exec('ALTER TABLE admins ADD COLUMN otp_expires_at INTEGER');
+    console.log('✅ Migration: otp_expires_at column added to admins');
+  }
 }
 
 initSchema();

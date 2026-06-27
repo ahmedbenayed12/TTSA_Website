@@ -26,7 +26,7 @@
     <div class="auth-header">
       <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
       <h1>Verify Your Email</h1>
-      <p>Enter the 4-digit code we sent you</p>
+      <p>Enter the 6-digit code we sent you</p>
     </div>
     <div class="auth-body">
       <div id="errBox" class="alert alert-error" style="display:none;margin-bottom:16px"></div>
@@ -38,6 +38,8 @@
         <input type="text" maxlength="1" id="otp1" inputmode="numeric" pattern="[0-9]"/>
         <input type="text" maxlength="1" id="otp2" inputmode="numeric" pattern="[0-9]"/>
         <input type="text" maxlength="1" id="otp3" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" id="otp4" inputmode="numeric" pattern="[0-9]"/>
+        <input type="text" maxlength="1" id="otp5" inputmode="numeric" pattern="[0-9]"/>
       </div>
       <button class="btn btn-primary" style="width:100%;margin-top:24px" id="verifyBtn" onclick="verifyOTP()">Verify Email</button>
       <div class="resend-timer" id="resendRow">
@@ -58,24 +60,24 @@ document.querySelectorAll('#otpInputs input').forEach((inp,i,arr) => {
   inp.addEventListener('input', () => {
     inp.value = inp.value.replace(/\D/g,'');
     if (inp.value && i < arr.length-1) arr[i+1].focus();
-    if (getOTP().length===4) verifyOTP();
+    if (getOTP().length===6) verifyOTP();
   });
   inp.addEventListener('keydown', e => {
     if (e.key==='Backspace' && !inp.value && i>0) arr[i-1].focus();
   });
   inp.addEventListener('paste', e => {
-    const text = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,4);
+    const text = (e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
     text.split('').forEach((c,j)=>{ if(arr[j]) arr[j].value=c; });
     e.preventDefault();
-    if (text.length===4) verifyOTP();
+    if (text.length===6) verifyOTP();
   });
 });
 
-function getOTP() { return [0,1,2,3].map(i=>document.getElementById('otp'+i).value).join(''); }
+function getOTP() { return [0,1,2,3,4,5].map(i=>document.getElementById('otp'+i).value).join(''); }
 
 async function verifyOTP() {
   const otp = getOTP();
-  if (otp.length<4) return;
+  if (otp.length<6) return;
   const btn=document.getElementById('verifyBtn');
   const err=document.getElementById('errBox');
   err.style.display='none';
@@ -92,7 +94,9 @@ async function verifyOTP() {
     setAuth(data.token, data.role || 'member', data.user.first_name);
     document.getElementById('successBox').textContent='Verification successful! Redirecting…';
     document.getElementById('successBox').style.display='flex';
-    if (data.role === 'reviewer') {
+    if (data.role === 'admin') {
+      setTimeout(()=>location.href='/admin/dashboard.html',1200);
+    } else if (data.role === 'reviewer') {
       setTimeout(()=>location.href='/reviewer/dashboard.html',1200);
     } else {
       setTimeout(()=>location.href='/member/dashboard.html',1200);
@@ -101,7 +105,7 @@ async function verifyOTP() {
     err.textContent=ex.message||'Invalid OTP';
     err.style.display='flex';
     btn.disabled=false; btn.textContent='Verify Email';
-    [0,1,2,3].forEach(i=>document.getElementById('otp'+i).value='');
+    [0,1,2,3,4,5].forEach(i=>document.getElementById('otp'+i).value='');
     document.getElementById('otp0').focus();
   }
 }

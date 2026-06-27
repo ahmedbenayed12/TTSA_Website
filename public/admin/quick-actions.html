@@ -121,7 +121,8 @@
         <div class="action-card">
           <div class="action-icon">📧</div>
           <div class="action-title">Test Email System</div>
-          <div class="action-desc">Verify if SMTP credentials work and send a test email to your admin address.</div>
+          <div class="action-desc">Verify if SMTP credentials work. Enter any email address to test delivery:</div>
+          <input type="email" id="test_email_dest" class="form-control" placeholder="example@gmail.com" style="margin-bottom: 12px; font-size: 0.85rem;" />
           <button onclick="testEmailSystem(this)" class="btn btn-primary btn-sm" style="align-self:flex-start">Test Connection</button>
         </div>
 
@@ -139,6 +140,9 @@ apiFetch('/auth/me').then(me => {
 
 async function testEmailSystem(btn) {
   const oldText = btn.textContent;
+  const destInput = document.getElementById('test_email_dest');
+  const destEmail = destInput ? destInput.value.trim() : '';
+
   btn.disabled = true;
   btn.textContent = 'Testing...';
   try {
@@ -146,7 +150,8 @@ async function testEmailSystem(btn) {
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
     
-    const response = await fetch('/api/admin/test-email', { headers });
+    const url = destEmail ? `/api/admin/test-email?to=${encodeURIComponent(destEmail)}` : '/api/admin/test-email';
+    const response = await fetch(url, { headers });
     const data = await response.json().catch(() => ({}));
     
     if (!response.ok) {

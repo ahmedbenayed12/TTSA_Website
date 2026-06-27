@@ -189,6 +189,33 @@ async function sendReviewerLoginOTP(toEmail, firstName, otp) {
   });
 }
 
+async function sendAdminLoginOTP(toEmail, firstName, otp) {
+  const transporter = createTransporter();
+  await transporter.sendMail({
+    from: FROM,
+    to: toEmail,
+    subject: 'TTSA – Admin Login Verification Code',
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden">
+        <div style="background:#0C589A;padding:24px;text-align:center">
+          <h1 style="color:#fff;margin:0;font-size:22px">TTSA</h1>
+          <p style="color:#cfe2ff;margin:4px 0 0">Tunisian Thoracic Surgery Association</p>
+        </div>
+        <div style="padding:32px">
+          <p style="font-size:16px">Dear <strong>${firstName}</strong>,</p>
+          <p>Please use the following verification code to complete your administrator login:</p>
+          <div style="text-align:center;margin:32px 0">
+            <span style="display:inline-block;background:#B82538;color:#fff;font-size:36px;font-weight:700;letter-spacing:12px;padding:16px 32px;border-radius:8px">${otp}</span>
+          </div>
+          <p style="color:#666;font-size:13px">This code expires in <strong>15 minutes</strong>. Do not share it with anyone.</p>
+          <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
+          <p style="color:#aaa;font-size:12px;text-align:center">Tunisian Thoracic Surgery Association &copy; 2026</p>
+        </div>
+      </div>
+    `,
+  });
+}
+
 module.exports = {
   sendOTP,
   sendPasswordResetOTP,
@@ -196,4 +223,5 @@ module.exports = {
   sendVerdict,
   sendFileUploadReminder,
   sendReviewerLoginOTP,
+  sendAdminLoginOTP,
 };

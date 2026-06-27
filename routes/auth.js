@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
 const db = require('../db/database');
-const { sendOTP, sendReviewerLoginOTP } = require('../services/email');
+const { sendOTP, sendReviewerLoginOTP, sendAdminLoginOTP } = require('../services/email');
 
 // ─── Rate Limiters ─────────────────────────────────────────────────────────────
 // 10 login attempts per 15 minutes per IP
@@ -113,7 +113,26 @@ router.post('/verify-otp', otpLimiter, (req, res) => {
 
   const lEmail = email.toLowerCase();
 
-  // Check reviewer first
+  // Check admin first
+  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(lEmail);
+  if (admin) {
+    const now = Math.floor(Date.now() / 1000);
+    if (admin.otp !== otp) return res.status(400).json({ error: 'Invalid OTP' });
+    if (admin.otp_expires_at < now) return res.status(400).json({ error: 'OTP has expired. Request a new one.' });
+
+    // Clear OTP
+    db.prepare('UPDATE admins SET otp = NULL, otp_expires_at = NULL WHERE id = ?').run(admin.id);
+
+    const token = generateToken({ id: admin.id, email: admin.email, role: 'admin', name: admin.first_name });
+    return res.json({
+      message: 'Email verified successfully',
+      token,
+      role: 'admin',
+      user: { id: admin.id, email: admin.email, first_name: admin.first_name, last_name: admin.last_name }
+    });
+  }
+
+  // Check reviewer next
   const reviewer = db.prepare('SELECT * FROM reviewers WHERE email = ?').get(lEmail);
   if (reviewer) {
     const now = Math.floor(Date.now() / 1000);
@@ -166,7 +185,23 @@ router.post('/resend-otp', otpLimiter, async (req, res) => {
 
   const lEmail = email.toLowerCase();
 
-  // Check reviewer
+  // Check admin first
+  const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(lEmail);
+  if (admin) {
+    const otp = generateOTP();
+    const otpExpires = Math.floor((Date.now() + 15 * 60 * 1000) / 1000);
+    db.prepare('UPDATE admins SET otp = ?, otp_expires_at = ? WHERE id = ?').run(otp, otpExpires, admin.id);
+
+    try {
+      await sendAdminLoginOTP(admin.email, admin.first_name, otp);
+      return res.json({ message: 'New OTP sent to your email' });
+    } catch (err) {
+      console.error('Resend OTP failed for admin:', err.message);
+      return res.status(500).json({ error: 'Failed to send OTP' });
+    }
+  }
+
+  // Check reviewer next
   const reviewer = db.prepare('SELECT * FROM reviewers WHERE email = ?').get(lEmail);
   if (reviewer) {
     const otp = generateOTP();
@@ -212,8 +247,20 @@ router.post('/login', loginLimiter, async (req, res) => {
   if (admin) {
     const match = await bcrypt.compare(password, admin.password_hash);
     if (!match) return res.status(401).json({ error: 'Invalid credentials' });
-    const token = generateToken({ id: admin.id, email: admin.email, role: 'admin', name: admin.first_name });
-    return res.json({ token, role: 'admin', name: admin.first_name });
+
+    // Generate and send OTP for 2FA on admin login
+    const otp = generateOTP();
+    const otpExpires = Math.floor((Date.now() + 15 * 60 * 1000) / 1000);
+    db.prepare('UPDATE admins SET otp = ?, otp_expires_at = ? WHERE id = ?').run(otp, otpExpires, admin.id);
+
+    try {
+      await sendAdminLoginOTP(admin.email, admin.first_name, otp);
+    } catch (err) {
+      console.error('Failed to send admin OTP:', err);
+      return res.status(500).json({ error: 'Failed to send login verification email. Please try again.' });
+    }
+
+    return res.json({ requiresOTP: true, email: admin.email, role: 'admin' });
   }
 
   // Check reviewer (requires OTP verification)
