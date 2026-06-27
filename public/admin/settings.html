@@ -111,6 +111,8 @@
       <div class="card" style="margin-top:28px">
         <div class="card-header"><h3>👤 Super Admin Profile</h3></div>
         <div class="card-body">
+          <div id="profileErrBox" class="alert alert-error" style="display:none;margin-bottom:16px"></div>
+          <div id="profileSuccessBox" class="alert alert-success" style="display:none;margin-bottom:16px"></div>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">First Name</label>
@@ -173,33 +175,60 @@ async function init() {
 
 async function saveAdminProfile() {
   const btn = document.getElementById('saveProfileBtn');
+  const errBox = document.getElementById('profileErrBox');
+  const successBox = document.getElementById('profileSuccessBox');
+
+  // Reset feedback
+  errBox.style.display = 'none';
+  successBox.style.display = 'none';
+
+  const firstName = document.getElementById('admin_first_name').value.trim();
+  const lastName  = document.getElementById('admin_last_name').value.trim();
+  const email     = document.getElementById('admin_email').value.trim();
+  const password  = document.getElementById('admin_password').value;
+
+  // Client-side validation
+  if (!firstName || !lastName || !email) {
+    errBox.textContent = 'First name, last name, and email are all required.';
+    errBox.style.display = 'flex';
+    errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  if (password && password.length < 8) {
+    errBox.textContent = 'Password must be at least 8 characters long.';
+    errBox.style.display = 'flex';
+    errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = 'Saving...';
-  
-  const firstName = document.getElementById('admin_first_name').value;
-  const lastName = document.getElementById('admin_last_name').value;
-  const email = document.getElementById('admin_email').value;
-  const password = document.getElementById('admin_password').value;
 
   try {
-    const body = {
-      first_name: firstName,
-      last_name: lastName,
-      email: email
-    };
+    const body = { first_name: firstName, last_name: lastName, email: email };
     if (password) body.password = password;
 
-    await apiFetch('/admin/profile', {
+    const result = await apiFetch('/admin/profile', {
       method: 'PUT',
       body: JSON.stringify(body)
     });
 
-    showToast('Profile updated! Logging you out to apply changes...');
-    setTimeout(() => { logout(); }, 1500);
+    // apiFetch returns undefined if it auto-logged-out (401/403)
+    if (result === undefined) {
+      errBox.textContent = 'Session expired. Please log in again.';
+      errBox.style.display = 'flex';
+      errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    successBox.textContent = '✅ Profile updated! You will be logged out in 2 seconds to apply changes.';
+    successBox.style.display = 'flex';
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => { logout(); }, 2000);
   } catch (err) {
-    document.getElementById('errBox').textContent = err.message;
-    document.getElementById('errBox').style.display = 'flex';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    errBox.textContent = err.message || 'Failed to update profile. Please try again.';
+    errBox.style.display = 'flex';
+    errBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
   } finally {
     btn.disabled = false;
     btn.textContent = '💾 Save Profile';
