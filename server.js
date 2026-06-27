@@ -42,9 +42,10 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Ensure uploads dir exists
-const uploadsDir = path.join(__dirname, 'uploads');
+// Serve uploads from persistent disk on Render, fallback to local path locally
+const uploadsDir = process.env.DATABASE_PATH ? path.join(__dirname, 'public', 'uploads') : '/data/uploads';
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
+app.use('/uploads', express.static(uploadsDir));
 
 // ─── API Routes ───────────────────────────────────────────────────────────────
 app.use('/api/auth',      require('./routes/auth'));
