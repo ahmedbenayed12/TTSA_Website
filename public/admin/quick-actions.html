@@ -142,10 +142,32 @@ async function testEmailSystem(btn) {
   btn.disabled = true;
   btn.textContent = 'Testing...';
   try {
-    const res = await apiFetch('/admin/test-email');
-    showToast(res.message || 'SMTP verified and test email sent!');
+    const token = getToken();
+    const headers = { 'Content-Type': 'application/json' };
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    
+    const response = await fetch('/api/admin/test-email', { headers });
+    const data = await response.json().catch(() => ({}));
+    
+    if (!response.ok) {
+      let errMsg = data.error || `HTTP ${response.status}`;
+      if (data.debugConfig) {
+        const c = data.debugConfig;
+        errMsg += `\n\n[Active Environment Config on Render]:\n` +
+                  `• SMTP_HOST: ${c.host}\n` +
+                  `• SMTP_PORT: ${c.port}\n` +
+                  `• SMTP_SECURE: ${c.secure}\n` +
+                  `• SMTP_USER: ${c.user}\n` +
+                  `• SMTP_PASS Set: ${c.hasPassword ? 'Yes ✅' : 'No ❌'}\n\n` +
+                  `If these show default or incorrect values, you need to add them to your Render dashboard under the Environment variables tab.`;
+      }
+      alert(errMsg);
+      return;
+    }
+    
+    showToast(data.message || 'SMTP verified and test email sent!');
   } catch(err) {
-    showToast(err.message || 'SMTP test failed', 'error');
+    alert('Request failed: ' + err.message);
   } finally {
     btn.disabled = false;
     btn.textContent = oldText;

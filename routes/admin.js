@@ -497,7 +497,14 @@ router.get('/test-email', requireAdmin, (req, res) => {
     if (err) {
       console.error('SMTP verify failed:', err);
       return res.status(500).json({
-        error: `SMTP connection failed: ${err.message}. Check your SMTP credentials and port/secure settings.`
+        error: `SMTP connection failed: ${err.message}.`,
+        debugConfig: {
+          host: process.env.SMTP_HOST || '(default: smtp.gmail.com)',
+          port: process.env.SMTP_PORT || '(default: 587)',
+          secure: process.env.SMTP_SECURE || '(default: false)',
+          user: process.env.SMTP_USER || '(not configured)',
+          hasPassword: !!process.env.SMTP_PASS
+        }
       });
     }
 
