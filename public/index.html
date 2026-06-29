@@ -90,7 +90,7 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-bg-layer active" style="background-image: linear-gradient(rgba(12, 88, 154, 0.6), rgba(9, 74, 130, 0.7)), url('/img/hero-bg-1.jpg');"></div>
+  <div class="hero-bg-layer" style="background-image: linear-gradient(rgba(12, 88, 154, 0.6), rgba(9, 74, 130, 0.7)), url('/img/hero-bg-1.jpg');"></div>
   <div class="hero-bg-layer" style="background-image: linear-gradient(rgba(12, 88, 154, 0.6), rgba(9, 74, 130, 0.7)), url('/img/hero-bg-2.jpg');"></div>
   <div class="hero-inner">
     <div>
@@ -319,6 +319,11 @@ function startHeroBannerRotation() {
   const layers = document.querySelectorAll('.hero-bg-layer');
   if (layers.length < 2) return;
   let activeIndex = 0;
+
+  // Activate the first layer on the next frame so it triggers the zoom animation on page load
+  requestAnimationFrame(() => {
+    layers[0].classList.add('active');
+  });
 
   setInterval(() => {
     layers[activeIndex].classList.remove('active');
