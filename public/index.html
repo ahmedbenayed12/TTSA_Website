@@ -67,6 +67,157 @@
     .btn-white:hover { background: var(--gray-100); }
     .btn-outline-white { background: transparent; border: 2px solid rgba(255,255,255,.5); color: var(--white); }
     .btn-outline-white:hover { background: rgba(255,255,255,.1); }
+
+    /* Custom Styles for Congress Content */
+    .welcome-split {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+      margin-top: 24px;
+    }
+    .welcome-text {
+      flex: 1.2;
+      min-width: 300px;
+    }
+    .welcome-image-container {
+      flex: 1;
+      min-width: 300px;
+      position: relative;
+    }
+    .welcome-image {
+      width: 100%;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      border: 4px solid var(--white);
+      transition: var(--transition);
+    }
+    .welcome-image:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+    .welcome-badge {
+      display: inline-block;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      margin-bottom: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .welcome-text h2 {
+      font-size: 2rem;
+      color: var(--blue-dark);
+      margin-bottom: 18px;
+      line-height: 1.25;
+    }
+    .welcome-text p {
+      font-size: 1.02rem;
+      line-height: 1.8;
+      color: var(--gray-600);
+      margin-bottom: 24px;
+    }
+    
+    .scientific-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 28px;
+      margin-top: 40px;
+    }
+    .theme-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--gray-100);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .theme-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--blue);
+      transform: scaleY(0);
+      transform-origin: bottom;
+      transition: transform 0.3s ease;
+    }
+    .theme-card:hover::after {
+      transform: scaleY(1);
+    }
+    .theme-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(12, 88, 154, 0.2);
+    }
+    .theme-icon-box {
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius);
+      background: var(--blue-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: var(--blue);
+    }
+    .theme-card h3 {
+      font-size: 1.15rem;
+      color: var(--blue-dark);
+      margin-bottom: 12px;
+    }
+    .theme-card p {
+      font-size: 0.92rem;
+      line-height: 1.6;
+      color: var(--gray-600);
+    }
+
+    .workshops-container {
+      margin-top: 48px;
+    }
+    .workshops-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+    }
+    .workshop-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      border-left: 5px solid var(--red);
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .workshop-card:hover {
+      transform: translateX(4px);
+      box-shadow: var(--shadow);
+    }
+    .workshop-category {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 8px;
+      letter-spacing: 0.05em;
+    }
+    .workshop-card h4 {
+      font-size: 1.05rem;
+      color: var(--blue-dark);
+      margin-bottom: 8px;
+    }
+    .workshop-card p {
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--gray-600);
+    }
   </style>
 </head>
 <body>
@@ -125,33 +276,112 @@
   </div>
 </section>
 
-<!-- FEATURES -->
-<section class="section section-alt">
+<!-- WELCOME SECTION -->
+<section class="section">
   <div class="container">
-    <div class="section-title">
-      <h2>A New Horizon in Healing</h2>
-      <p>The Landmark Triumph of the 1st Pan-Arab Congress of Thoracic Surgery</p>
-      <div style="display: flex; align-items: center; gap: 48px; margin-top: 40px; text-align: left; flex-wrap: wrap;">
-        <div style="flex: 1.2; min-width: 300px;">
-          <p style="font-size: 1rem; color: var(--gray-600); line-height: 1.8;">The inaugural Pan-Arab Congress of Thoracic Surgery was successfully held in Tunis, Tunisia, from November 6–8, 2025, marking a historic milestone for the regional medical community. Hosted at the Diplomatic Academy of Tunis, the event was held in conjunction with the 4th Congress of the Tunisian Society of Thoracic Surgery and received prestigious endorsement from the European Society of Thoracic Surgeons (ESTS).</p>
+    <div class="welcome-split">
+      <div class="welcome-text">
+        <div class="welcome-badge">Welcome & Invitation</div>
+        <h2>Welcome to the 5th TTSA National Congress</h2>
+        <p>The Tunisian Thoracic Surgery Association (TTSA) is delighted to invite you to the 5th edition of its National Congress, held on November 6–7, 2026, in the historic city of Sfax at the prestigious Borj Dhiafa Hotel.</p>
+        <p>This premier annual event brings together thoracic surgeons, pulmonologists, oncologists, anesthesiologists, and healthcare professionals. This year, our scientific program focuses on innovation, interdisciplinary collaboration, and the sharing of clinical expertise to meet the rapidly evolving technological challenges of our specialty.</p>
+        <div style="margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap;">
+          <a href="/abstract-submission.html" class="btn" style="background:var(--red); color:#fff;">Submit Abstract</a>
+          <a href="/register.html" class="btn btn-outline">Register Now</a>
         </div>
-        <div style="flex: 1; min-width: 300px;">
-          <img src="/img/congress-hall.jpg" alt="Diplomatic Academy of Tunis" style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);">
+      </div>
+      <div class="welcome-image-container">
+        <img src="/img/hero-bg-2.jpg" alt="Borj Dhiafa Hotel" class="welcome-image">
+        <div style="text-align: center; margin-top: 12px; font-size: 0.85rem; color: var(--gray-500); font-style: italic;">
+          Venue: Borj Dhiafa Hotel, Sfax
         </div>
       </div>
     </div>
-    <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
-      <div class="feature-card">
-        <h3>Oncology Innovations</h3>
-        <p>In-depth sessions focused on the latest multidisciplinary approaches to lung and esophageal cancers.</p>
+  </div>
+</section>
+
+<!-- SCIENTIFIC PROGRAM -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-title">
+      <h2>A High-Caliber Scientific Program</h2>
+      <p>The scientific committee has curated a comprehensive program featuring dedicated thematic sessions, keynote lectures, and international joint sessions:</p>
+    </div>
+    
+    <div class="scientific-grid">
+      <!-- Session 1 -->
+      <div class="theme-card">
+        <div class="theme-icon-box">🤖</div>
+        <h3>Robotic Surgery & Innovation <span style="font-size:0.8rem; color:var(--red); display:block; font-weight:600; margin-top:4px;">SFCTCV Session</span></h3>
+        <p>Dive into cutting-edge technical advances with a designated robotic surgery session and a hands-on introductory workshop.</p>
       </div>
-      <div class="feature-card">
-        <h3>Minimally Invasive Techniques</h3>
-        <p>Discussions on advancements in VATS (Video-Assisted Thoracoscopic Surgery) and robotic-assisted procedures aimed at improving patient recovery times.</p>
+
+      <!-- Session 2 -->
+      <div class="theme-card">
+        <div class="theme-icon-box">🧬</div>
+        <h3>Thymic Pathology</h3>
+        <p>An interdisciplinary approach in partnership with the Tunisian Association of Neurology, covering new guidelines for myasthenia gravis management, the role of lymph node dissection, and minimally invasive approaches.</p>
       </div>
-      <div class="feature-card">
-        <h3>Regional Research</h3>
-        <p>Presentations of clinical data specific to the Arab region, addressing local healthcare challenges and surgical outcomes.</p>
+
+      <!-- Session 3 -->
+      <div class="theme-card">
+        <div class="theme-icon-box">🫁</div>
+        <h3>Endo-bronchial Approaches</h3>
+        <p>A complete overview spanning diagnostic, therapeutic, and palliative techniques led by prominent international experts.</p>
+      </div>
+
+      <!-- Session 4 -->
+      <div class="theme-card">
+        <div class="theme-icon-box">🩺</div>
+        <h3>Peri-operative Management <span style="font-size:0.8rem; color:var(--red); display:block; font-weight:600; margin-top:4px;">APACS Session</span></h3>
+        <p>In-depth discussions on preventing prolonged post-operative air leaks, pre-operative rehabilitation strategies, and chronic post-operative pain management.</p>
+      </div>
+
+      <!-- Session 5 -->
+      <div class="theme-card">
+        <div class="theme-icon-box">🩹</div>
+        <h3>Thoracic Hydatid Cysts & Trauma</h3>
+        <p>Specialized free communication sessions addressing these critical and frequently encountered regional pathologies.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKSHOPS -->
+<section class="section">
+  <div class="container">
+    <div class="section-title">
+      <h2>Medical and Allied Health Workshops</h2>
+      <p>Because optimal patient care relies on a cohesive team, the congress offers specialized technical and practical training spaces:</p>
+    </div>
+
+    <div class="workshops-list">
+      <!-- Workshop 1 -->
+      <div class="workshop-card">
+        <div class="workshop-category">Practical</div>
+        <h4>Introduction to Robotic Thoracic Surgery</h4>
+        <p>Hands-on simulator training and system introduction for surgeons.</p>
+      </div>
+
+      <!-- Workshop 2 -->
+      <div class="workshop-card">
+        <div class="workshop-category">Medical</div>
+        <h4>Healthcare Staff Ergonomics</h4>
+        <p>Workplace health, physical strain reduction, and occupational ergonomics in high-stress clinical environments.</p>
+      </div>
+
+      <!-- Workshop 3 -->
+      <div class="workshop-card">
+        <div class="workshop-category">Allied Health (Paramedical)</div>
+        <h4>Anesthesia & Access</h4>
+        <p>Targeted sessions on thoracic surgery anesthesia, managing peri-operative anticoagulation, and best practices for permanent vascular/thoracic access.</p>
+      </div>
+
+      <!-- Workshop 4 -->
+      <div class="workshop-card">
+        <div class="workshop-category">Research</div>
+        <h4>Posters & Video Sessions</h4>
+        <p>Dynamic presentation areas designed to showcase the research of junior doctors and share complex surgical videos.</p>
       </div>
     </div>
   </div>
