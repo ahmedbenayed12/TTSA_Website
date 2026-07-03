@@ -46,8 +46,9 @@
       background: var(--white); border-radius: var(--radius); padding: 20px 24px;
       box-shadow: var(--shadow-sm); border: 1px solid var(--gray-100);
       display: flex; align-items: center; gap: 20px; transition: var(--transition);
+      text-decoration: none; color: inherit; cursor: pointer;
     }
-    .event-item:hover { border-color: var(--blue); }
+    .event-item:hover { border-color: var(--blue); box-shadow: var(--shadow); transform: translateY(-2px); }
     .event-date-box {
       min-width: 64px; height: 64px; border-radius: var(--radius);
       background: var(--blue); color: var(--white);
@@ -487,7 +488,7 @@ async function loadPublicData() {
     } else {
       el.innerHTML = events.slice(0,3).map(e => {
         const dt = e.event_date ? new Date(e.event_date) : null;
-        return `<div class="event-item" style="display:flex; flex-direction:${e.poster_url?'row':'row'}; align-items:center;">
+        return `<a href="/events.html" class="event-item" style="display:flex; flex-direction:row; align-items:center;">
           ${e.poster_url ? `<div class="event-poster" style="flex:0 0 120px; margin-right:20px;"><img src="${e.poster_url}" style="width:100%; border-radius:8px; box-shadow:var(--shadow-sm);"/></div>` : `
           <div class="event-date-box">
             <div class="day">${dt ? dt.getDate() : '—'}</div>
@@ -498,14 +499,14 @@ async function loadPublicData() {
             <h4>${e.title}</h4>
             <p>${e.location || ''} ${e.description ? '· ' + e.description.substring(0,80) : ''}</p>
             ${e.event_link ? `
-              <div style="margin-top: 6px;">
+              <div style="margin-top: 6px;" onclick="event.stopPropagation()">
                 <a href="${e.event_link}" target="_blank" style="font-size: 0.8rem; color: var(--blue); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
                   🔗 Event Link
                 </a>
               </div>
             ` : ''}
           </div>
-        </div>`;
+        </a>`;
       }).join('');
     }
   } catch(e) { console.error(e); }
