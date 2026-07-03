@@ -488,7 +488,7 @@ async function loadPublicData() {
     } else {
       el.innerHTML = events.slice(0,3).map(e => {
         const dt = e.event_date ? new Date(e.event_date) : null;
-        return `<div class="event-item" onclick="window.location.href='/events.html'" style="display:flex; flex-direction:row; align-items:center;">
+        return `<div class="event-item" onclick="window.location.href='/events.html#events-section'" style="display:flex; flex-direction:row; align-items:center;">
           ${e.poster_url ? `<div class="event-poster" style="flex:0 0 120px; margin-right:20px;"><img src="${e.poster_url}" style="width:100%; border-radius:8px; box-shadow:var(--shadow-sm);"/></div>` : `
           <div class="event-date-box">
             <div class="day">${dt ? dt.getDate() : '—'}</div>

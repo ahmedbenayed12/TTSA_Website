@@ -19,6 +19,7 @@
     .event-content h3 { font-size: 1.5rem; color: var(--blue-dark); margin-bottom: 12px; }
     .event-content .meta { display: flex; gap: 16px; margin-bottom: 16px; font-size: .95rem; color: var(--gray-600); font-weight: 500; }
     .event-content p { color: var(--gray-700); line-height: 1.6; }
+    html { scroll-behavior: smooth; }
   </style>
 </head>
 <body>
@@ -46,6 +47,7 @@
   </div>
 </header>
 
+<div id="events-section"></div>
 <main class="container" style="padding-bottom: 80px;">
   <div id="eventsList" class="events-grid">
     <div class="loading-center" style="padding: 60px 0;"><div class="spinner"></div></div>
