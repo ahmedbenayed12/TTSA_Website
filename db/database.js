@@ -138,6 +138,7 @@ function initSchema() {
       event_end_date TEXT,
       location TEXT,
       poster_url TEXT,
+      event_link TEXT,
       is_published INTEGER NOT NULL DEFAULT 1,
       created_at INTEGER NOT NULL DEFAULT (unixepoch())
     );
@@ -289,6 +290,13 @@ function initSchema() {
   if (!adminCols.includes('otp_expires_at')) {
     db.exec('ALTER TABLE admins ADD COLUMN otp_expires_at INTEGER');
     console.log('✅ Migration: otp_expires_at column added to admins');
+  }
+
+  // Migration: add event_link to events table if not present
+  const eventCols = db.prepare("PRAGMA table_info(events)").all().map(c => c.name);
+  if (!eventCols.includes('event_link')) {
+    db.exec('ALTER TABLE events ADD COLUMN event_link TEXT');
+    console.log('✅ Migration: event_link column added to events');
   }
 }
 

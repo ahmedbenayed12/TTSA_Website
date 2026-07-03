@@ -104,6 +104,13 @@ fetch('/api/events').then(r=>r.json()).then(events => {
             ${e.location ? `<span>📍 ${e.location}</span>` : ''}
           </div>
           ${e.description ? `<p>${e.description.replace(/\n/g,'<br/>')}</p>` : ''}
+          ${e.event_link ? `
+            <div style="margin-top: 16px;">
+              <a href="${e.event_link}" target="_blank" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none;">
+                <span>🔗</span> Event Link
+              </a>
+            </div>
+          ` : ''}
         </div>
       </div>
     `;

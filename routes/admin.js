@@ -287,12 +287,12 @@ router.post('/events', uploadEventPoster.single('poster'), requireAdmin, (req, r
     console.warn('⚠️ Warning: req.body is undefined in POST /events. Ensuring it is an object.');
     req.body = {};
   }
-  const { title, description, event_date, event_end_date, location } = req.body;
+  const { title, description, event_date, event_end_date, location, event_link } = req.body;
   if (!title) return res.status(400).json({ error: 'Title required' });
   
   const poster_url = req.file ? `/uploads/events/${req.file.filename}` : null;
-  const result = db.prepare('INSERT INTO events(title,description,event_date,event_end_date,location,poster_url) VALUES(?,?,?,?,?,?)')
-    .run(title, description || '', event_date || '', event_end_date || '', location || '', poster_url);
+  const result = db.prepare('INSERT INTO events(title,description,event_date,event_end_date,location,poster_url,event_link) VALUES(?,?,?,?,?,?,?)')
+    .run(title, description || '', event_date || '', event_end_date || '', location || '', poster_url, event_link || '');
   res.status(201).json({ message: 'Event created', id: result.lastInsertRowid });
 });
 
@@ -301,7 +301,7 @@ router.put('/events/:id', uploadEventPoster.single('poster'), requireAdmin, (req
     console.warn('⚠️ Warning: req.body is undefined in PUT /events. Ensuring it is an object.');
     req.body = {};
   }
-  const { title, description, event_date, event_end_date, location, is_published } = req.body;
+  const { title, description, event_date, event_end_date, location, is_published, event_link } = req.body;
   
   let poster_url = req.body.poster_url;
   if (req.file) {
@@ -313,8 +313,8 @@ router.put('/events/:id', uploadEventPoster.single('poster'), requireAdmin, (req
     }
   }
 
-  db.prepare('UPDATE events SET title=?,description=?,event_date=?,event_end_date=?,location=?,poster_url=?,is_published=? WHERE id=?')
-    .run(title, description || '', event_date || '', event_end_date || '', location || '', poster_url, is_published === 'true' || is_published === 1 ? 1 : 0, req.params.id);
+  db.prepare('UPDATE events SET title=?,description=?,event_date=?,event_end_date=?,location=?,poster_url=?,is_published=?,event_link=? WHERE id=?')
+    .run(title, description || '', event_date || '', event_end_date || '', location || '', poster_url, is_published === 'true' || is_published === 1 ? 1 : 0, event_link || '', req.params.id);
   res.json({ message: 'Event updated' });
 });
 
