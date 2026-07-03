@@ -497,7 +497,12 @@ async function loadPublicData() {
           <div class="event-info">
             <div style="font-size:.75rem; color:var(--blue); font-weight:600; margin-bottom:4px;">${formatDateRange(e.event_date, e.event_end_date)}</div>
             <h4>${e.title}</h4>
-            <p>${e.location || ''} ${e.description ? '· ' + e.description.substring(0,80) : ''}</p>
+            <p style="margin-bottom:0;">${e.location ? `<span style="font-weight:500;">📍 ${e.location}</span>` : ''}</p>
+            ${e.description ? `<p style="margin-top:4px; color:var(--gray-600); line-height:1.5;">
+              ${e.description.length > 120
+                ? e.description.substring(0, 120).trimEnd() + '… <span style="color:var(--blue); font-weight:600; white-space:nowrap;">Read more →</span>'
+                : e.description}
+            </p>` : ''}
             ${e.event_link ? `
               <div style="margin-top: 6px;" onclick="event.stopPropagation()">
                 <a href="${e.event_link}" target="_blank" style="font-size: 0.8rem; color: var(--blue); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
