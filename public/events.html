@@ -97,7 +97,7 @@ fetch('/api/events').then(r=>r.json()).then(events => {
     }
 
     return `
-      <div class="event-card-lg">
+      <div class="event-card-lg" id="event-${e.id}">
         ${e.poster_url ? `<div class="event-poster" style="flex: 0 0 200px; min-width:200px;"><img src="${e.poster_url}" style="width:100%; border-radius:var(--radius-lg); box-shadow:var(--shadow-lg);"/></div>` : dtHtml}
         <div class="event-content">
           <div style="font-size:.85rem; color:var(--blue); font-weight:600; margin-bottom:8px;">${formatDateRange(e.event_date, e.event_end_date)}</div>
@@ -118,16 +118,24 @@ fetch('/api/events').then(r=>r.json()).then(events => {
     `;
   }).join('');
 
-  // Auto-scroll to events list after render if arriving from homepage
-  if (window.location.hash === '#events-section') {
+  // Auto-scroll to specific event after render if coming from homepage
+  if (window.location.hash) {
     setTimeout(() => {
-      const target = document.getElementById('events-section');
+      const target = document.querySelector(window.location.hash);
       if (target) {
         const navbarHeight = document.querySelector('.navbar') ? document.querySelector('.navbar').offsetHeight : 70;
         const top = target.getBoundingClientRect().top + window.scrollY - navbarHeight - 16;
         window.scrollTo({ top, behavior: 'smooth' });
+        // Briefly highlight the card
+        target.style.transition = 'box-shadow 0.4s, border-color 0.4s';
+        target.style.boxShadow = '0 0 0 3px var(--blue)';
+        target.style.borderColor = 'var(--blue)';
+        setTimeout(() => {
+          target.style.boxShadow = '';
+          target.style.borderColor = '';
+        }, 1800);
       }
-    }, 100);
+    }, 150);
   }
 }).catch(console.error);
 </script>
