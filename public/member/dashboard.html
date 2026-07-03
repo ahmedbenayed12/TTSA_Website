@@ -71,7 +71,7 @@
       <div style="margin-bottom:32px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
           <h3>My Submission Slots</h3>
-          <span style="font-size:.82rem;color:var(--gray-500)">Max 3 abstracts per participant</span>
+          <span style="font-size:.82rem;color:var(--gray-500)">Max 5 abstracts per participant</span>
         </div>
         <div id="slotList" style="display:flex;flex-direction:column;gap:14px">
           <div class="loading-center"><div class="spinner"></div></div>
@@ -167,7 +167,7 @@ async function loadDashboard() {
       }
     }
 
-    const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
+    const maxSlots = parseInt(settings.max_abstracts_per_user) || 5;
     const isFull = abstracts.length >= maxSlots;
     
     // Disable New Abstract buttons if deadline passed, not started yet, or slots full

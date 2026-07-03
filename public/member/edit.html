@@ -145,7 +145,7 @@ async function init() {
     document.getElementById('sidebarName').textContent = me.first_name+' '+me.last_name;
 
     // Check if deadline passed or slots full to disable the New Abstract button
-    const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
+    const maxSlots = parseInt(settings.max_abstracts_per_user) || 5;
     const isFull = allAbstracts.length >= maxSlots;
     let passed = false;
     let notStarted = false;

@@ -162,7 +162,7 @@ function initSchema() {
     ['submission_start',    '2026-07-01T00:00:00'],
     ['upload_deadline', '2026-10-15T23:59:59'],
     ['blind_review', 'false'],
-    ['max_abstracts_per_user', '3'],
+    ['max_abstracts_per_user', '5'],
     ['max_words_per_abstract', '300'],
     ['criteria1_label', 'Relevance'],
     ['criteria2_label', 'Methodology'],

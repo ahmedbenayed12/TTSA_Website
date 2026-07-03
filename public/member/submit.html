@@ -128,7 +128,7 @@ async function init() {
     maxWords = parseInt(settings.max_words_per_abstract) || 300;
 
     // Block if slots are full
-    const maxSlots = parseInt(settings.max_abstracts_per_user) || 3;
+    const maxSlots = parseInt(settings.max_abstracts_per_user) || 5;
     if (abstracts.length >= maxSlots) {
       showToast('You have reached the maximum number of abstracts (' + maxSlots + ').', 'error');
       setTimeout(() => location.href = '/member/dashboard.html', 1500);
