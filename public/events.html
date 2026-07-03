@@ -117,6 +117,18 @@ fetch('/api/events').then(r=>r.json()).then(events => {
       </div>
     `;
   }).join('');
+
+  // Auto-scroll to events list after render if arriving from homepage
+  if (window.location.hash === '#events-section') {
+    setTimeout(() => {
+      const target = document.getElementById('events-section');
+      if (target) {
+        const navbarHeight = document.querySelector('.navbar') ? document.querySelector('.navbar').offsetHeight : 70;
+        const top = target.getBoundingClientRect().top + window.scrollY - navbarHeight - 16;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }, 100);
+  }
 }).catch(console.error);
 </script>
 </body>
