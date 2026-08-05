@@ -256,8 +256,9 @@ router.post('/login', loginLimiter, async (req, res) => {
     try {
       await sendAdminLoginOTP(admin.email, admin.first_name, otp);
     } catch (err) {
-      console.error('Failed to send admin OTP:', err.message);
-      return res.status(500).json({ error: 'Failed to send login verification email. Please try again.' });
+      // Email failed — log OTP to server console so admin can retrieve it from server logs
+      console.error('Failed to send admin OTP email:', err.message);
+      console.warn(`⚠️  ADMIN OTP FALLBACK — OTP for ${admin.email}: ${otp} (expires in 15 min)`);
     }
 
     return res.json({ requiresOTP: true, email: admin.email, role: 'admin' });
