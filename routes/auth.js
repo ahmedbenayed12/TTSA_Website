@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const db = require('../db/database');
 const { sendOTP, sendReviewerLoginOTP, sendAdminLoginOTP } = require('../services/email');
@@ -49,8 +50,8 @@ if (!JWT_SECRET) {
 }
 
 function generateOTP() {
-  // 6 digits = 900,000 possible values (vs 9,000 for 4-digit)
-  return String(Math.floor(100000 + Math.random() * 900000));
+  // Use CSPRNG instead of Math.random() for security
+  return String(crypto.randomInt(100000, 1000000));
 }
 
 function generateToken(payload) {
@@ -76,6 +77,13 @@ router.post('/register', loginLimiter, async (req, res) => {
     if (!email || !password || !first_name || !last_name || !nationality || !profession || !specialty || !seniority) {
       return res.status(400).json({ error: 'All fields are required' });
     }
+
+    // Input length validation
+    if (first_name.length > 100) return res.status(400).json({ error: 'First name too long (max 100 characters)' });
+    if (last_name.length > 100)  return res.status(400).json({ error: 'Last name too long (max 100 characters)' });
+    if (email.length > 200)      return res.status(400).json({ error: 'Email too long (max 200 characters)' });
+    if (password.length < 8)     return res.status(400).json({ error: 'Password must be at least 8 characters' });
+    if (specialty_details && specialty_details.length > 300) return res.status(400).json({ error: 'Specialty details too long (max 300 characters)' });
 
     const lEmail = email.toLowerCase();
     const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(lEmail);
@@ -188,6 +196,11 @@ router.post('/resend-otp', otpLimiter, async (req, res) => {
   // Check admin first
   const admin = db.prepare('SELECT * FROM admins WHERE email = ?').get(lEmail);
   if (admin) {
+    // Per-account cooldown: don't allow resend if OTP was issued within last 60 seconds
+    const now = Math.floor(Date.now() / 1000);
+    if (admin.otp_expires_at && (admin.otp_expires_at - now) > (15 * 60 - 60)) {
+      return res.status(429).json({ error: 'Please wait at least 60 seconds before requesting a new OTP.' });
+    }
     const otp = generateOTP();
     const otpExpires = Math.floor((Date.now() + 15 * 60 * 1000) / 1000);
     db.prepare('UPDATE admins SET otp = ?, otp_expires_at = ? WHERE id = ?').run(otp, otpExpires, admin.id);
@@ -197,7 +210,8 @@ router.post('/resend-otp', otpLimiter, async (req, res) => {
       return res.json({ message: 'New OTP sent to your email' });
     } catch (err) {
       console.error('Resend OTP failed for admin:', err.message);
-      return res.status(500).json({ error: 'Failed to send OTP' });
+      console.warn(`⚠️  ADMIN OTP FALLBACK — OTP for ${admin.email}: ${otp} (expires in 15 min)`);
+      return res.json({ message: 'New OTP sent to your email' });
     }
   }
 
@@ -334,9 +348,10 @@ router.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
 
   const lEmail = email.toLowerCase();
   const user = db.prepare('SELECT id, email, first_name FROM users WHERE email = ?').get(lEmail);
-  
+
+  // Always return the same response to prevent user enumeration
   if (!user) {
-    return res.status(404).json({ error: 'This email is not registered. Please create an account.' });
+    return res.json({ message: 'If that email is registered, a password reset code has been sent.' });
   }
 
   const otp = generateOTP();

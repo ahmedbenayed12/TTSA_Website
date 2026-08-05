@@ -25,9 +25,16 @@ const upload = multer({
   storage,
   limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
   fileFilter: (req, file, cb) => {
-    const allowed = ['.ppt', '.pptx', '.pdf', '.key'];
+    const allowedExts  = ['.ppt', '.pptx', '.pdf', '.key'];
+    const allowedMimes = [
+      'application/pdf',
+      'application/vnd.ms-powerpoint',
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+      'application/x-iwork-keynote-sffkey',
+      'application/octet-stream', // fallback for .key files
+    ];
     const ext = path.extname(file.originalname).toLowerCase();
-    if (allowed.includes(ext)) cb(null, true);
+    if (allowedExts.includes(ext) && allowedMimes.includes(file.mimetype)) cb(null, true);
     else cb(new Error('Only PPT, PPTX, PDF, or KEY files allowed'));
   },
 });
@@ -269,13 +276,18 @@ router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
       try { fs.unlinkSync(abstract.file_path); } catch (e) { console.error('Failed to delete old file', e); }
     }
 
+    // Sanitize filename before storing (strip path chars, limit length)
+    const safeFileName = path.basename(req.file.originalname)
+      .replace(/[^a-zA-Z0-9._\-\s]/g, '_')
+      .substring(0, 200);
+
     db.prepare(`
       UPDATE abstracts
       SET file_path = ?, file_name = ?, file_uploaded_at = unixepoch(), status = 'Final File Uploaded', updated_at = unixepoch()
       WHERE id = ?
-    `).run(req.file.path, req.file.originalname, abstract.id);
+    `).run(req.file.path, safeFileName, abstract.id);
 
-    res.json({ message: 'File uploaded successfully', filename: req.file.originalname });
+    res.json({ message: 'File uploaded successfully', filename: safeFileName });
   } catch (err) {
     console.error(err);
     if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);

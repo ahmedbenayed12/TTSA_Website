@@ -3,8 +3,14 @@ const bcrypt = require('bcryptjs');
 const db = require('./database');
 
 async function seed() {
-  const email = process.env.ADMIN_EMAIL || 'admin@ttsa.tn';
-  const password = process.env.ADMIN_PASSWORD || 'Admin@2026!';
+  const email = process.env.ADMIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD;
+
+  if (!email || !password) {
+    console.error('❌ ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables.');
+    process.exit(1);
+  }
+
   const hash = await bcrypt.hash(password, 12);
 
   const existing = db.prepare('SELECT id FROM admins WHERE email = ?').get(email);

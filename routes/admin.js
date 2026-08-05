@@ -28,9 +28,10 @@ const uploadEventPoster = multer({
   storage: eventPosterStorage,
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
   fileFilter: (req, file, cb) => {
-    const allowed = ['.jpg', '.jpeg'];
+    const allowedExts  = ['.jpg', '.jpeg'];
+    const allowedMimes = ['image/jpeg'];
     const ext = path.extname(file.originalname).toLowerCase();
-    if (allowed.includes(ext)) cb(null, true);
+    if (allowedExts.includes(ext) && allowedMimes.includes(file.mimetype)) cb(null, true);
     else cb(new Error('Only JPEG images allowed'));
   }
 });
@@ -373,7 +374,7 @@ router.get('/export/files', requireAdmin, (req, res) => {
   res.setHeader('Content-Disposition', `attachment; filename="TTSA_Presentations_${new Date().toISOString().slice(0,10)}.zip"`);
 
   const archive = archiver('zip', { zlib: { level: 9 } });
-  archive.on('error', err => { console.error(err); });
+  archive.on('error', err => { console.error('Archive error:', err); res.destroy(err); });
   archive.pipe(res);
 
   for (const abs of abstracts) {
@@ -495,10 +496,11 @@ router.patch('/users/:id/block', requireAdmin, (req, res) => {
   }
 });
 
-// GET /api/admin/test-email — test SMTP connection and send a test email to the logged-in admin or custom recipient
+// GET /api/admin/test-email — test SMTP connection and send a test email to the logged-in admin
 router.get('/test-email', requireAdmin, (req, res) => {
   const nodemailer = require('nodemailer');
-  const targetEmail = req.query.to || req.user.email;
+  // Always send to the authenticated admin's own email — no arbitrary recipient allowed
+  const targetEmail = req.user.email;
   const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT) || 587,
@@ -512,15 +514,9 @@ router.get('/test-email', requireAdmin, (req, res) => {
   transporter.verify(async (err, success) => {
     if (err) {
       console.error('SMTP verify failed:', err);
+      // Do not expose SMTP config details in the error response
       return res.status(500).json({
-        error: `SMTP connection failed: ${err.message}.`,
-        debugConfig: {
-          host: process.env.SMTP_HOST || '(default: smtp.gmail.com)',
-          port: process.env.SMTP_PORT || '(default: 587)',
-          secure: process.env.SMTP_SECURE || '(default: false)',
-          user: process.env.SMTP_USER || '(not configured)',
-          hasPassword: !!process.env.SMTP_PASS
-        }
+        error: `SMTP connection failed. Please check your SMTP environment variables.`
       });
     }
 
@@ -542,7 +538,6 @@ router.get('/test-email', requireAdmin, (req, res) => {
               <div style="background:#dcfce7;border-left:4px solid #166534;color:#166534;padding:16px;border-radius:4px;margin:16px 0;font-weight:bold">
                 ✅ SMTP system is fully operational!
               </div>
-              <p style="font-size:13px;color:#555">This email was successfully sent to <strong>${targetEmail}</strong> from <code>${fromEmail}</code>.</p>
               <hr style="border:none;border-top:1px solid #eee;margin:24px 0"/>
               <p style="color:#aaa;font-size:12px;text-align:center">Tunisian Thoracic Surgery Association &copy; 2026</p>
             </div>

@@ -14,8 +14,6 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net"],
-      // Allow inline event handlers (onclick="...", onchange="...", etc.) used across all admin pages
-      // helmet v8 sets script-src-attr 'none' by default which blocks these:
       scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdnjs.cloudflare.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
@@ -26,6 +24,7 @@ app.use(helmet({
     },
   },
   crossOriginEmbedderPolicy: false, // needed for file downloads
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
 
 // ─── CORS — restrict to your domain in production ─────────────────────────────
@@ -69,7 +68,9 @@ app.use((req, res, next) => {
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: err.message || 'Internal server error' });
+  // Never leak internal error details to the client in production
+  const message = process.env.NODE_ENV === 'production' ? 'Internal server error' : (err.message || 'Internal server error');
+  res.status(500).json({ error: message });
 });
 
 // ─── Start ────────────────────────────────────────────────────────────────────
