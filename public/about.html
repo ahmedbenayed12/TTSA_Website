@@ -37,7 +37,6 @@
     .hero-badge {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
       padding: 6px 18px;
       background: rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(8px);
@@ -83,24 +82,9 @@
     }
 
     .overview-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
       margin-bottom: 24px;
       padding-bottom: 18px;
       border-bottom: 2px solid var(--gray-100);
-    }
-
-    .overview-header .icon-wrapper {
-      width: 48px;
-      height: 48px;
-      background: var(--blue-light);
-      color: var(--blue);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.4rem;
     }
 
     .overview-header h2 {
@@ -119,7 +103,6 @@
     .date-badge-box {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
       background: var(--gray-50);
       border-left: 4px solid var(--blue);
       padding: 14px 20px;
@@ -228,7 +211,7 @@
     .cta-btn {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      justify-content: center;
       background: var(--white);
       color: var(--blue);
       font-weight: 700;
@@ -275,7 +258,7 @@
 <header class="hero-banner">
   <div class="container">
     <div class="hero-badge">
-      <span>🇹🇳</span> Official Medical Association
+      Official Medical Association
     </div>
     <h1>About TTSA</h1>
     <p>Tunisian Thoracic Surgery Association</p>
@@ -287,7 +270,6 @@
   <!-- About Overview Card -->
   <div class="overview-card">
     <div class="overview-header">
-      <div class="icon-wrapper">🩺</div>
       <h2>Who We Are</h2>
     </div>
     
@@ -296,7 +278,6 @@
     </p>
 
     <div class="date-badge-box">
-      <span>📅</span>
       <span>Our association became official on <strong>January 11, 2022</strong>. We have been active since <strong>March 2023</strong>.</span>
     </div>
   </div>
@@ -357,7 +338,6 @@
     <p>Participate in the upcoming TTSA congress and present your scientific work.</p>
     <a href="/register.html" class="cta-btn">
       <span>Create Account & Submit</span>
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </a>
   </div>
 
