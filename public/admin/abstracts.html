@@ -9,41 +9,139 @@
     .table-container table { width:100%; border-collapse:collapse; text-align:left; }
     .table-container th, .table-container td { padding:12px 16px; border-bottom:1px solid var(--gray-100); }
     .table-container th { background:var(--gray-50); font-size:.8rem; color:var(--gray-600); text-transform:uppercase; white-space:nowrap; }
-    .table-container tbody tr:hover { background:var(--gray-50); }
+    .table-container tbody tr:hover { background:var(--gray-50); cursor:pointer; }
     .table-container tbody tr.selected { background:#eff6ff; }
     .status-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:12px; font-size:.75rem; font-weight:600; }
     .score-box { background:var(--blue-light); color:var(--blue); font-weight:700; padding:2px 8px; border-radius:4px; display:inline-block; }
 
-    /* ── Eye Toggle ───────────────── */
-    .eye-toggle {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 20px; border-radius: 50px;
-      border: 2px solid var(--gray-300); background: var(--white);
-      cursor: pointer; font-weight: 700; font-size: .875rem;
-      color: var(--gray-600); transition: all 0.25s ease; user-select: none;
-    }
-    .eye-toggle:hover { border-color: var(--blue); color: var(--blue); }
-    .eye-toggle.active { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 4px 14px rgba(184,37,56,.3); }
-    .eye-toggle .eye-icon { width: 22px; height: 22px; flex-shrink: 0; }
-    .eye-toggle .toggle-label { white-space: nowrap; }
+    /* ── Eye Toggle ─────────────────────────────── */
+    .eye-toggle { display:flex; align-items:center; gap:10px; padding:10px 20px; border-radius:50px; border:2px solid var(--gray-300); background:var(--white); cursor:pointer; font-weight:700; font-size:.875rem; color:var(--gray-600); transition:all .25s; user-select:none; }
+    .eye-toggle:hover { border-color:var(--blue); color:var(--blue); }
+    .eye-toggle.active { background:var(--red); border-color:var(--red); color:#fff; box-shadow:0 4px 14px rgba(184,37,56,.3); }
+    .eye-toggle .eye-icon { width:22px; height:22px; flex-shrink:0; }
+    .eye-toggle .toggle-label { white-space:nowrap; }
 
-    /* ── Bulk Action Toolbar ──────── */
-    #bulkBar {
-      display: none;
-      align-items: center; gap: 12px; flex-wrap: wrap;
-      background: #eff6ff; border: 1.5px solid var(--blue);
-      border-radius: var(--radius); padding: 10px 16px;
-      margin-bottom: 14px;
-    }
-    #bulkBar.visible { display: flex; }
-    #bulkBar .sel-count {
-      font-weight: 700; color: var(--blue); font-size: .9rem; margin-right: 4px;
-    }
-    #bulkBar .bulk-divider { width: 1px; height: 24px; background: var(--gray-300); }
+    /* ── Bulk Action Toolbar ────────────────────── */
+    #bulkBar { display:none; align-items:center; gap:12px; flex-wrap:wrap; background:#eff6ff; border:1.5px solid var(--blue); border-radius:var(--radius); padding:10px 16px; margin-bottom:14px; }
+    #bulkBar.visible { display:flex; }
+    #bulkBar .sel-count { font-weight:700; color:var(--blue); font-size:.9rem; margin-right:4px; }
+    #bulkBar .bulk-divider { width:1px; height:24px; background:var(--gray-300); }
+    .row-check { width:16px; height:16px; cursor:pointer; accent-color:var(--blue); }
+    #checkAll  { width:16px; height:16px; cursor:pointer; accent-color:var(--blue); }
 
-    /* checkbox styling */
-    .row-check { width: 16px; height: 16px; cursor: pointer; accent-color: var(--blue); }
-    #checkAll  { width: 16px; height: 16px; cursor: pointer; accent-color: var(--blue); }
+    /* ── Detail Side Panel ──────────────────────── */
+    .detail-overlay {
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.4);
+      z-index:900;
+      opacity:0; pointer-events:none;
+      transition:opacity .25s;
+    }
+    .detail-overlay.open { opacity:1; pointer-events:all; }
+    .detail-panel {
+      position:fixed; top:0; right:0; bottom:0;
+      width:620px; max-width:96vw;
+      background:var(--white);
+      box-shadow:-8px 0 40px rgba(0,0,0,.15);
+      display:flex; flex-direction:column;
+      transform:translateX(100%);
+      transition:transform .3s cubic-bezier(.4,0,.2,1);
+      z-index:901;
+      overflow:hidden;
+    }
+    .detail-overlay.open .detail-panel { transform:translateX(0); }
+
+    .dp-header {
+      padding:20px 24px 16px;
+      border-bottom:1px solid var(--gray-100);
+      display:flex; align-items:flex-start; gap:14px;
+      background:linear-gradient(135deg,#0C589A 0%,#1a7fd4 100%);
+      color:#fff;
+      flex-shrink:0;
+    }
+    .dp-num {
+      background:rgba(255,255,255,.2);
+      border-radius:8px; padding:6px 12px;
+      font-weight:800; font-size:1.1rem;
+      white-space:nowrap; flex-shrink:0;
+    }
+    .dp-header-info { flex:1; min-width:0; }
+    .dp-title { font-size:1rem; font-weight:800; margin:0 0 4px; line-height:1.35; }
+    .dp-sub   { font-size:.8rem; opacity:.8; margin:0; }
+    .dp-close {
+      background:rgba(255,255,255,.15); border:none; cursor:pointer;
+      color:#fff; font-size:1.4rem; line-height:1; padding:4px 8px;
+      border-radius:6px; flex-shrink:0; transition:background .15s;
+    }
+    .dp-close:hover { background:rgba(255,255,255,.3); }
+
+    .dp-body { flex:1; overflow-y:auto; padding:0; }
+
+    /* Section inside panel */
+    .dp-section { padding:20px 24px; border-bottom:1px solid var(--gray-100); }
+    .dp-section:last-child { border-bottom:none; }
+    .dp-section-title {
+      font-size:.68rem; font-weight:800; text-transform:uppercase;
+      letter-spacing:.08em; color:var(--gray-400);
+      margin:0 0 14px; padding-bottom:8px;
+      border-bottom:1px solid var(--gray-100);
+    }
+    .dp-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .dp-item { display:flex; flex-direction:column; gap:3px; }
+    .dp-label { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--gray-400); }
+    .dp-value { font-size:.88rem; font-weight:600; color:var(--gray-800); }
+
+    /* Abstract text box */
+    .abstract-text-box {
+      background:var(--gray-50);
+      border:1px solid var(--gray-200);
+      border-radius:8px;
+      padding:14px 16px;
+      font-size:.875rem;
+      line-height:1.7;
+      color:var(--gray-700);
+      white-space:pre-wrap;
+      word-break:break-word;
+      max-height:280px;
+      overflow-y:auto;
+    }
+
+    /* Authors table */
+    .authors-table { width:100%; border-collapse:collapse; font-size:.82rem; }
+    .authors-table th { background:var(--gray-50); padding:8px 10px; font-weight:700; color:var(--gray-500); font-size:.72rem; text-transform:uppercase; border-bottom:1px solid var(--gray-200); text-align:left; }
+    .authors-table td { padding:8px 10px; border-bottom:1px solid var(--gray-100); color:var(--gray-700); vertical-align:top; }
+    .authors-table tr:last-child td { border-bottom:none; }
+    .corr-badge { background:#fef3c7; color:#92400e; padding:1px 6px; border-radius:8px; font-size:.7rem; font-weight:700; }
+
+    /* Score bars */
+    .score-row { display:flex; align-items:center; gap:10px; margin-bottom:8px; }
+    .score-bar-wrap { flex:1; background:var(--gray-100); border-radius:4px; height:6px; }
+    .score-bar-fill { height:6px; border-radius:4px; background:var(--blue); transition:width .4s; }
+    .score-val { font-weight:700; font-size:.82rem; color:var(--gray-700); width:32px; text-align:right; }
+    .score-label-txt { font-size:.78rem; color:var(--gray-500); width:120px; flex-shrink:0; }
+
+    .verdict-box {
+      border-radius:10px; padding:12px 16px;
+      font-weight:700; font-size:.9rem;
+      display:flex; align-items:center; gap:10px;
+    }
+    .verdict-admitted { background:#dcfce7; color:#166534; }
+    .verdict-refused  { background:#fee2e2; color:#991b1b; }
+
+    .comments-box {
+      background:var(--gray-50); border:1px solid var(--gray-200);
+      border-radius:8px; padding:12px 14px;
+      font-size:.85rem; line-height:1.6; color:var(--gray-700);
+      white-space:pre-wrap;
+    }
+
+    .dp-footer {
+      padding:14px 24px;
+      border-top:1px solid var(--gray-100);
+      background:var(--gray-50);
+      display:flex; gap:10px; justify-content:flex-end;
+      flex-shrink:0;
+    }
   </style>
 </head>
 <body>
@@ -75,10 +173,9 @@
       <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
     </div>
   </aside>
+
   <main class="portal-main">
-    <div class="portal-topbar">
-      <h2>Abstracts &amp; Reviews</h2>
-    </div>
+    <div class="portal-topbar"><h2>Abstracts &amp; Reviews</h2></div>
     <div class="portal-body">
 
       <!-- Blind Review Toggle -->
@@ -105,24 +202,16 @@
       <div id="bulkBar">
         <span class="sel-count"><span id="selCount">0</span> selected</span>
         <div class="bulk-divider"></div>
-        <button class="btn btn-primary btn-sm" onclick="bulkAssign()" id="btnBulkAssign">
-          👤 Assign Reviewer
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="bulkFinalize()" id="btnBulkFinalize">
-          📧 Finalize &amp; Send Email
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="bulkRemind()" id="btnBulkRemind">
-          ⏰ Send Upload Reminder
-        </button>
-        <button class="btn btn-ghost btn-sm" onclick="clearSelection()">
-          ✕ Clear
-        </button>
+        <button class="btn btn-primary btn-sm" onclick="bulkAssign()" id="btnBulkAssign">👤 Assign Reviewer</button>
+        <button class="btn btn-outline btn-sm" onclick="bulkFinalize()" id="btnBulkFinalize">📧 Finalize &amp; Send Email</button>
+        <button class="btn btn-outline btn-sm" onclick="bulkRemind()" id="btnBulkRemind">⏰ Send Upload Reminder</button>
+        <button class="btn btn-ghost btn-sm" onclick="clearSelection()">✕ Clear</button>
       </div>
 
       <!-- Sort Controls -->
-      <div style="display:flex; justify-content:flex-end; margin-bottom:12px; align-items:center; gap:12px;">
-        <span style="font-size:.85rem; font-weight:600; color:var(--gray-500);">Sort by:</span>
-        <select id="sortSelect" class="form-control" style="width:200px; padding:4px 8px; font-size:.85rem;" onchange="applySort()">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px;align-items:center;gap:12px;">
+        <span style="font-size:.85rem;font-weight:600;color:var(--gray-500);">Sort by:</span>
+        <select id="sortSelect" class="form-control" style="width:200px;padding:4px 8px;font-size:.85rem;" onchange="applySort()">
           <option value="id_desc">Newest First</option>
           <option value="id_asc">Oldest First</option>
           <option value="score_desc">Score (Highest first)</option>
@@ -141,6 +230,7 @@
               <th>ID</th>
               <th>Title</th>
               <th>Submitter</th>
+              <th>Submitted</th>
               <th>Status</th>
               <th>Reviewer</th>
               <th>Score</th>
@@ -149,7 +239,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="9" style="text-align:center;padding:40px">Loading abstracts...</td></tr>
+            <tr><td colspan="10" style="text-align:center;padding:40px">Loading abstracts...</td></tr>
           </tbody>
         </table>
       </div>
@@ -158,7 +248,31 @@
   </main>
 </div>
 
-<!-- Assign Modal (single or bulk) -->
+<!-- ── Detail Side Panel ─────────────────────────────────────────── -->
+<div class="detail-overlay" id="detailOverlay" onclick="closePanelClick(event)">
+  <div class="detail-panel" id="detailPanel">
+
+    <div class="dp-header">
+      <div class="dp-num" id="dpNum">#—</div>
+      <div class="dp-header-info">
+        <p class="dp-title" id="dpTitle">—</p>
+        <p class="dp-sub"  id="dpSub">—</p>
+      </div>
+      <button class="dp-close" onclick="closePanel()">×</button>
+    </div>
+
+    <div class="dp-body" id="dpBody">
+      <div style="padding:40px;text-align:center;color:var(--gray-400)">Loading…</div>
+    </div>
+
+    <div class="dp-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closePanel()">Close</button>
+      <button class="btn btn-primary btn-sm" id="dpAssignBtn" onclick="openAssignFromPanel()">👤 Assign Reviewer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Assign Modal ──────────────────────────────────────────────── -->
 <div class="modal-overlay" id="assignModal">
   <div class="modal">
     <div class="modal-header">
@@ -187,22 +301,22 @@ if (!requireAuth(['admin'])) throw '';
 
 let abstracts = [];
 let reviewers = [];
-let pendingAbstractIds = []; // IDs queued for bulk assign
+let criteriaLabels = { criteria1_label:'Criteria 1', criteria2_label:'Criteria 2', criteria3_label:'Criteria 3', criteria4_label:'Criteria 4' };
+let pendingAbstractIds = [];
+let currentPanelId = null;
 
-const FINALIZED = ['Waiting for File Upload', 'Final File Uploaded', 'Refused', 'Accepted'];
-
+const FINALIZED = ['Waiting for File Upload','Final File Uploaded','Refused','Accepted'];
 const statusColors = {
-  Draft: 'badge-gray',
-  Submitted: 'badge-blue',
-  'Waiting for Review': 'badge-yellow',
-  Accepted: 'badge-green',
-  Refused: 'badge-red',
-  'Waiting for File Upload': 'badge-orange',
-  'Final File Uploaded': 'badge-purple'
+  Draft:'badge-gray', Submitted:'badge-blue', 'Waiting for Review':'badge-yellow',
+  Accepted:'badge-green', Refused:'badge-red',
+  'Waiting for File Upload':'badge-orange', 'Final File Uploaded':'badge-purple'
 };
 
-// ─── Init ────────────────────────────────────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function fmtDate(ts) { return ts ? new Date(ts*1000).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '—'; }
+function fmtDateShort(ts) { return ts ? new Date(ts*1000).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '—'; }
 
+// ── Init ────────────────────────────────────────────────────────────
 async function init() {
   const [me, abs, revs, adminSettings] = await Promise.all([
     apiFetch('/auth/me'),
@@ -210,29 +324,31 @@ async function init() {
     apiFetch('/admin/reviewers'),
     apiFetch('/admin/settings')
   ]);
-
-  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarName').textContent  = me.first_name+' '+me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
-
   abstracts = abs;
   reviewers = revs;
+
+  // Store criteria labels from settings
+  ['criteria1_label','criteria2_label','criteria3_label','criteria4_label'].forEach(k => {
+    if (adminSettings[k]) criteriaLabels[k] = adminSettings[k];
+  });
 
   setBlindUI(adminSettings.blind_review === 'true');
   applySort();
 
-  document.getElementById('reviewerSelect').innerHTML = '<option value="">-- Select Reviewer --</option>' +
-    reviewers.map(r => `<option value="${r.id}">${r.last_name}, ${r.first_name}</option>`).join('');
+  document.getElementById('reviewerSelect').innerHTML =
+    '<option value="">-- Select Reviewer --</option>' +
+    reviewers.map(r => `<option value="${r.id}">${esc(r.last_name)}, ${esc(r.first_name)}</option>`).join('');
 }
 
-// ─── Eye Toggle ──────────────────────────────────────────────────────────────
-
+// ── Eye Toggle ──────────────────────────────────────────────────────
 const SVG_EYE_OPEN   = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
 const SVG_EYE_CLOSED = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
 
 function setBlindUI(isBlind) {
-  const btn  = document.getElementById('blindToggle');
-  const icon = document.getElementById('eyeIcon');
-  icon.innerHTML = isBlind ? SVG_EYE_CLOSED : SVG_EYE_OPEN;
+  const btn = document.getElementById('blindToggle');
+  document.getElementById('eyeIcon').innerHTML = isBlind ? SVG_EYE_CLOSED : SVG_EYE_OPEN;
   if (isBlind) {
     btn.classList.add('active');
     document.getElementById('toggleLabel').textContent = 'Disable Blind Review';
@@ -243,54 +359,48 @@ function setBlindUI(isBlind) {
     document.getElementById('blindDesc').innerHTML = 'Currently <strong>OFF</strong> — Reviewers can see author names and affiliations.';
   }
 }
-
 async function toggleBlind() {
   const enabled = !document.getElementById('blindToggle').classList.contains('active');
   try {
-    await apiFetch('/admin/blind-review', { method:'PATCH', body:JSON.stringify({enabled}) });
+    await apiFetch('/admin/blind-review',{method:'PATCH',body:JSON.stringify({enabled})});
     setBlindUI(enabled);
     showToast(`Blind review ${enabled ? 'enabled — authors hidden' : 'disabled — authors visible'}`);
-  } catch(e) {
-    showToast('Failed to toggle blind review','error');
-  }
+  } catch(e) { showToast('Failed to toggle blind review','error'); }
 }
 
-// ─── Sorting ─────────────────────────────────────────────────────────────────
-
+// ── Sorting ─────────────────────────────────────────────────────────
 function applySort() {
-  const sortBy = document.getElementById('sortSelect').value;
-  abstracts.sort((a, b) => {
-    switch (sortBy) {
-      case 'id_desc': return b.id - a.id;
-      case 'id_asc': return a.id - b.id;
-      case 'title_asc': return a.title.localeCompare(b.title);
+  const s = document.getElementById('sortSelect').value;
+  abstracts.sort((a,b) => {
+    switch(s) {
+      case 'id_desc':    return b.id - a.id;
+      case 'id_asc':     return a.id - b.id;
+      case 'title_asc':  return a.title.localeCompare(b.title);
       case 'status_asc': return a.status.localeCompare(b.status);
-      case 'score_desc': return (b.total_score || -1) - (a.total_score || -1);
-      case 'score_asc': return (a.total_score || -1) - (b.total_score || -1);
+      case 'score_desc': return (b.total_score||-1)-(a.total_score||-1);
+      case 'score_asc':  return (a.total_score||-1)-(b.total_score||-1);
       default: return b.id - a.id;
     }
   });
   renderTable();
 }
 
-// ─── Table Rendering ─────────────────────────────────────────────────────────
-
+// ── Table Rendering ─────────────────────────────────────────────────
 function renderTable() {
   const tbody = document.querySelector('#abstractsTable tbody');
   if (!abstracts.length) {
-    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--gray-500)">No abstracts found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--gray-500)">No abstracts found</td></tr>';
     return;
   }
-
   tbody.innerHTML = abstracts.map(a => {
-    let verdictHtml = '—';
-    if (a.verdict === 'Admitted') verdictHtml = '<span style="color:var(--success);font-weight:700">Admitted</span>';
-    else if (a.verdict === 'Refused') verdictHtml = '<span style="color:var(--red);font-weight:700">Refused</span>';
-
-    const isSelectable = ['Submitted', 'Waiting for Review', 'Waiting for File Upload'].includes(a.status);
-
+    const verdictHtml = a.verdict === 'Admitted'
+      ? '<span style="color:var(--success);font-weight:700">✅ Admitted</span>'
+      : a.verdict === 'Refused'
+        ? '<span style="color:var(--red);font-weight:700">❌ Refused</span>'
+        : '—';
+    const isSelectable = ['Submitted','Waiting for Review','Waiting for File Upload'].includes(a.status);
     return `
-      <tr data-id="${a.id}" onclick="handleRowClick(event, ${a.id})" style="cursor:pointer">
+      <tr data-id="${a.id}" onclick="handleRowClick(event,${a.id})" style="cursor:pointer">
         <td onclick="event.stopPropagation()">
           ${isSelectable
             ? `<input type="checkbox" class="row-check" value="${a.id}" onchange="onCheckChange()">`
@@ -299,205 +409,281 @@ function renderTable() {
         <td style="font-weight:600;color:var(--gray-500)">
           ${a.submission_number
             ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">#${a.submission_number}</span>`
-            : `<span class="badge badge-gray">ID: ${a.id}</span>`}
+            : `<span class="badge badge-gray">ID:${a.id}</span>`}
         </td>
         <td>
-          <div style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${a.title}">${a.title}</div>
-          <div style="font-size:.75rem;color:var(--gray-500)">${a.word_count} words</div>
+          <div style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${esc(a.title)}">${esc(a.title)}</div>
+          <div style="font-size:.72rem;color:var(--gray-400)">${a.word_count} words · ${esc(a.topic||'—')}</div>
         </td>
         <td>
-          <div style="font-weight:500">${a.submitter_name}</div>
-          <div style="font-size:.75rem;color:var(--gray-500)">${a.submitter_email}</div>
+          <div style="font-weight:500">${esc(a.submitter_name)}</div>
+          <div style="font-size:.72rem;color:var(--gray-400)">${esc(a.submitter_email)}</div>
         </td>
-        <td><span class="status-badge ${statusColors[a.status] || 'badge-gray'}">${a.status}</span></td>
-        <td>${a.reviewer_name ? a.reviewer_name : '<span style="color:var(--gray-400)">Unassigned</span>'}</td>
-        <td>${a.total_score != null ? `<span class="score-box">${a.total_score}/20</span>` : '—'}</td>
-        <td>${a.presentation_type ? `<span style="font-weight:600;color:var(--gray-700)">${a.presentation_type}</span>` : '—'}</td>
+        <td style="font-size:.78rem;white-space:nowrap;color:var(--gray-500)">${fmtDateShort(a.created_at)}</td>
+        <td><span class="status-badge ${statusColors[a.status]||'badge-gray'}">${a.status}</span></td>
+        <td>${a.reviewer_name ? esc(a.reviewer_name) : '<span style="color:var(--gray-400)">Unassigned</span>'}</td>
+        <td>${a.total_score!=null ? `<span class="score-box">${a.total_score}/20</span>` : '—'}</td>
+        <td>${a.presentation_type ? `<span style="font-weight:600;color:var(--gray-700)">${esc(a.presentation_type)}</span>` : '—'}</td>
         <td>${verdictHtml}</td>
-      </tr>
-    `;
+      </tr>`;
   }).join('');
-
   updateBulkBar();
 }
 
-// ─── Selection ───────────────────────────────────────────────────────────────
-
-function getChecked() {
-  return [...document.querySelectorAll('.row-check:checked')].map(c => +c.value);
-}
-
+// ── Selection ────────────────────────────────────────────────────────
+function getChecked() { return [...document.querySelectorAll('.row-check:checked')].map(c=>+c.value); }
 function onCheckChange() {
-  const all  = document.querySelectorAll('.row-check');
-  const chk  = document.querySelectorAll('.row-check:checked');
-  document.getElementById('checkAll').indeterminate = chk.length > 0 && chk.length < all.length;
-  document.getElementById('checkAll').checked = chk.length === all.length && all.length > 0;
-
-  // Highlight selected rows
-  all.forEach(cb => {
-    cb.closest('tr').classList.toggle('selected', cb.checked);
-  });
-
+  const all = document.querySelectorAll('.row-check');
+  const chk = document.querySelectorAll('.row-check:checked');
+  document.getElementById('checkAll').indeterminate = chk.length>0 && chk.length<all.length;
+  document.getElementById('checkAll').checked = chk.length===all.length && all.length>0;
+  all.forEach(cb => cb.closest('tr').classList.toggle('selected',cb.checked));
   updateBulkBar();
 }
-
 function toggleSelectAll(master) {
-  document.querySelectorAll('.row-check').forEach(cb => {
-    cb.checked = master.checked;
-    cb.closest('tr').classList.toggle('selected', master.checked);
-  });
+  document.querySelectorAll('.row-check').forEach(cb => { cb.checked=master.checked; cb.closest('tr').classList.toggle('selected',master.checked); });
   updateBulkBar();
 }
-
 function clearSelection() {
-  document.querySelectorAll('.row-check').forEach(cb => {
-    cb.checked = false;
-    cb.closest('tr').classList.remove('selected');
-  });
-  document.getElementById('checkAll').checked = false;
-  document.getElementById('checkAll').indeterminate = false;
+  document.querySelectorAll('.row-check').forEach(cb => { cb.checked=false; cb.closest('tr').classList.remove('selected'); });
+  document.getElementById('checkAll').checked=false;
+  document.getElementById('checkAll').indeterminate=false;
   updateBulkBar();
 }
 
 function handleRowClick(e, id) {
-  // clicking row body (not checkbox) toggles checkbox
-  const cb = document.querySelector(`.row-check[value="${id}"]`);
-  if (!cb) return;
-  cb.checked = !cb.checked;
-  cb.closest('tr').classList.toggle('selected', cb.checked);
-  onCheckChange();
+  // If clicking on checkbox cell → handled by checkbox itself
+  if (e.target.type === 'checkbox') return;
+  openPanel(id);
 }
 
-// ─── Bulk Bar ────────────────────────────────────────────────────────────────
-
+// ── Bulk Bar ─────────────────────────────────────────────────────────
 function updateBulkBar() {
   const ids = getChecked();
-  const bar = document.getElementById('bulkBar');
   document.getElementById('selCount').textContent = ids.length;
-
-  if (ids.length === 0) {
-    bar.classList.remove('visible');
-    return;
-  }
+  const bar = document.getElementById('bulkBar');
+  if (!ids.length) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
-
-  // Determine which actions make sense for the selection
-  const selAbs = abstracts.filter(a => ids.includes(a.id));
-  // 'Finalize' only valid for abstracts currently waiting for review that have a verdict
-  const canFinalize = selAbs.some(a => a.status === 'Waiting for Review' && (a.verdict === 'Admitted' || a.verdict === 'Refused'));
-  const canAssign   = selAbs.some(a => !FINALIZED.includes(a.status) && a.status !== 'Draft');
-  const canRemind   = selAbs.some(a => a.status === 'Waiting for File Upload');
-
-  document.getElementById('btnBulkAssign').disabled   = !canAssign;
-  document.getElementById('btnBulkFinalize').disabled = !canFinalize;
-  document.getElementById('btnBulkRemind').disabled   = !canRemind;
+  const sel = abstracts.filter(a => ids.includes(a.id));
+  document.getElementById('btnBulkAssign').disabled   = !sel.some(a=>!FINALIZED.includes(a.status)&&a.status!=='Draft');
+  document.getElementById('btnBulkFinalize').disabled = !sel.some(a=>a.status==='Waiting for Review'&&(a.verdict==='Admitted'||a.verdict==='Refused'));
+  document.getElementById('btnBulkRemind').disabled   = !sel.some(a=>a.status==='Waiting for File Upload');
 }
 
-// ─── Bulk Actions ────────────────────────────────────────────────────────────
-
+// ── Bulk Actions ──────────────────────────────────────────────────────
 function bulkAssign() {
   const ids = getChecked();
-  if (!ids.length) return;
-  const selAbs = abstracts.filter(a => ids.includes(a.id) && !FINALIZED.includes(a.status) && a.status !== 'Draft');
-  if (!selAbs.length) { showToast('No assignable abstracts in selection', 'error'); return; }
-
-  pendingAbstractIds = selAbs.map(a => a.id);
-  document.getElementById('assignTitle').textContent = `Assign Reviewer`;
-  document.getElementById('assignSummary').textContent =
-    `Will assign to ${pendingAbstractIds.length} abstract(s): ${selAbs.map(a => `#${a.submission_number || a.id}`).join(', ')}`;
-  document.getElementById('reviewerSelect').value = '';
+  const sel = abstracts.filter(a=>ids.includes(a.id)&&!FINALIZED.includes(a.status)&&a.status!=='Draft');
+  if (!sel.length) { showToast('No assignable abstracts in selection','error'); return; }
+  pendingAbstractIds = sel.map(a=>a.id);
+  document.getElementById('assignTitle').textContent = 'Assign Reviewer';
+  document.getElementById('assignSummary').textContent = `Will assign to ${pendingAbstractIds.length} abstract(s): ${sel.map(a=>`#${a.submission_number||a.id}`).join(', ')}`;
+  document.getElementById('reviewerSelect').value='';
   document.getElementById('assignModal').classList.add('open');
 }
-
 async function bulkFinalize() {
   const ids = getChecked();
-  if (!ids.length) return;
-  // Only finalize abstracts that are Waiting for Review and have a reviewer verdict
-  const selAbs = abstracts.filter(a => ids.includes(a.id) && a.status === 'Waiting for Review' && (a.verdict === 'Admitted' || a.verdict === 'Refused'));
-  if (!selAbs.length) { showToast('No valid abstracts to finalize in selection', 'error'); return; }
-
-  if (!confirm(`Finalize ${selAbs.length} abstract(s) and send email notifications to authors?\n\nIDs: ${selAbs.map(a => `#${a.submission_number || a.id}`).join(', ')}`)) return;
-
+  const sel = abstracts.filter(a=>ids.includes(a.id)&&a.status==='Waiting for Review'&&(a.verdict==='Admitted'||a.verdict==='Refused'));
+  if (!sel.length) { showToast('No valid abstracts to finalize in selection','error'); return; }
+  if (!confirm(`Finalize ${sel.length} abstract(s) and send email notifications?\n\nIDs: ${sel.map(a=>`#${a.submission_number||a.id}`).join(', ')}`)) return;
   try {
-    const res = await apiFetch('/admin/finalize', {
-      method: 'POST',
-      body: JSON.stringify({ abstract_ids: selAbs.map(a => a.id) })
-    });
-    showToast(res.message);
-    clearSelection();
-    init();
-  } catch(e) {
-    showToast(e.message, 'error');
-  }
+    const r = await apiFetch('/admin/finalize',{method:'POST',body:JSON.stringify({abstract_ids:sel.map(a=>a.id)})});
+    showToast(r.message); clearSelection(); init();
+  } catch(e) { showToast(e.message,'error'); }
 }
-
 async function bulkRemind() {
   const ids = getChecked();
-  if (!ids.length) return;
-  const selAbs = abstracts.filter(a => ids.includes(a.id) && a.status === 'Waiting for File Upload');
-  if (!selAbs.length) { showToast('None of the selected abstracts are waiting for a file upload', 'error'); return; }
-
-  if (!confirm(`Send reminder emails to ${selAbs.length} author(s) to upload their presentation files?\n\nIDs: ${selAbs.map(a => `#${a.submission_number || a.id}`).join(', ')}`)) return;
-
-  const btn = document.getElementById('btnBulkRemind');
-  btn.disabled = true; btn.textContent = 'Sending...';
-
+  const sel = abstracts.filter(a=>ids.includes(a.id)&&a.status==='Waiting for File Upload');
+  if (!sel.length) { showToast('None of the selected abstracts are waiting for a file upload','error'); return; }
+  if (!confirm(`Send reminder emails to ${sel.length} author(s)?`)) return;
+  const btn=document.getElementById('btnBulkRemind'); btn.disabled=true; btn.textContent='Sending...';
   try {
-    const res = await apiFetch('/admin/remind-upload', {
-      method: 'POST',
-      body: JSON.stringify({ abstract_ids: selAbs.map(a => a.id) })
-    });
-    showToast(res.message);
-    clearSelection();
-  } catch(e) {
-    showToast(e.message, 'error');
-  }
-  
-  btn.disabled = false; btn.textContent = '⏰ Send Upload Reminder';
+    const r=await apiFetch('/admin/remind-upload',{method:'POST',body:JSON.stringify({abstract_ids:sel.map(a=>a.id)})});
+    showToast(r.message); clearSelection();
+  } catch(e) { showToast(e.message,'error'); }
+  btn.disabled=false; btn.textContent='⏰ Send Upload Reminder';
 }
 
-// ─── Assign Modal ────────────────────────────────────────────────────────────
+// ── Detail Panel ──────────────────────────────────────────────────────
+async function openPanel(id) {
+  currentPanelId = id;
+  const a = abstracts.find(x=>x.id===id);
+  if (!a) return;
 
-function openAssign(id) {
-  // Single row assign (kept for legacy compatibility)
-  pendingAbstractIds = [id];
-  const a = abstracts.find(x => x.id === id);
-  document.getElementById('assignTitle').textContent = `Assign Reviewer`;
-  document.getElementById('assignSummary').textContent = `Abstract: ${a ? a.title : `ID ${id}`}`;
-  const sel = document.getElementById('reviewerSelect');
-  sel.value = '';
+  // Header
+  document.getElementById('dpNum').textContent   = a.submission_number ? `#${a.submission_number}` : `ID ${a.id}`;
+  document.getElementById('dpTitle').textContent = a.title;
+  document.getElementById('dpSub').textContent   = `${a.submitter_name} · ${a.submitter_email}`;
+
+  // Show/hide assign button
+  const canAssign = !FINALIZED.includes(a.status) && a.status !== 'Draft';
+  document.getElementById('dpAssignBtn').style.display = canAssign ? '' : 'none';
+
+  document.getElementById('detailOverlay').classList.add('open');
+  document.getElementById('dpBody').innerHTML = '<div style="padding:40px;text-align:center;color:var(--gray-400)">Loading details…</div>';
+
+  // Fetch full abstract detail (includes authors)
+  try {
+    const detail = await apiFetch(`/admin/abstracts/${id}`);
+    renderPanel(a, detail);
+  } catch(e) {
+    document.getElementById('dpBody').innerHTML = `<div style="padding:24px;color:var(--red)">${e.message}</div>`;
+  }
+}
+
+function renderPanel(a, detail) {
+  const authors = detail.authors || [];
+  const review  = detail.review;
+
+  let html = '';
+
+  // ── 1. Abstract Info ──────────────────────────────
+  html += `<div class="dp-section">
+    <div class="dp-section-title">Abstract Information</div>
+    <div class="dp-grid" style="margin-bottom:14px">
+      <div class="dp-item"><span class="dp-label">Submission #</span><span class="dp-value">${a.submission_number ? `#${a.submission_number}` : '—'}</span></div>
+      <div class="dp-item"><span class="dp-label">Status</span><span class="dp-value"><span class="status-badge ${statusColors[a.status]||'badge-gray'}">${a.status}</span></span></div>
+      <div class="dp-item"><span class="dp-label">Topic</span><span class="dp-value">${esc(a.topic||'—')}</span></div>
+      <div class="dp-item"><span class="dp-label">Preference</span><span class="dp-value">${esc(a.preference||'—')}</span></div>
+      <div class="dp-item"><span class="dp-label">Word Count</span><span class="dp-value">${a.word_count} words</span></div>
+      <div class="dp-item"><span class="dp-label">Submitted On</span><span class="dp-value">${fmtDate(a.created_at)}</span></div>
+      ${a.updated_at && a.updated_at !== a.created_at ? `<div class="dp-item" style="grid-column:span 2"><span class="dp-label">Last Updated</span><span class="dp-value">${fmtDate(a.updated_at)}</span></div>` : ''}
+    </div>
+    <div class="dp-label" style="margin-bottom:8px">Abstract Text</div>
+    <div class="abstract-text-box">${esc(a.main_text)}</div>
+  </div>`;
+
+  // ── 2. Submitter Profile ──────────────────────────
+  html += `<div class="dp-section">
+    <div class="dp-section-title">Submitter Profile</div>
+    <div class="dp-grid">
+      <div class="dp-item"><span class="dp-label">Full Name</span><span class="dp-value">${esc(a.submitter_name)}</span></div>
+      <div class="dp-item"><span class="dp-label">Email</span><span class="dp-value" style="font-size:.82rem">${esc(a.submitter_email)}</span></div>
+      <div class="dp-item"><span class="dp-label">Nationality</span><span class="dp-value">${esc(a.nationality||'—')}</span></div>
+      <div class="dp-item"><span class="dp-label">Profession</span><span class="dp-value">${esc(a.profession||'—')}</span></div>
+      <div class="dp-item"><span class="dp-label">Specialty</span><span class="dp-value">${esc(a.specialty||'—')}</span></div>
+      <div class="dp-item"><span class="dp-label">Seniority</span><span class="dp-value">${esc(a.seniority||'—')}</span></div>
+    </div>
+  </div>`;
+
+  // ── 3. Authors ────────────────────────────────────
+  html += `<div class="dp-section">
+    <div class="dp-section-title">Authors (${authors.length})</div>`;
+  if (!authors.length) {
+    html += `<p style="color:var(--gray-400);font-size:.85rem;margin:0">No authors recorded.</p>`;
+  } else {
+    html += `<table class="authors-table">
+      <thead><tr><th>#</th><th>Name</th><th>Institution</th><th>Country</th><th>Email</th></tr></thead>
+      <tbody>
+        ${authors.map((au,i) => `
+          <tr>
+            <td style="color:var(--gray-400);font-weight:600">${i+1}${au.is_corresponding ? ' <span class="corr-badge">Corresp.</span>' : ''}</td>
+            <td><strong>${esc(au.last_name)}</strong>, ${esc(au.first_name)}</td>
+            <td>${esc(au.institution)}</td>
+            <td>${esc(au.country)}</td>
+            <td style="font-size:.78rem">${esc(au.email||'—')}</td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+  html += `</div>`;
+
+  // ── 4. Review / Score ─────────────────────────────
+  html += `<div class="dp-section">
+    <div class="dp-section-title">Review &amp; Score</div>`;
+
+  if (!review) {
+    html += `<p style="color:var(--gray-400);font-size:.85rem;margin:0">No review submitted yet.
+      ${detail.assignment ? `Assigned to: <strong>${esc(detail.assignment.reviewer_name)}</strong>` : 'Abstract not yet assigned.'}</p>`;
+  } else {
+    const c = [
+      { label: criteriaLabels.criteria1_label, val: review.criteria1 },
+      { label: criteriaLabels.criteria2_label, val: review.criteria2 },
+      { label: criteriaLabels.criteria3_label, val: review.criteria3 },
+      { label: criteriaLabels.criteria4_label, val: review.criteria4 },
+    ];
+    html += `<div style="margin-bottom:16px">
+      ${c.map(cr => `
+        <div class="score-row">
+          <span class="score-label-txt">${esc(cr.label)}</span>
+          <div class="score-bar-wrap"><div class="score-bar-fill" style="width:${cr.val/5*100}%"></div></div>
+          <span class="score-val">${cr.val}/5</span>
+        </div>`).join('')}
+      <div style="text-align:right;margin-top:6px">
+        <span class="score-box" style="font-size:1rem">Total: ${review.total_score}/20</span>
+      </div>
+    </div>`;
+
+    if (review.verdict) {
+      const vClass = review.verdict === 'Admitted' ? 'verdict-admitted' : 'verdict-refused';
+      const vIcon  = review.verdict === 'Admitted' ? '✅' : '❌';
+      html += `<div class="verdict-box ${vClass}" style="margin-bottom:12px">${vIcon} Verdict: ${review.verdict}
+        ${review.presentation_type ? `<span style="font-weight:400;opacity:.8;font-size:.85rem;margin-left:8px">· ${esc(review.presentation_type)}</span>` : ''}
+      </div>`;
+    }
+
+    if (review.comments) {
+      html += `<div class="dp-label" style="margin-bottom:6px">Reviewer Comments</div>
+               <div class="comments-box">${esc(review.comments)}</div>`;
+    }
+
+    html += `<div style="margin-top:10px;font-size:.78rem;color:var(--gray-400)">
+      Reviewed by: <strong>${esc(review.reviewer_name||'—')}</strong>
+    </div>`;
+  }
+  html += `</div>`;
+
+  // ── 5. Uploaded File ──────────────────────────────
+  if (a.file_name) {
+    html += `<div class="dp-section">
+      <div class="dp-section-title">Uploaded Presentation File</div>
+      <div class="dp-grid">
+        <div class="dp-item" style="grid-column:span 2"><span class="dp-label">File Name</span><span class="dp-value">📎 ${esc(a.file_name)}</span></div>
+        <div class="dp-item"><span class="dp-label">Uploaded On</span><span class="dp-value">${fmtDate(a.file_uploaded_at)}</span></div>
+      </div>
+    </div>`;
+  }
+
+  document.getElementById('dpBody').innerHTML = html;
+}
+
+function closePanel() { document.getElementById('detailOverlay').classList.remove('open'); currentPanelId=null; }
+function closePanelClick(e) { if (e.target===document.getElementById('detailOverlay')) closePanel(); }
+
+function openAssignFromPanel() {
+  if (!currentPanelId) return;
+  const a = abstracts.find(x=>x.id===currentPanelId);
+  pendingAbstractIds = [currentPanelId];
+  document.getElementById('assignTitle').textContent = 'Assign Reviewer';
+  document.getElementById('assignSummary').textContent = `Abstract: ${a?a.title:`ID ${currentPanelId}`}`;
+  document.getElementById('reviewerSelect').value='';
   document.getElementById('assignModal').classList.add('open');
 }
 
+// ── Assign Modal ───────────────────────────────────────────────────
+function openAssign(id) {
+  pendingAbstractIds=[id];
+  const a=abstracts.find(x=>x.id===id);
+  document.getElementById('assignTitle').textContent='Assign Reviewer';
+  document.getElementById('assignSummary').textContent=`Abstract: ${a?a.title:`ID ${id}`}`;
+  document.getElementById('reviewerSelect').value='';
+  document.getElementById('assignModal').classList.add('open');
+}
 function closeModal() { document.getElementById('assignModal').classList.remove('open'); }
 
 async function saveAssignment() {
-  const revId = document.getElementById('reviewerSelect').value;
-  if (!revId) { showToast('Please select a reviewer', 'error'); return; }
-
-  const btn = document.getElementById('assignBtn');
-  btn.disabled = true; btn.textContent = 'Saving…';
-
-  let successCount = 0, failCount = 0;
+  const revId=document.getElementById('reviewerSelect').value;
+  if (!revId) { showToast('Please select a reviewer','error'); return; }
+  const btn=document.getElementById('assignBtn'); btn.disabled=true; btn.textContent='Saving…';
+  let ok=0, fail=0;
   for (const absId of pendingAbstractIds) {
-    try {
-      await apiFetch('/admin/assignments', {
-        method: 'PATCH',
-        body: JSON.stringify({ abstract_id: absId, reviewer_id: revId })
-      });
-      successCount++;
-    } catch(e) {
-      failCount++;
-    }
+    try { await apiFetch('/admin/assignments',{method:'PATCH',body:JSON.stringify({abstract_id:absId,reviewer_id:revId})}); ok++; }
+    catch(e) { fail++; }
   }
-
-  btn.disabled = false; btn.textContent = 'Save Assignment';
-  closeModal();
-  clearSelection();
-
-  if (successCount > 0) showToast(`Assigned ${successCount} abstract(s) successfully` + (failCount ? `, ${failCount} failed` : ''));
-  else showToast('Assignment failed', 'error');
-
+  btn.disabled=false; btn.textContent='Save Assignment';
+  closeModal(); clearSelection();
+  if (ok>0) showToast(`Assigned ${ok} abstract(s) successfully`+(fail?`, ${fail} failed`:''));
+  else showToast('Assignment failed','error');
   init();
 }
 
