@@ -1,21 +1,257 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>About – TTSA</title>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>About Us – TTSA (Tunisian Thoracic Surgery Association)</title>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg"/>
   <link rel="stylesheet" href="/css/global.css"/>
   <style>
-    .page-header { background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); color: var(--white); padding: 80px 0; text-align: center; }
-    .page-header h1 { color: #fff; margin-bottom: 12px; font-size: 2.5rem; }
-    .page-header p { color: rgba(255,255,255,.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
-    .content-box { background: var(--white); border-radius: var(--radius-lg); padding: 40px; box-shadow: var(--shadow); margin-top: -40px; position: relative; border: 1px solid var(--gray-100); }
-    .about-content { line-height: 1.8; color: var(--gray-800); font-size: 1.05rem; }
-    .about-content p { margin-bottom: 1.5rem; }
-    .about-content h2 { font-size: 1.4rem; margin-top: 2rem; margin-bottom: 1rem; color: var(--navy); font-weight: 700; }
-    .goals-list { list-style: none; padding-left: 0; margin-top: 1rem; }
-    .goals-list li { position: relative; padding-left: 28px; margin-bottom: 12px; line-height: 1.7; }
-    .goals-list li::before { content: "•"; position: absolute; left: 8px; top: 0; color: var(--blue); font-weight: bold; font-size: 1.3rem; }
+    :root {
+      --primary-navy: #072a4a;
+      --primary-blue: #0C589A;
+      --accent-blue: #2563eb;
+      --accent-soft: #eff6ff;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-blue) 60%, #094a82 100%);
+      color: var(--white);
+      padding: 70px 0 90px 0;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -20%;
+      width: 140%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #e0f2fe;
+      margin-bottom: 18px;
+    }
+
+    .hero-banner h1 {
+      color: var(--white);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-banner p {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.15rem;
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .content-wrapper {
+      margin-top: -50px;
+      position: relative;
+      z-index: 10;
+    }
+
+    .overview-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 36px;
+    }
+
+    .overview-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 18px;
+      border-bottom: 2px solid var(--gray-100);
+    }
+
+    .overview-header .icon-wrapper {
+      width: 48px;
+      height: 48px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+
+    .overview-header h2 {
+      font-size: 1.6rem;
+      color: var(--gray-900);
+      margin: 0;
+    }
+
+    .intro-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: var(--gray-700);
+      margin-bottom: 20px;
+    }
+
+    .date-badge-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--gray-50);
+      border-left: 4px solid var(--blue);
+      padding: 14px 20px;
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      font-size: 1.02rem;
+      color: var(--gray-800);
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    .section-title-wrap {
+      text-align: center;
+      margin: 48px 0 32px 0;
+    }
+
+    .section-title-wrap h2 {
+      font-size: 1.8rem;
+      color: var(--gray-900);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .section-title-wrap p {
+      color: var(--gray-500);
+      font-size: 1rem;
+    }
+
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-bottom: 48px;
+    }
+
+    .goal-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .goal-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(12,88,154,0.12);
+      border-color: rgba(12,88,154,0.3);
+    }
+
+    .goal-num {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      color: var(--blue);
+      font-weight: 700;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+    }
+
+    .goal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 10px;
+    }
+
+    .goal-desc {
+      font-size: 0.98rem;
+      line-height: 1.65;
+      color: var(--gray-600);
+      flex-grow: 1;
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, #094a82 0%, var(--primary-blue) 100%);
+      border-radius: var(--radius-xl);
+      padding: 44px 32px;
+      color: var(--white);
+      text-align: center;
+      box-shadow: var(--shadow-blue);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box h3 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+
+    .cta-box p {
+      color: rgba(255,255,255,0.85);
+      font-size: 1.05rem;
+      max-width: 550px;
+      margin: 0 auto 24px auto;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--white);
+      color: var(--blue);
+      font-weight: 700;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.15);
+      transition: var(--transition);
+      font-size: 1.02rem;
+    }
+
+    .cta-btn:hover {
+      background: #f8fafc;
+      color: var(--blue-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+      .hero-banner { padding: 50px 0 70px 0; }
+      .overview-card { padding: 24px; }
+      .goals-grid { grid-template-columns: 1fr; }
+      .goals-grid .goal-card[style*="grid-column"] { grid-column: span 1 !important; }
+    }
   </style>
 </head>
 <body>
@@ -36,35 +272,95 @@
   </div>
 </nav>
 
-<header class="page-header">
+<header class="hero-banner">
   <div class="container">
+    <div class="hero-badge">
+      <span>🇹🇳</span> Official Medical Association
+    </div>
     <h1>About TTSA</h1>
-    <p>Learn more about the Tunisian Thoracic Surgery Association.</p>
+    <p>Tunisian Thoracic Surgery Association</p>
   </div>
 </header>
 
-<main class="container" style="padding-bottom: 80px;">
-  <div class="content-box">
-    <div class="about-content">
-      <p>TTSA is the Tunisian Thoracic Surgery Association, which brings together all Tunisian thoracic surgeons working in the public sector, as well as the private sector, and residents in training.</p>
-      
-      <p>Our association became official on January 11, 2022. We have been active since March 2023.</p>
-      
-      <h2>TTSA goals:</h2>
-      <ul class="goals-list">
-        <li>To develop scientific thinking and professional performance in the field of thoracic surgery.</li>
-        <li>To work to create scientific relations and provide appropriate scientific advice in the field of the specialty.</li>
-        <li>Contribute to raising public health awareness of the dangers of smoking and related diseases.</li>
-        <li>Seek to coordinate efforts to improve the care of patients requiring thoracic surgery.</li>
-        <li>Establish relations with associations and organizations with similar interests inside and outside the country, with which Tunisia has diplomatic relations.</li>
-      </ul>
+<main class="container content-wrapper" style="padding-bottom: 80px;">
+  
+  <!-- About Overview Card -->
+  <div class="overview-card">
+    <div class="overview-header">
+      <div class="icon-wrapper">🩺</div>
+      <h2>Who We Are</h2>
     </div>
     
-    <div style="margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--gray-200); text-align: center;">
-      <h3 style="margin-bottom: 16px;">Ready to submit your abstract?</h3>
-      <a href="/register.html" class="btn btn-primary btn-lg">Create Account & Submit</a>
+    <p class="intro-text">
+      TTSA is the Tunisian Thoracic Surgery Association, which brings together all Tunisian thoracic surgeons working in the public sector, as well as the private sector, and residents in training.
+    </p>
+
+    <div class="date-badge-box">
+      <span>📅</span>
+      <span>Our association became official on <strong>January 11, 2022</strong>. We have been active since <strong>March 2023</strong>.</span>
     </div>
   </div>
+
+  <!-- Goals Section -->
+  <div class="section-title-wrap">
+    <h2>TTSA Goals</h2>
+    <p>Our core objectives and strategic mission in thoracic surgery</p>
+  </div>
+
+  <div class="goals-grid">
+    
+    <div class="goal-card">
+      <div class="goal-num">01</div>
+      <div class="goal-title">Scientific Thinking & Performance</div>
+      <div class="goal-desc">
+        To develop scientific thinking and professional performance in the field of thoracic surgery.
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-num">02</div>
+      <div class="goal-title">Scientific Relations & Advice</div>
+      <div class="goal-desc">
+        To work to create scientific relations and provide appropriate scientific advice in the field of the specialty.
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-num">03</div>
+      <div class="goal-title">Public Health Awareness</div>
+      <div class="goal-desc">
+        Contribute to raising public health awareness of the dangers of smoking and related diseases.
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-num">04</div>
+      <div class="goal-title">Patient Care Coordination</div>
+      <div class="goal-desc">
+        Seek to coordinate efforts to improve the care of patients requiring thoracic surgery.
+      </div>
+    </div>
+
+    <div class="goal-card" style="grid-column: span 2;">
+      <div class="goal-num">05</div>
+      <div class="goal-title">Partnerships & Diplomatic Relations</div>
+      <div class="goal-desc">
+        Establish relations with associations and organizations with similar interests inside and outside the country, with which Tunisia has diplomatic relations.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- CTA Box -->
+  <div class="cta-box">
+    <h3>Ready to submit your abstract?</h3>
+    <p>Participate in the upcoming TTSA congress and present your scientific work.</p>
+    <a href="/register.html" class="cta-btn">
+      <span>Create Account & Submit</span>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </a>
+  </div>
+
 </main>
 
 <footer class="footer">
