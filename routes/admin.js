@@ -470,7 +470,19 @@ router.put('/profile', requireAdmin, async (req, res) => {
 // GET /api/admin/users — list all registered participants (users)
 router.get('/users', requireAdmin, (req, res) => {
   try {
-    const users = db.prepare('SELECT id, email, first_name, last_name, nationality, profession, specialty, seniority, is_blocked, created_at FROM users ORDER BY created_at DESC').all();
+    const users = db.prepare(`
+      SELECT
+        u.id, u.email, u.first_name, u.last_name,
+        u.nationality, u.country,
+        u.profession, u.specialty, u.specialty_details,
+        u.seniority, u.is_verified, u.is_blocked, u.created_at,
+        COUNT(a.id)                                        AS total_abstracts,
+        SUM(CASE WHEN a.status != 'Draft' THEN 1 ELSE 0 END) AS submitted_abstracts
+      FROM users u
+      LEFT JOIN abstracts a ON a.user_id = u.id
+      GROUP BY u.id
+      ORDER BY u.created_at DESC
+    `).all();
     res.json(users);
   } catch (err) {
     console.error('Failed to list users:', err);

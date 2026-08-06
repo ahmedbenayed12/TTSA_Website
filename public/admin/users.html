@@ -7,11 +7,24 @@
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg"/>
   <link rel="stylesheet" href="/css/global.css"/>
   <style>
-    .search-bar {
+    /* ── Toolbar ─────────────────────────────────────────────── */
+    .toolbar {
       display: flex;
       gap: 12px;
+      align-items: center;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
+    .toolbar input { flex: 1; min-width: 220px; max-width: 360px; }
+    .toolbar select { min-width: 150px; }
+    .count-label {
+      margin-left: auto;
+      font-size: .85rem;
+      color: var(--gray-500);
+      white-space: nowrap;
+    }
+
+    /* ── Table ───────────────────────────────────────────────── */
     .user-table {
       width: 100%;
       border-collapse: collapse;
@@ -20,61 +33,168 @@
       overflow: hidden;
       box-shadow: 0 1px 4px rgba(0,0,0,.05);
       border: 1px solid var(--gray-200);
+      font-size: .875rem;
     }
     .user-table th, .user-table td {
-      padding: 14px 20px;
+      padding: 12px 16px;
       text-align: left;
-      border-bottom: 1px solid var(--gray-200);
+      border-bottom: 1px solid var(--gray-100);
     }
     .user-table th {
       background: var(--gray-50);
       font-weight: 700;
-      color: var(--gray-700);
-      font-size: .85rem;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
-    .user-table td {
-      font-size: .9rem;
       color: var(--gray-600);
+      font-size: .75rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      white-space: nowrap;
     }
-    .user-table tr:last-child td {
-      border-bottom: none;
-    }
-    .user-table tr:hover td {
-      background: var(--gray-50);
-    }
+    .user-table td { color: var(--gray-700); vertical-align: middle; }
+    .user-table tbody tr:last-child td { border-bottom: none; }
+    .user-table tbody tr:hover td { background: var(--gray-50); cursor: pointer; }
+
+    /* ── Badges ──────────────────────────────────────────────── */
     .badge {
       display: inline-block;
-      padding: 4px 8px;
-      border-radius: 12px;
-      font-size: .75rem;
-      font-weight: 600;
+      padding: 3px 9px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 700;
       text-transform: uppercase;
+      letter-spacing: .04em;
     }
-    .badge-active {
-      background: #e1f5fe;
-      color: #0288d1;
+    .badge-active   { background: #dcfce7; color: #166534; }
+    .badge-blocked  { background: #fee2e2; color: #991b1b; }
+    .badge-unverif  { background: #fef9c3; color: #854d0e; }
+    .badge-medical  { background: #e0f2fe; color: #0369a1; }
+    .badge-para     { background: #f3e8ff; color: #6b21a8; }
+    .badge-senior   { background: #f1f5f9; color: #475569; }
+    .badge-resident { background: #fef3c7; color: #92400e; }
+    .badge-tunisian { background: #e0f2fe; color: #075985; }
+    .badge-foreign  { background: #fce7f3; color: #9d174d; }
+
+    /* ── Abstract counter pill ───────────────────────────────── */
+    .abs-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: .82rem;
+      font-weight: 600;
     }
-    .badge-blocked {
-      background: #ffebee;
-      color: #c62828;
-    }
+    .abs-pill .total { color: var(--gray-500); font-weight: 500; }
+    .abs-pill .submitted { color: #0C589A; }
+
+    /* ── Empty state ─────────────────────────────────────────── */
     .empty-state {
       padding: 60px 20px;
       text-align: center;
       background: var(--white);
       border: 1px dashed var(--gray-300);
       border-radius: var(--radius);
-      margin-top: 16px;
     }
-    .empty-state .icon {
-      font-size: 3rem;
-      margin-bottom: 12px;
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+    .empty-state h3 { margin: 0 0 6px; color: var(--gray-800); }
+
+    /* ── Detail Modal ────────────────────────────────────────── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 1000;
+      opacity: 0; pointer-events: none;
+      transition: opacity .2s;
     }
-    .empty-state h3 {
-      margin: 0 0 6px;
-      color: var(--gray-800);
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+    .modal {
+      background: var(--white);
+      border-radius: 14px;
+      width: 580px;
+      max-width: 96vw;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      transform: translateY(20px);
+      transition: transform .2s;
+    }
+    .modal-overlay.open .modal { transform: translateY(0); }
+    .modal-header {
+      padding: 22px 26px 16px;
+      border-bottom: 1px solid var(--gray-100);
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .modal-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #0C589A, #1a7fd4);
+      display: flex; align-items: center; justify-content: center;
+      color: #fff;
+      font-size: 1.4rem;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .modal-header-info { flex: 1; }
+    .modal-name { font-size: 1.15rem; font-weight: 800; color: var(--gray-900); margin: 0 0 4px; }
+    .modal-email { font-size: .85rem; color: var(--gray-500); margin: 0; }
+    .modal-close {
+      background: none; border: none; cursor: pointer;
+      color: var(--gray-400); font-size: 1.4rem; line-height: 1;
+      padding: 0; margin-left: auto;
+      transition: color .15s;
+    }
+    .modal-close:hover { color: var(--gray-700); }
+    .modal-body { padding: 20px 26px 26px; }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .detail-item { display: flex; flex-direction: column; gap: 3px; }
+    .detail-label {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--gray-400);
+    }
+    .detail-value { font-size: .9rem; font-weight: 600; color: var(--gray-800); }
+    .detail-section-title {
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--gray-400);
+      margin: 20px 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+    .abstract-mini-list { display: flex; flex-direction: column; gap: 8px; }
+    .abstract-mini {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 10px 14px;
+      display: flex; gap: 10px; align-items: center;
+    }
+    .abstract-mini .abs-num {
+      font-size: .72rem; font-weight: 700;
+      background: var(--blue); color: #fff;
+      padding: 2px 7px; border-radius: 10px;
+      white-space: nowrap;
+    }
+    .abstract-mini .abs-title { font-size: .84rem; font-weight: 600; color: var(--gray-700); flex: 1; }
+    .abstract-mini .abs-status { font-size: .72rem; }
+    .modal-footer {
+      padding: 14px 26px;
+      border-top: 1px solid var(--gray-100);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+    }
+    @media (max-width: 600px) {
+      .detail-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -107,19 +227,36 @@
       <a href="#" onclick="logout()" style="display:flex;align-items:center;gap:8px;padding:8px 12px;color:rgba(255,255,255,.6);font-size:.82rem;border-radius:var(--radius-sm);margin-top:4px"><span>🚪</span> Sign Out</a>
     </div>
   </aside>
+
   <main class="portal-main">
     <div class="portal-topbar">
       <h2>Participant Management</h2>
     </div>
     <div class="portal-body">
       <div id="errBox" class="alert alert-error" style="display:none;margin-bottom:20px"></div>
-      
-      <div class="search-bar">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by name or email..." style="max-width:360px" oninput="filterUsers()"/>
+
+      <div class="toolbar">
+        <input type="text" id="searchInput" class="form-control" placeholder="🔍  Search name, email, specialty…" oninput="filterUsers()"/>
+        <select id="filterNationality" class="form-control" onchange="filterUsers()">
+          <option value="">All Nationalities</option>
+          <option value="Tunisian">Tunisian</option>
+          <option value="Foreign">Foreign</option>
+        </select>
+        <select id="filterProfession" class="form-control" onchange="filterUsers()">
+          <option value="">All Professions</option>
+          <option value="Medical">Medical</option>
+          <option value="Paramedical">Paramedical</option>
+        </select>
+        <select id="filterStatus" class="form-control" onchange="filterUsers()">
+          <option value="">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="blocked">Blocked</option>
+          <option value="unverified">Unverified</option>
+        </select>
+        <span class="count-label" id="countLabel"></span>
       </div>
 
       <div id="usersContainer">
-        <!-- User table or empty state goes here -->
         <div class="empty-state">
           <div class="icon">👥</div>
           <h3>Loading Participants...</h3>
@@ -129,14 +266,62 @@
   </main>
 </div>
 
+<!-- ── Detail Modal ──────────────────────────────────────── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-avatar" id="modalAvatar"></div>
+      <div class="modal-header-info">
+        <p class="modal-name" id="modalName"></p>
+        <p class="modal-email" id="modalEmail"></p>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="detail-grid" id="detailGrid"></div>
+      <div class="detail-section-title">Abstracts</div>
+      <div id="abstractList" class="abstract-mini-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline btn-sm" onclick="closeModal()">Close</button>
+      <button class="btn btn-sm" id="modalBlockBtn" onclick="modalToggleBlock()"></button>
+    </div>
+  </div>
+</div>
+
 <script src="/js/api.js"></script>
 <script>
 if (!requireAuth(['admin'])) throw '';
-let users = [];
 
+let users = [];
+let currentUser = null;
+
+// ── Status helpers ─────────────────────────────────────────────
+function statusBadge(u) {
+  if (u.is_blocked)   return `<span class="badge badge-blocked">Blocked</span>`;
+  if (!u.is_verified) return `<span class="badge badge-unverif">Unverified</span>`;
+  return `<span class="badge badge-active">Active</span>`;
+}
+function profBadge(p)  { return p === 'Medical' ? `<span class="badge badge-medical">Medical</span>` : `<span class="badge badge-para">Paramedical</span>`; }
+function senBadge(s)   { return s === 'Senior'  ? `<span class="badge badge-senior">Senior</span>`  : `<span class="badge badge-resident">Resident</span>`; }
+function natBadge(n)   { return n === 'Tunisian'? `<span class="badge badge-tunisian">🇹🇳 Tunisian</span>` : `<span class="badge badge-foreign">🌍 Foreign</span>`; }
+function fmtDate(ts)   { return ts ? new Date(ts * 1000).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}) : '—'; }
+
+// Abstract status colour map
+const absStatusColor = {
+  'Draft':                  '#94a3b8',
+  'Submitted':              '#3b82f6',
+  'Waiting for Review':     '#f59e0b',
+  'Accepted':               '#22c55e',
+  'Refused':                '#ef4444',
+  'Waiting for File Upload':'#f97316',
+  'Final File Uploaded':    '#8b5cf6',
+};
+
+// ── Load ───────────────────────────────────────────────────────
 async function loadUsers() {
   const me = await apiFetch('/auth/me');
-  document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
+  document.getElementById('sidebarName').textContent  = me.first_name + ' ' + me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
 
   try {
@@ -148,89 +333,187 @@ async function loadUsers() {
   }
 }
 
+// ── Render table ───────────────────────────────────────────────
 function renderTable(list) {
   const container = document.getElementById('usersContainer');
-  
+  document.getElementById('countLabel').textContent = `${list.length} participant${list.length !== 1 ? 's' : ''}`;
+
   if (!list.length) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="icon">👥</div>
         <h3>No Participants Found</h3>
-      </div>
-    `;
+        <p style="color:var(--gray-500);margin:0">Try adjusting your filters.</p>
+      </div>`;
     return;
   }
 
   container.innerHTML = `
-    <table class="user-table">
+    <table class="user-table" id="userTable">
       <thead>
         <tr>
+          <th>#</th>
           <th>Name</th>
           <th>Email</th>
-          <th>Profile Info</th>
+          <th>Nationality</th>
+          <th>Profession</th>
+          <th>Specialty</th>
+          <th>Seniority</th>
+          <th>Country</th>
+          <th>Abstracts</th>
+          <th>Registered</th>
           <th>Status</th>
           <th style="text-align:right">Actions</th>
         </tr>
       </thead>
       <tbody>
-        ${list.map(u => {
-          const statusBadge = u.is_blocked 
-            ? `<span class="badge badge-blocked">Blocked</span>` 
-            : `<span class="badge badge-active">Active</span>`;
-          
+        ${list.map((u, i) => {
           const actionBtn = u.is_blocked
-            ? `<button class="btn btn-outline btn-sm" onclick="toggleBlock(${u.id}, false, '${u.first_name} ${u.last_name}')">🔓 Unblock</button>`
-            : `<button class="btn btn-danger btn-sm" onclick="toggleBlock(${u.id}, true, '${u.first_name} ${u.last_name}')">🔒 Block</button>`;
-
+            ? `<button class="btn btn-outline btn-sm" onclick="event.stopPropagation();quickBlock(${u.id},false,'${escHtml(u.first_name+' '+u.last_name)}')">🔓 Unblock</button>`
+            : `<button class="btn btn-danger btn-sm"  onclick="event.stopPropagation();quickBlock(${u.id},true,'${escHtml(u.first_name+' '+u.last_name)}')">🔒 Block</button>`;
           return `
-            <tr>
-              <td><strong>${u.last_name.toUpperCase()}</strong>, ${u.first_name}</td>
-              <td>${u.email}</td>
+            <tr onclick="openModal(${u.id})" title="Click to view full details">
+              <td style="color:var(--gray-400);font-weight:600">${i+1}</td>
+              <td><strong>${escHtml(u.last_name.toUpperCase())}</strong>, ${escHtml(u.first_name)}</td>
+              <td style="font-size:.82rem">${escHtml(u.email)}</td>
+              <td>${natBadge(u.nationality)}</td>
+              <td>${profBadge(u.profession)}</td>
+              <td style="font-size:.82rem">${escHtml(u.specialty)}${u.specialty_details ? `<br><span style="color:var(--gray-400);font-size:.75rem">${escHtml(u.specialty_details)}</span>` : ''}</td>
+              <td>${senBadge(u.seniority)}</td>
+              <td style="font-size:.82rem">${escHtml(u.country || '—')}</td>
               <td>
-                <div style="font-size:.8rem;color:var(--gray-500)">
-                  ${u.nationality} · ${u.profession} · ${u.specialty} · ${u.seniority}
-                </div>
+                <span class="abs-pill">
+                  <span class="submitted" title="Submitted abstracts">📄 ${u.submitted_abstracts || 0}</span>
+                  <span class="total" title="Total including drafts">/ ${u.total_abstracts || 0}</span>
+                </span>
               </td>
-              <td>${statusBadge}</td>
-              <td style="text-align:right">${actionBtn}</td>
-            </tr>
-          `;
+              <td style="font-size:.8rem;white-space:nowrap">${fmtDate(u.created_at)}</td>
+              <td>${statusBadge(u)}</td>
+              <td style="text-align:right;white-space:nowrap">${actionBtn}</td>
+            </tr>`;
         }).join('')}
       </tbody>
-    </table>
-  `;
+    </table>`;
 }
 
+// ── Filter ─────────────────────────────────────────────────────
 function filterUsers() {
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
-  if (!query) {
-    renderTable(users);
-    return;
-  }
-  const filtered = users.filter(u => 
-    u.first_name.toLowerCase().includes(query) ||
-    u.last_name.toLowerCase().includes(query) ||
-    u.email.toLowerCase().includes(query)
-  );
+  const q    = document.getElementById('searchInput').value.toLowerCase().trim();
+  const nat  = document.getElementById('filterNationality').value;
+  const prof = document.getElementById('filterProfession').value;
+  const stat = document.getElementById('filterStatus').value;
+
+  const filtered = users.filter(u => {
+    const matchQ = !q ||
+      u.first_name.toLowerCase().includes(q) ||
+      u.last_name.toLowerCase().includes(q) ||
+      u.email.toLowerCase().includes(q) ||
+      (u.specialty||'').toLowerCase().includes(q) ||
+      (u.specialty_details||'').toLowerCase().includes(q) ||
+      (u.country||'').toLowerCase().includes(q);
+    const matchNat  = !nat  || u.nationality === nat;
+    const matchProf = !prof || u.profession  === prof;
+    const matchStat = !stat ||
+      (stat === 'blocked'    &&  u.is_blocked) ||
+      (stat === 'unverified' && !u.is_verified && !u.is_blocked) ||
+      (stat === 'active'     && !u.is_blocked &&  u.is_verified);
+    return matchQ && matchNat && matchProf && matchStat;
+  });
   renderTable(filtered);
 }
 
-async function toggleBlock(id, blocked, name) {
-  const actionText = blocked ? 'block' : 'unblock';
-  if (!confirm(`Are you sure you want to ${actionText} participant account "${name}"?`)) {
-    return;
+// ── Quick block (from table row button) ───────────────────────
+async function quickBlock(id, blocked, name) {
+  const action = blocked ? 'block' : 'unblock';
+  if (!confirm(`Are you sure you want to ${action} "${name}"?`)) return;
+  try {
+    await apiFetch(`/admin/users/${id}/block`, { method:'PATCH', body: JSON.stringify({ blocked }) });
+    showToast(`Participant ${blocked ? 'blocked' : 'unblocked'} successfully.`);
+    loadUsers();
+  } catch (err) { showToast(err.message, 'error'); }
+}
+
+// ── Modal ──────────────────────────────────────────────────────
+async function openModal(id) {
+  currentUser = users.find(u => u.id === id);
+  if (!currentUser) return;
+  const u = currentUser;
+
+  // Header
+  document.getElementById('modalAvatar').textContent = u.first_name[0].toUpperCase();
+  document.getElementById('modalName').textContent   = `${u.last_name.toUpperCase()}, ${u.first_name}`;
+  document.getElementById('modalEmail').textContent  = u.email;
+
+  // Detail grid
+  document.getElementById('detailGrid').innerHTML = `
+    <div class="detail-item"><span class="detail-label">Nationality</span><span class="detail-value">${natBadge(u.nationality)}</span></div>
+    <div class="detail-item"><span class="detail-label">Country</span><span class="detail-value">${escHtml(u.country||'—')}</span></div>
+    <div class="detail-item"><span class="detail-label">Profession</span><span class="detail-value">${profBadge(u.profession)}</span></div>
+    <div class="detail-item"><span class="detail-label">Seniority</span><span class="detail-value">${senBadge(u.seniority)}</span></div>
+    <div class="detail-item"><span class="detail-label">Specialty</span><span class="detail-value">${escHtml(u.specialty)}</span></div>
+    <div class="detail-item"><span class="detail-label">Specialty Details</span><span class="detail-value">${escHtml(u.specialty_details||'—')}</span></div>
+    <div class="detail-item"><span class="detail-label">Account Status</span><span class="detail-value">${statusBadge(u)}</span></div>
+    <div class="detail-item"><span class="detail-label">Registered On</span><span class="detail-value">${fmtDate(u.created_at)}</span></div>
+    <div class="detail-item"><span class="detail-label">Submitted Abstracts</span><span class="detail-value" style="color:#0C589A;font-size:1.1rem">${u.submitted_abstracts||0}</span></div>
+    <div class="detail-item"><span class="detail-label">Total (incl. Drafts)</span><span class="detail-value">${u.total_abstracts||0}</span></div>
+  `;
+
+  // Block button
+  const blockBtn = document.getElementById('modalBlockBtn');
+  if (u.is_blocked) {
+    blockBtn.textContent = '🔓 Unblock';
+    blockBtn.className   = 'btn btn-outline btn-sm';
+  } else {
+    blockBtn.textContent = '🔒 Block';
+    blockBtn.className   = 'btn btn-danger btn-sm';
   }
 
+  // Abstracts list — fetch from admin abstracts filtered by user
+  document.getElementById('abstractList').innerHTML = '<p style="color:var(--gray-400);font-size:.85rem">Loading abstracts…</p>';
+  document.getElementById('modalOverlay').classList.add('open');
+
   try {
-    await apiFetch(`/admin/users/${id}/block`, {
-      method: 'PATCH',
-      body: JSON.stringify({ blocked })
-    });
-    showToast(`Participant account successfully ${blocked ? 'blocked' : 'unblocked'}.`);
-    loadUsers();
-  } catch (err) {
-    showToast(err.message, 'error');
+    const all = await apiFetch('/admin/abstracts');
+    const abs  = all.filter(a => a.user_id === u.id);
+    if (!abs.length) {
+      document.getElementById('abstractList').innerHTML = '<p style="color:var(--gray-400);font-size:.85rem;margin:0">No abstracts submitted yet.</p>';
+    } else {
+      document.getElementById('abstractList').innerHTML = abs.map(a => {
+        const color = absStatusColor[a.status] || '#94a3b8';
+        const numTag = a.submission_number ? `<span class="abs-num">#${a.submission_number}</span>` : '';
+        return `<div class="abstract-mini">
+          ${numTag}
+          <span class="abs-title">${escHtml(a.title)}</span>
+          <span class="abs-status" style="background:${color}22;color:${color};padding:2px 8px;border-radius:10px;font-size:.72rem;font-weight:700;white-space:nowrap">${a.status}</span>
+        </div>`;
+      }).join('');
+    }
+  } catch(e) {
+    document.getElementById('abstractList').innerHTML = '<p style="color:var(--gray-400);font-size:.85rem">Could not load abstracts.</p>';
   }
+}
+
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modalOverlay')) return;
+  document.getElementById('modalOverlay').classList.remove('open');
+  currentUser = null;
+}
+
+async function modalToggleBlock() {
+  if (!currentUser) return;
+  const blocked = !currentUser.is_blocked;
+  const action  = blocked ? 'block' : 'unblock';
+  if (!confirm(`Are you sure you want to ${action} "${currentUser.first_name} ${currentUser.last_name}"?`)) return;
+  try {
+    await apiFetch(`/admin/users/${currentUser.id}/block`, { method:'PATCH', body: JSON.stringify({ blocked }) });
+    showToast(`Participant ${blocked ? 'blocked' : 'unblocked'} successfully.`);
+    document.getElementById('modalOverlay').classList.remove('open');
+    loadUsers();
+  } catch(err) { showToast(err.message, 'error'); }
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 loadUsers();
