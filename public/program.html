@@ -421,11 +421,19 @@
       color: #1e40af;
     }
 
-    /* 4. Breaks & Meals: Green Accent & Light Background */
+    /* 4. Breaks & Meals & Events: Green Accent & Light Background */
     .session-card[data-cat="pause"] {
       border-left: 6px solid #10b981;
       background: #f0fdf4;
       border-color: #bbf7d0;
+    }
+    .session-card[data-cat="pause"] .time-badge {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+    .session-card[data-cat="pause"] .session-subtitle-text {
+      color: #047857;
     }
 
     /* 5. Symposium: Purple Accent & Light Background */
@@ -814,9 +822,9 @@
       </div>
 
       <!-- 19h00 -->
-      <div class="session-card event-card" data-day="day1" data-cat="event" data-search="cocktail de bienvenue welcome cocktail reception networking">
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="cocktail de bienvenue welcome cocktail reception networking">
         <div class="session-card-header">
-          <div class="time-badge event">19h00</div>
+          <div class="time-badge">19h00</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Welcome Cocktail 🥤" data-fr="Cocktail de bienvenue 🥤">Welcome Cocktail 🥤</div>
             <div class="session-subtitle-text" data-en="Opening reception & networking" data-fr="Réception d'ouverture et networking">Opening reception & networking</div>
@@ -1135,9 +1143,9 @@
       </div>
 
       <!-- 19h00 -->
-      <div class="session-card event-card" data-day="day2" data-cat="event" data-search="dîner gala dinner soirée closing evening">
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="dîner gala dinner soirée closing evening">
         <div class="session-card-header">
-          <div class="time-badge event">19h00</div>
+          <div class="time-badge">19h00</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Gala Dinner 🎆" data-fr="Dîner Gala 🎆">Gala Dinner 🎆</div>
             <div class="session-subtitle-text" data-en="Official TTSA Congress Closing Evening" data-fr="Soirée officielle de clôture du Congrès TTSA">Official TTSA Congress Closing Evening</div>
