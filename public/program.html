@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Programme Scientifique – TTSA Congress 2026</title>
+  <meta name="description" content="Découvrez le programme scientifique officiel du Congrès de l'Association Tunisienne de Chirurgie Thoracique (TTSA) - 06 & 07 Novembre 2026."/>
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg"/>
+  <link rel="stylesheet" href="/css/global.css"/>
+  <style>
+    :root {
+      --primary-navy: #072a4a;
+      --primary-blue: #0C589A;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-amber: #d97706;
+      --accent-purple: #7c3aed;
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, var(--primary-navy) 0%, var(--primary-blue) 60%, #094a82 100%);
+      color: var(--white);
+      padding: 65px 0 85px 0;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -20%;
+      width: 140%; height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 18px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: #e0f2fe;
+      margin-bottom: 16px;
+    }
+
+    .hero-banner h1 {
+      color: var(--white);
+      font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-banner p {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 1.12rem;
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .content-wrapper {
+      margin-top: -45px;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Controls Bar */
+    .controls-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 24px 28px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .days-tab-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .day-tab-btn {
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--gray-700);
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .day-tab-btn:hover {
+      border-color: var(--blue);
+      color: var(--blue);
+      background: var(--blue-light);
+    }
+
+    .day-tab-btn.active {
+      background: var(--blue);
+      color: var(--white);
+      border-color: var(--blue);
+      box-shadow: 0 4px 12px rgba(12,88,154,0.25);
+    }
+
+    .filters-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .search-box-wrap {
+      position: relative;
+      flex-grow: 1;
+      max-width: 420px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 16px 10px 42px;
+      border-radius: var(--radius);
+      border: 1px solid var(--gray-300);
+      font-size: 0.92rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .search-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(12,88,154,0.15);
+    }
+
+    .search-icon-svg {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      pointer-events: none;
+    }
+
+    .action-btns-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius);
+      font-size: 0.88rem;
+      font-weight: 600;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--gray-700);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-action:hover {
+      background: var(--gray-100);
+      color: var(--gray-900);
+    }
+
+    /* Category Tags */
+    .cat-filters-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 12px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .cat-btn {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid var(--gray-200);
+      background: var(--gray-50);
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .cat-btn:hover, .cat-btn.active {
+      background: var(--gray-800);
+      color: var(--white);
+      border-color: var(--gray-800);
+    }
+
+    /* Day Section Headers */
+    .day-section-header {
+      background: linear-gradient(135deg, var(--gray-900) 0%, #1e293b 100%);
+      color: var(--white);
+      border-radius: var(--radius-lg);
+      padding: 24px 32px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .day-section-header h2 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: var(--white);
+      margin: 0;
+    }
+
+    .day-section-header .sub-info {
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+    }
+
+    /* Timeline & Cards */
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 48px;
+    }
+
+    .session-card {
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+      overflow: hidden;
+      transition: all 0.2s ease;
+    }
+
+    .session-card:hover {
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border-color: rgba(12,88,154,0.3);
+    }
+
+    .session-card-header {
+      padding: 20px 24px;
+      background: var(--white);
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      border-bottom: 1px solid var(--gray-100);
+      flex-wrap: wrap;
+    }
+
+    .time-badge {
+      min-width: 130px;
+      padding: 8px 14px;
+      background: var(--blue-light);
+      color: var(--blue);
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 0.92rem;
+      text-align: center;
+      border: 1px solid rgba(12,88,154,0.2);
+    }
+
+    .time-badge.break {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+
+    .time-badge.event {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+
+    .session-main-info {
+      flex-grow: 1;
+    }
+
+    .session-title-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .session-subtitle-text {
+      font-size: 0.95rem;
+      color: var(--blue);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .session-tags-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .tag-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .tag-room { background: #e0f2fe; color: #0369a1; }
+    .tag-room-alt { background: #f3e8ff; color: #6b21a8; }
+    .tag-chair { background: var(--gray-100); color: var(--gray-700); }
+    .tag-type { background: #f1f5f9; color: #334155; }
+
+    /* Presentations Table / List inside Card */
+    .presentations-container {
+      padding: 16px 24px 20px 24px;
+      background: #f8fafc;
+    }
+
+    .presentations-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .presentation-item {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      border: 1px solid var(--gray-200);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .presentation-content {
+      flex-grow: 1;
+    }
+
+    .presentation-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .presentation-speaker {
+      font-size: 0.88rem;
+      color: var(--gray-600);
+      font-weight: 500;
+    }
+
+    .duration-chip {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gray-600);
+      background: var(--gray-100);
+      padding: 4px 10px;
+      border-radius: 12px;
+      white-space: nowrap;
+    }
+
+    /* Parallel tracks layout */
+    .parallel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px 24px;
+      background: #f8fafc;
+    }
+
+    .track-column {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      border: 1px solid var(--gray-200);
+    }
+
+    .track-header {
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--blue);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    /* No search results */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--white);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--gray-200);
+      margin-bottom: 48px;
+    }
+
+    .empty-state h3 { font-size: 1.2rem; color: var(--gray-700); margin-bottom: 6px; }
+    .empty-state p { color: var(--gray-500); font-size: 0.9rem; }
+
+    @media (max-width: 768px) {
+      .hero-banner { padding: 45px 0 65px 0; }
+      .parallel-grid { grid-template-columns: 1fr; }
+      .session-card-header { padding: 16px; }
+      .presentations-container { padding: 14px 16px; }
+      .time-badge { width: 100%; text-align: left; }
+    }
+
+    @media print {
+      .navbar, .footer, .controls-card, .cta-box { display: none !important; }
+      .hero-banner { padding: 20px 0; color: #000; background: none; }
+      .hero-banner h1 { color: #000; font-size: 1.8rem; }
+      .hero-banner p { color: #333; }
+      .content-wrapper { margin-top: 0; }
+      .session-card { page-break-inside: avoid; border: 1px solid #ccc; box-shadow: none; }
+      body { background: #fff; color: #000; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="/" class="navbar-brand">
+      <img src="/img/logo.svg" alt="TTSA Logo" onerror="this.style.display='none'"/>
+    </a>
+    <div class="navbar-links" id="navLinks">
+      <a href="/">Home</a>
+      <a href="/events.html">Events</a>
+      <a href="/program.html" class="active">Program</a>
+      <a href="/about.html">About</a>
+      <a href="/abstract-submission.html">Abstract Submission</a>
+      <a href="/register.html" class="btn-nav-red">Register</a>
+      <a href="/login.html" class="btn-nav"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Login</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Header -->
+<header class="hero-banner">
+  <div class="container">
+    <div class="hero-badge">
+      5th National Thoracic Surgery Congress
+    </div>
+    <h1>Programme Scientifique</h1>
+    <p>Congrès National de Chirurgie Thoracique — 06 & 07 Novembre 2026</p>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="container content-wrapper" style="padding-bottom: 80px;">
+
+  <!-- Interactive Controls Card -->
+  <div class="controls-card">
+    
+    <!-- Day Tabs -->
+    <div class="days-tab-container">
+      <button class="day-tab-btn active" onclick="filterDay('all')" id="tab-all">
+        Tous les Jours
+      </button>
+      <button class="day-tab-btn" onclick="filterDay('day1')" id="tab-day1">
+        Vendredi 06 Nov 2026
+      </button>
+      <button class="day-tab-btn" onclick="filterDay('day2')" id="tab-day2">
+        Samedi 07 Nov 2026
+      </button>
+    </div>
+
+    <!-- Filters & Search Row -->
+    <div class="filters-row">
+      <div class="search-box-wrap">
+        <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un sujet, intervenant, session..." onkeyup="handleSearch()"/>
+      </div>
+
+      <div class="action-btns-group">
+        <button class="btn-action" onclick="window.print()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+          Imprimer / PDF
+        </button>
+      </div>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="cat-filters-container">
+      <button class="cat-btn active" onclick="filterCategory('all', this)">Tous</button>
+      <button class="cat-btn" onclick="filterCategory('workshop', this)">Workshops & Ateliers</button>
+      <button class="cat-btn" onclick="filterCategory('session', this)">Sessions Thématiques</button>
+      <button class="cat-btn" onclick="filterCategory('posters', this)">Communications & Posters</button>
+      <button class="cat-btn" onclick="filterCategory('pause', this)">Pauses & Événements</button>
+    </div>
+
+  </div>
+
+  <!-- Container for Day 1 -->
+  <div id="day1-container" class="day-group">
+    
+    <div class="day-section-header">
+      <div>
+        <h2>Vendredi 06 Novembre 2026</h2>
+        <div class="sub-info">Workshops, Ateliers Paramédicaux & Sessions Posters</div>
+      </div>
+      <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;">Jour 1</span>
+    </div>
+
+    <div class="timeline-list">
+
+      <!-- 08h00 - 12h30 -->
+      <div class="session-card" data-day="day1" data-cat="workshop" data-search="workshop initiation chirurgie robotique mohammed ben amar grande salle petite salle">
+        <div class="session-card-header">
+          <div class="time-badge">08h00 - 12h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Workshop: Initiation à la chirurgie robotique</div>
+            <div class="session-subtitle-text">Dr Mohammed BEN AMAR (TUN) 🇹🇳</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Salle 1: grande salle</span>
+              <span class="tag-badge tag-room-alt">Salle 2: petite salle</span>
+              <span class="tag-badge tag-type">Workshop</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12h30 - 13h00 -->
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="pause transition">
+        <div class="session-card-header">
+          <div class="time-badge break">12h30 - 13h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Pause / Transition</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13h00 - 14h00 -->
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="déjeuner pause midi">
+        <div class="session-card-header">
+          <div class="time-badge break">13h00 - 14h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Pause Déjeuner</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14h00 - 15h30 -->
+      <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier médical ergonomie personnel de santé majda alila atelier paramédical anesthésie chirurgie thoracique mariem bousarsar hbiba ksouri">
+        <div class="session-card-header">
+          <div class="time-badge">14h00 - 15h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Ateliers en Sessions Parallèles</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-type">Sessions Parallèles</span>
+            </div>
+          </div>
+        </div>
+        <div class="parallel-grid">
+          <div class="track-column">
+            <div class="track-header">Salle 1: Grande Salle</div>
+            <div class="presentation-title">Atelier médical: Ergonomie du personnel de santé</div>
+            <div class="presentation-speaker">Majda ALILA (TUN) 🇹🇳</div>
+          </div>
+          <div class="track-column">
+            <div class="track-header">Salle 2: Petite Salle</div>
+            <div class="presentation-title">Atelier paramédical 1: Anesthésie en chirurgie thoracique</div>
+            <div class="presentation-speaker">Dr Mariem BOUSARSAR (TUN) 🇹🇳 & Mme Hbiba KSOURI (TUN) 🇹🇳</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15h30 - 16h30 -->
+      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 1 atelier paramédical 2 instrumentation chirurgie robotique mohamed ben amor sirine boulila">
+        <div class="session-card-header">
+          <div class="time-badge">15h30 - 16h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Posters & Atelier Paramédical</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-type">Sessions Parallèles</span>
+            </div>
+          </div>
+        </div>
+        <div class="parallel-grid">
+          <div class="track-column">
+            <div class="track-header">Salle 1: Grande Salle</div>
+            <div class="presentation-title">Session Posters commentés 1</div>
+          </div>
+          <div class="track-column">
+            <div class="track-header">Salle 2: Petite Salle</div>
+            <div class="presentation-title">Atelier paramédical 2: Instrumentation en chirurgie robotique</div>
+            <div class="presentation-speaker">Dr Mohamed Ben Amor & Mme Sirine BOULILA</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 16h30 - 17h00 -->
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="pause café coffee break">
+        <div class="session-card-header">
+          <div class="time-badge break">16h30 - 17h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Pause café ☕</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 17h00 - 18h00 -->
+      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 2 atelier paramédical 2 gestion anticoagulation sonia ouerghi">
+        <div class="session-card-header">
+          <div class="time-badge">17h00 - 18h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Posters & Atelier Paramédical</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-type">Sessions Parallèles</span>
+            </div>
+          </div>
+        </div>
+        <div class="parallel-grid">
+          <div class="track-column">
+            <div class="track-header">Salle 1: Grande Salle</div>
+            <div class="presentation-title">Session Posters commentés 2</div>
+          </div>
+          <div class="track-column">
+            <div class="track-header">Salle 2: Petite Salle</div>
+            <div class="presentation-title">Atelier paramédical 2: Gestion de l’anticoagulation en péri opératoire</div>
+            <div class="presentation-speaker">Dr Sonia OUERGHI (TUN) 🇹🇳</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18h00 - 19h00 -->
+      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 3 communications orales paramédicales">
+        <div class="session-card-header">
+          <div class="time-badge">18h00 - 19h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Posters & Communications Orales</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-type">Sessions Parallèles</span>
+            </div>
+          </div>
+        </div>
+        <div class="parallel-grid">
+          <div class="track-column">
+            <div class="track-header">Salle 1: Grande Salle</div>
+            <div class="presentation-title">Session Posters commentés 3</div>
+          </div>
+          <div class="track-column">
+            <div class="track-header">Salle 2: Petite Salle</div>
+            <div class="presentation-title">Communications orales Paramédicales</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 19h00 -->
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="cocktail de bienvenue reception networking">
+        <div class="session-card-header">
+          <div class="time-badge event">19h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Cocktail de bienvenue 🍸</div>
+            <div class="session-subtitle-text">Réception d'ouverture et networking</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Container for Day 2 -->
+  <div id="day2-container" class="day-group">
+    
+    <div class="day-section-header">
+      <div>
+        <h2>Samedi 07 Novembre 2026</h2>
+        <div class="sub-info">Grande Salle — Sessions Thématiques, SFCTCV, APACS & Dîner Gala</div>
+      </div>
+      <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;">Jour 2</span>
+    </div>
+
+    <div class="timeline-list">
+
+      <!-- 08h00 - 08h30 -->
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="accueil inscription registration">
+        <div class="session-card-header">
+          <div class="time-badge break">08h00 - 08h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Accueil et inscription</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 08h30 - 09h30 -->
+      <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 1 kyste hydatique du thorax">
+        <div class="session-card-header">
+          <div class="time-badge">08h30 - 09h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Communications libres 1: Kyste Hydatique du thorax</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-type">Communications Libres</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 09h30 - 10h30 -->
+      <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 2 traumatisme thoracique">
+        <div class="session-card-header">
+          <div class="time-badge">09h30 - 10h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Communications libres 2: Traumatisme thoracique</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-type">Communications Libres</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10h30 - 11h00 -->
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="pause café coffee break">
+        <div class="session-card-header">
+          <div class="time-badge break">10h30 - 11h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Pause café ☕</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 11h00 - 12h30 -->
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 1 chirurgie robotique sfctcv stephane renaud ludovic fournel joseph seitlinger">
+        <div class="session-card-header">
+          <div class="time-badge">11h00 - 12h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Session 1: Chirurgie robotique (SFCTCV)</div>
+            <div class="session-subtitle-text">Présidé par Dr Stephane RENAUD</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-chair">SFCTCV</span>
+              <span class="tag-badge tag-type">Session Thématique</span>
+            </div>
+          </div>
+        </div>
+        <div class="presentations-container">
+          <div class="presentations-list">
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Programme de chirurgie thoracique robotique</div>
+                <div class="presentation-speaker">Dr Ludovic Fournel</div>
+              </div>
+              <span class="duration-chip">20 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Rentabilisation d’un programme robotique</div>
+                <div class="presentation-speaker">Dr Joseph Seitlinger</div>
+              </div>
+              <span class="duration-chip">20 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Chirurgie thoracique robotique et pièges à éviter</div>
+                <div class="presentation-speaker">Pr Stéphane Renaud</div>
+              </div>
+              <span class="duration-chip">20 mn</span>
+            </div>
+            <div class="presentation-item" style="background:#f1f5f9;">
+              <div class="presentation-content">
+                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+              </div>
+              <span class="duration-chip" style="background:#e2e8f0;">30 mn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 12h30 - 13h00 -->
+      <div class="session-card" data-day="day2" data-cat="session" data-search="symposium">
+        <div class="session-card-header">
+          <div class="time-badge">12h30 - 13h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Symposium</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 13h00 - 14h00 -->
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="déjeuner lunch break">
+        <div class="session-card-header">
+          <div class="time-badge break">13h00 - 14h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Déjeuner 🍽️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 14h00 - 15h30 -->
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 2 pathologie thymique association tunisienne de neurologie amina gargouri imen bouassida mohammed sadok boudaya afef khanfir myasthénie thymome">
+        <div class="session-card-header">
+          <div class="time-badge">14h00 - 15h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Session 2: Pathologie thymique</div>
+            <div class="session-subtitle-text">Association Tunisienne de Neurologie</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-chair">ATN</span>
+              <span class="tag-badge tag-type">Session Thématique</span>
+            </div>
+          </div>
+        </div>
+        <div class="presentations-container">
+          <div class="presentations-list">
+            <div class="presentation-item" style="border-left:4px solid var(--red);">
+              <div class="presentation-content">
+                <div class="presentation-title" style="color:var(--red-dark);">Les nouvelles recommandations de la prise en charge de la myasthénie</div>
+                <div class="presentation-speaker">Dr Amina GARGOURI (TUN) 🇹🇳</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">La place du curage ganglionnaire dans la chirurgie des thymomes</div>
+                <div class="presentation-speaker">Dr Imen BOUASSIDA (TUN) 🇹🇳</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Thymectomie par voies mini-invasives : quelle approche ?</div>
+                <div class="presentation-speaker">Dr Mohammed Sadok BOUDAYA (TUN) 🇹🇳</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Thymome localement avancé : quelles options en néoadjuvant en 2026 ?</div>
+                <div class="presentation-speaker">Dr Afef KHANFIR (TUN) 🇹🇳</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item" style="background:#f1f5f9;">
+              <div class="presentation-content">
+                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+              </div>
+              <span class="duration-chip" style="background:#e2e8f0;">30 mn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 15h30 - 16h30 -->
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 3 approche endobronchique marc filaire sfctcv laura filaire géraud galvaing ebus sténoses trachéales">
+        <div class="session-card-header">
+          <div class="time-badge">15h30 - 16h30</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Session 3: Approche Endobronchique</div>
+            <div class="session-subtitle-text">Présidé par Pr Marc FILAIRE (SFCTCV)</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-chair">SFCTCV</span>
+              <span class="tag-badge tag-type">Session Thématique</span>
+            </div>
+          </div>
+        </div>
+        <div class="presentations-container">
+          <div class="presentations-list">
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Staging ganglionnaire : de la médiastinoscopie à l’EBUS</div>
+                <div class="presentation-speaker">Dr Laura Filaire</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Prise en charge des sténoses trachéales</div>
+                <div class="presentation-speaker">Dr Géraud Galvaing</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Bronchoscopie rigide et tumeurs endobronchiques</div>
+                <div class="presentation-speaker">Pr Marc Filaire</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item" style="background:#f1f5f9;">
+              <div class="presentation-content">
+                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+              </div>
+              <span class="duration-chip" style="background:#e2e8f0;">15 mn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 16h30 - 17h00 -->
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="pause café coffee break">
+        <div class="session-card-header">
+          <div class="time-badge break">16h30 - 17h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Pause café ☕</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 17h00 - 18h00 -->
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 4 apacs la gestion périopératoire abdessalem hentati walid feki rym zaimi bullage réhabilitation douleur">
+        <div class="session-card-header">
+          <div class="time-badge">17h00 - 18h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Session 4: La gestion périopératoire</div>
+            <div class="session-subtitle-text">APACS</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-chair">APACS</span>
+              <span class="tag-badge tag-type">Session Thématique</span>
+            </div>
+          </div>
+        </div>
+        <div class="presentations-container">
+          <div class="presentations-list">
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Bullage prolongé en post opératoire : prévention et traitement</div>
+                <div class="presentation-speaker">Dr Abdessalem HENTATI (TUN) 🇹🇳</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Réhabilitation préopératoire : indications et intérêts</div>
+                <div class="presentation-speaker">Dr Walid FEKI (TUN) 🇹🇳</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item">
+              <div class="presentation-content">
+                <div class="presentation-title">Douleur chronique post opératoire : étiologies et prise en charge</div>
+                <div class="presentation-speaker">Dr Rym ZAIMI (FRA) 🇫🇷</div>
+              </div>
+              <span class="duration-chip">15 mn</span>
+            </div>
+            <div class="presentation-item" style="background:#f1f5f9;">
+              <div class="presentation-content">
+                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+              </div>
+              <span class="duration-chip" style="background:#e2e8f0;">15 mn</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 18h00 - 19h00 -->
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 5 séance vidéo">
+        <div class="session-card-header">
+          <div class="time-badge">18h00 - 19h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Session 5: Séance vidéo</div>
+            <div class="session-tags-row">
+              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-type">Séance Vidéo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 19h00 -->
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="dîner gala dinner soirée">
+        <div class="session-card-header">
+          <div class="time-badge event">19h00</div>
+          <div class="session-main-info">
+            <div class="session-title-text">Dîner Gala 🍾</div>
+            <div class="session-subtitle-text">Soirée officielle de clôture du Congrès TTSA</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Empty Search Result -->
+  <div id="no-results" class="empty-state" style="display:none;">
+    <h3>Aucune session trouvée</h3>
+    <p>Essayez de modifier votre recherche ou de changer les filtres sélectionnés.</p>
+  </div>
+
+  <!-- CTA Box -->
+  <div class="cta-box">
+    <h3>Prêt à participer au Congrès TTSA 2026 ?</h3>
+    <p>Soumettez votre résumé scientifique ou créez un compte pour vous inscrire.</p>
+    <a href="/register.html" class="cta-btn">
+      <span>S'inscrire / Soumettre un résumé</span>
+    </a>
+  </div>
+
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer-bottom container" style="border:none">
+    <p>&copy; 2026 Tunisian Thoracic Surgery Association. Tous droits réservés.</p>
+  </div>
+</footer>
+
+<script>
+let currentDay = 'all';
+let currentCategory = 'all';
+
+function filterDay(day) {
+  currentDay = day;
+  
+  document.querySelectorAll('.day-tab-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('tab-' + day).classList.add('active');
+
+  const day1 = document.getElementById('day1-container');
+  const day2 = document.getElementById('day2-container');
+
+  if (day === 'day1') {
+    day1.style.display = 'block';
+    day2.style.display = 'none';
+  } else if (day === 'day2') {
+    day1.style.display = 'none';
+    day2.style.display = 'block';
+  } else {
+    day1.style.display = 'block';
+    day2.style.display = 'block';
+  }
+  
+  applyFilters();
+}
+
+function filterCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function handleSearch() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.session-card');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const cardDay = card.getAttribute('data-day');
+    const cardCat = card.getAttribute('data-cat');
+    const searchData = card.getAttribute('data-search').toLowerCase();
+
+    // Check Day
+    const matchesDay = (currentDay === 'all' || currentDay === cardDay);
+
+    // Check Category
+    const matchesCat = (currentCategory === 'all' || currentCategory === cardCat);
+
+    // Check Search
+    const matchesQuery = (!query || searchData.includes(query));
+
+    if (matchesDay && matchesCat && matchesQuery) {
+      card.style.display = 'block';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  // Handle Day container headers visibility if searching across days
+  const day1Cards = document.querySelectorAll('#day1-container .session-card[style="display: block;"]');
+  const day2Cards = document.querySelectorAll('#day2-container .session-card[style="display: block;"]');
+
+  document.getElementById('day1-container').style.display = (currentDay !== 'day2' && day1Cards.length > 0) ? 'block' : 'none';
+  document.getElementById('day2-container').style.display = (currentDay !== 'day1' && day2Cards.length > 0) ? 'block' : 'none';
+
+  const noResults = document.getElementById('no-results');
+  if (visibleCount === 0) {
+    noResults.style.display = 'block';
+  } else {
+    noResults.style.display = 'none';
+  }
+}
+</script>
+</body>
+</html>
