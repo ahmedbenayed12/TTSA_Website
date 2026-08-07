@@ -448,6 +448,31 @@
     .tag-chair { background: var(--gray-100); color: var(--gray-700); }
     .tag-type { background: #f1f5f9; color: #334155; }
 
+    /* Minimalist Icons & Flag Chips */
+    .mini-svg-icon {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2;
+      stroke: currentColor;
+      vertical-align: -2px;
+      margin-left: 6px;
+      display: inline-block;
+    }
+
+    .flag-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-left: 6px;
+      vertical-align: 1px;
+    }
+    .flag-chip.tn { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .flag-chip.fr { background: #e0f2fe; color: #0369a1; border: 1px solid #93c5fd; }
+
     /* Color-coded session cards */
     /* 1. Workshops: Yellow Accent & Light Background */
     .session-card[data-cat="workshop"] {
@@ -710,8 +735,8 @@
       <div class="action-btns-group">
         <!-- Language Switcher Pill -->
         <div class="lang-switcher-pill">
-          <button class="lang-btn active" id="lang-btn-en" onclick="setLanguage('en')">🇬🇧 EN</button>
-          <button class="lang-btn" id="lang-btn-fr" onclick="setLanguage('fr')">🇫🇷 FR</button>
+          <button class="lang-btn active" id="lang-btn-en" onclick="setLanguage('en')">EN</button>
+          <button class="lang-btn" id="lang-btn-fr" onclick="setLanguage('fr')">FR</button>
         </div>
 
         <button class="btn-action" onclick="window.print()">
@@ -770,7 +795,7 @@
           <div class="time-badge">08h00 - 12h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Workshop: Introduction to Robotic Surgery" data-fr="Workshop: Initiation à la chirurgie robotique">Workshop: Introduction to Robotic Surgery</div>
-            <div class="session-subtitle-text">Dr Mohammed BEN AMAR 🇹🇳</div>
+            <div class="session-subtitle-text">Dr Mohammed BEN AMAR <span class="flag-chip tn">TN</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-type">Workshop</span>
             </div>
@@ -793,7 +818,7 @@
         <div class="session-card-header">
           <div class="time-badge break">13h00 - 14h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Lunch Break 🍽️" data-fr="Pause Déjeuner 🍽️">Lunch Break 🍽️</div>
+            <div class="session-title-text" data-en="Lunch Break" data-fr="Pause Déjeuner">Lunch Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"></path><path d="M15 2v16"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"></path><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path></svg></div>
           </div>
         </div>
       </div>
@@ -804,7 +829,7 @@
           <div class="time-badge">14h00 - 15h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Medical Workshop: Ergonomics of Healthcare Personnel" data-fr="Atelier médical: Ergonomie du personnel de santé">Medical Workshop: Ergonomics of Healthcare Personnel</div>
-            <div class="session-subtitle-text">Majda ALILA 🇹🇳</div>
+            <div class="session-subtitle-text">Majda ALILA <span class="flag-chip tn">TN</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room" data-en="Hall 1: Main hall" data-fr="Salle 1: grande salle">Hall 1: Main hall</span>
               <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
@@ -819,7 +844,7 @@
           <div class="time-badge">14h00 - 15h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Paramedical Workshop 1: Anesthesia in Thoracic Surgery" data-fr="Atelier paramédical 1: Anesthésie en chirurgie thoracique">Paramedical Workshop 1: Anesthesia in Thoracic Surgery</div>
-            <div class="session-subtitle-text">Dr Mariem BOUSARSAR 🇹🇳 & Mme Hbiba KSOURI 🇹🇳</div>
+            <div class="session-subtitle-text">Dr Mariem BOUSARSAR <span class="flag-chip tn">TN</span> & Mme Hbiba KSOURI <span class="flag-chip tn">TN</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
               <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
@@ -848,7 +873,7 @@
           <div class="time-badge">15h30 - 16h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Paramedical Workshop 2: Instrumentation in Robotic Surgery" data-fr="Atelier paramédical 2: Instrumentation en chirurgie robotique">Paramedical Workshop 2: Instrumentation in Robotic Surgery</div>
-            <div class="session-subtitle-text">Dr Mohamed Ben Amor 🇹🇳 & Mme Sirine BOULILA 🇹🇳</div>
+            <div class="session-subtitle-text">Dr Mohamed Ben Amor <span class="flag-chip tn">TN</span> & Mme Sirine BOULILA <span class="flag-chip tn">TN</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
               <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
@@ -862,7 +887,7 @@
         <div class="session-card-header">
           <div class="time-badge break">16h30 - 17h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Coffee Break ☕" data-fr="Pause café ☕">Coffee Break ☕</div>
+            <div class="session-title-text" data-en="Coffee Break" data-fr="Pause café">Coffee Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg></div>
           </div>
         </div>
       </div>
@@ -887,7 +912,7 @@
           <div class="time-badge">17h00 - 18h00</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Paramedical Workshop 2: Perioperative Anticoagulation Management" data-fr="Atelier paramédical 2: Gestion de l’anticoagulation en péri opératoire">Paramedical Workshop 2: Perioperative Anticoagulation Management</div>
-            <div class="session-subtitle-text">Dr Sonia OUERGHI 🇹🇳</div>
+            <div class="session-subtitle-text">Dr Sonia OUERGHI <span class="flag-chip tn">TN</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
               <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
@@ -929,7 +954,7 @@
         <div class="session-card-header">
           <div class="time-badge">19h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Welcome Cocktail 🥤" data-fr="Cocktail de bienvenue 🥤">Welcome Cocktail 🥤</div>
+            <div class="session-title-text" data-en="Welcome Cocktail" data-fr="Cocktail de bienvenue">Welcome Cocktail <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"></path><path d="M12 11v11"></path><path d="M19 3L12 11 5 3z"></path><path d="M5 3h14"></path></svg></div>
             <div class="session-subtitle-text" data-en="Opening reception & networking" data-fr="Réception d'ouverture et networking">Opening reception & networking</div>
           </div>
         </div>
@@ -997,7 +1022,7 @@
         <div class="session-card-header">
           <div class="time-badge break">10h30 - 11h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Coffee Break ☕" data-fr="Pause café ☕">Coffee Break ☕</div>
+            <div class="session-title-text" data-en="Coffee Break" data-fr="Pause café">Coffee Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg></div>
           </div>
         </div>
       </div>
@@ -1008,7 +1033,7 @@
           <div class="time-badge">11h00 - 12h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Session 1: Robotic Surgery (SFCTCV)" data-fr="Session 1: Chirurgie robotique (SFCTCV)">Session 1: Robotic Surgery (SFCTCV)</div>
-            <div class="session-subtitle-text" data-en="Chaired by Dr Stephane RENAUD 🇫🇷" data-fr="Présidé par Dr Stephane RENAUD 🇫🇷">Chaired by Dr Stephane RENAUD 🇫🇷</div>
+            <div class="session-subtitle-text" data-en="Chaired by Dr Stephane RENAUD" data-fr="Présidé par Dr Stephane RENAUD">Chaired by Dr Stephane RENAUD <span class="flag-chip fr">FR</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
               <span class="tag-badge tag-chair">SFCTCV</span>
@@ -1021,21 +1046,21 @@
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Robotic Thoracic Surgery Program" data-fr="Programme de chirurgie thoracique robotique">Robotic Thoracic Surgery Program</div>
-                <div class="presentation-speaker">Dr Ludovic Fournel 🇫🇷</div>
+                <div class="presentation-speaker">Dr Ludovic Fournel <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Profitability of a Robotic Program" data-fr="Rentabilisation d’un programme robotique">Profitability of a Robotic Program</div>
-                <div class="presentation-speaker">Dr Joseph Seitlinger 🇫🇷</div>
+                <div class="presentation-speaker">Dr Joseph Seitlinger <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Robotic Thoracic Surgery and Pitfalls to Avoid" data-fr="Chirurgie thoracique robotique et pièges à éviter">Robotic Thoracic Surgery and Pitfalls to Avoid</div>
-                <div class="presentation-speaker">Pr Stéphane Renaud 🇫🇷</div>
+                <div class="presentation-speaker">Pr Stéphane Renaud <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
             </div>
@@ -1068,7 +1093,7 @@
         <div class="session-card-header">
           <div class="time-badge break">13h00 - 14h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Lunch Break 🍽️" data-fr="Déjeuner 🍽️">Lunch Break 🍽️</div>
+            <div class="session-title-text" data-en="Lunch Break" data-fr="Déjeuner">Lunch Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"></path><path d="M15 2v16"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"></path><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path></svg></div>
           </div>
         </div>
       </div>
@@ -1092,28 +1117,28 @@
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="New guidelines for the management of myasthenia gravis" data-fr="Les nouvelles recommandations de la prise en charge de la myasthénie">New guidelines for the management of myasthenia gravis</div>
-                <div class="presentation-speaker">Dr Amina GARGOURI 🇹🇳</div>
+                <div class="presentation-speaker">Dr Amina GARGOURI <span class="flag-chip tn">TN</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Role of lymph node dissection in thymoma surgery" data-fr="La place du curage ganglionnaire dans la chirurgie des thymomes">Role of lymph node dissection in thymoma surgery</div>
-                <div class="presentation-speaker">Dr Imen BOUASSIDA 🇹🇳</div>
+                <div class="presentation-speaker">Dr Imen BOUASSIDA <span class="flag-chip tn">TN</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Minimally invasive thymectomy: which approach?" data-fr="Thymectomie par voies mini-invasives : quelle approche ?">Minimally invasive thymectomy: which approach?</div>
-                <div class="presentation-speaker">Dr Mohammed Sadok BOUDAYA 🇹🇳</div>
+                <div class="presentation-speaker">Dr Mohammed Sadok BOUDAYA <span class="flag-chip tn">TN</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Locally advanced thymoma: neoadjuvant options in 2026?" data-fr="Thymome localement avancé : quelles options en néoadjuvant en 2026 ?">Locally advanced thymoma: neoadjuvant options in 2026?</div>
-                <div class="presentation-speaker">Dr Afef KHANFIR 🇹🇳</div>
+                <div class="presentation-speaker">Dr Afef KHANFIR <span class="flag-chip tn">TN</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
@@ -1133,7 +1158,7 @@
           <div class="time-badge">15h30 - 16h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Session 3: Endobronchial Approach" data-fr="Session 3: Approche Endobronchique">Session 3: Endobronchial Approach</div>
-            <div class="session-subtitle-text" data-en="Chaired by Pr Marc FILAIRE (SFCTCV) 🇫🇷" data-fr="Présidé par Pr Marc FILAIRE (SFCTCV) 🇫🇷">Chaired by Pr Marc FILAIRE (SFCTCV) 🇫🇷</div>
+            <div class="session-subtitle-text" data-en="Chaired by Pr Marc FILAIRE (SFCTCV)" data-fr="Présidé par Pr Marc FILAIRE (SFCTCV)">Chaired by Pr Marc FILAIRE (SFCTCV) <span class="flag-chip fr">FR</span></div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
               <span class="tag-badge tag-chair">SFCTCV</span>
@@ -1146,21 +1171,21 @@
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Lymph node staging: from mediastinoscopy to EBUS" data-fr="Staging ganglionnaire : de la médiastinoscopie à l’EBUS">Lymph node staging: from mediastinoscopy to EBUS</div>
-                <div class="presentation-speaker">Dr Laura Filaire 🇫🇷</div>
+                <div class="presentation-speaker">Dr Laura Filaire <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Management of tracheal stenosis" data-fr="Prise en charge des sténoses trachéales">Management of tracheal stenosis</div>
-                <div class="presentation-speaker">Dr Géraud Galvaing 🇫🇷</div>
+                <div class="presentation-speaker">Dr Géraud Galvaing <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Rigid bronchoscopy and endobronchial tumors" data-fr="Bronchoscopie rigide et tumeurs endobronchiques">Rigid bronchoscopy and endobronchial tumors</div>
-                <div class="presentation-speaker">Pr Marc Filaire 🇫🇷</div>
+                <div class="presentation-speaker">Pr Marc Filaire <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
@@ -1179,7 +1204,7 @@
         <div class="session-card-header">
           <div class="time-badge break">16h30 - 17h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Coffee Break ☕" data-fr="Pause café ☕">Coffee Break ☕</div>
+            <div class="session-title-text" data-en="Coffee Break" data-fr="Pause café">Coffee Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg></div>
           </div>
         </div>
       </div>
@@ -1203,21 +1228,21 @@
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Prolonged postoperative air leak: prevention and treatment" data-fr="Bullage prolongé en post opératoire : prévention et traitement">Prolonged postoperative air leak: prevention and treatment</div>
-                <div class="presentation-speaker">Dr Abdessalem HENTATI 🇹🇳</div>
+                <div class="presentation-speaker">Dr Abdessalem HENTATI <span class="flag-chip tn">TN</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Preoperative rehabilitation: indications and benefits" data-fr="Réhabilitation préopératoire : indications et intérêts">Preoperative rehabilitation: indications and benefits</div>
-                <div class="presentation-speaker">Dr Walid FEKI 🇹🇳</div>
+                <div class="presentation-speaker">Dr Walid FEKI <span class="flag-chip tn">TN</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
                 <div class="presentation-title" data-en="Postoperative chronic pain: etiologies and management" data-fr="Douleur chronique post opératoire : étiologies et prise en charge">Postoperative chronic pain: etiologies and management</div>
-                <div class="presentation-speaker">Dr Rym ZAIMI 🇫🇷</div>
+                <div class="presentation-speaker">Dr Rym ZAIMI <span class="flag-chip fr">FR</span></div>
               </div>
               <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
@@ -1250,7 +1275,7 @@
         <div class="session-card-header">
           <div class="time-badge">19h00</div>
           <div class="session-main-info">
-            <div class="session-title-text" data-en="Gala Dinner 🎆" data-fr="Dîner Gala 🎆">Gala Dinner 🎆</div>
+            <div class="session-title-text" data-en="Gala Dinner" data-fr="Dîner Gala">Gala Dinner <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
             <div class="session-subtitle-text" data-en="Official TTSA Congress Closing Evening" data-fr="Soirée officielle de clôture du Congrès TTSA">Official TTSA Congress Closing Evening</div>
           </div>
         </div>
