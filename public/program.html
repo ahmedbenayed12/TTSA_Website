@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
-  <title>Programme Scientifique – TTSA Congress 2026</title>
-  <meta name="description" content="Découvrez le programme scientifique officiel du Congrès de l'Association Tunisienne de Chirurgie Thoracique (TTSA) - 06 & 07 Novembre 2026."/>
+  <title>Scientific Program – TTSA Congress 2026</title>
+  <meta name="description" content="Official scientific program of the 5th National Thoracic Surgery Congress organized by the Tunisian Thoracic Surgery Association - November 06 & 07, 2026."/>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg"/>
   <link rel="stylesheet" href="/css/global.css"/>
   <style>
@@ -74,7 +74,7 @@
       z-index: 10;
     }
 
-    /* Controls Bar */
+    /* Controls Card */
     .controls-card {
       background: var(--white);
       border-radius: var(--radius-lg);
@@ -163,7 +163,7 @@
     .action-btns-group {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .btn-action {
@@ -184,6 +184,37 @@
     .btn-action:hover {
       background: var(--gray-100);
       color: var(--gray-900);
+    }
+
+    /* Language Switcher Pill */
+    .lang-switcher-pill {
+      display: inline-flex;
+      align-items: center;
+      background: var(--gray-100);
+      border-radius: 24px;
+      padding: 3px;
+      border: 1px solid var(--gray-300);
+    }
+
+    .lang-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border: none;
+      background: transparent;
+      color: var(--gray-600);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lang-btn.active {
+      background: var(--blue);
+      color: var(--white);
+      box-shadow: 0 2px 8px rgba(12,88,154,0.3);
     }
 
     /* Category Tags */
@@ -341,7 +372,7 @@
     .tag-chair { background: var(--gray-100); color: var(--gray-700); }
     .tag-type { background: #f1f5f9; color: #334155; }
 
-    /* Presentations Table / List inside Card */
+    /* Presentations Container */
     .presentations-container {
       padding: 16px 24px 20px 24px;
       background: #f8fafc;
@@ -475,11 +506,11 @@
 <!-- Hero Header -->
 <header class="hero-banner">
   <div class="container">
-    <div class="hero-badge">
+    <div class="hero-badge" data-en="5th National Thoracic Surgery Congress" data-fr="5ème Congrès National de Chirurgie Thoracique">
       5th National Thoracic Surgery Congress
     </div>
-    <h1>Programme Scientifique</h1>
-    <p>Congrès National de Chirurgie Thoracique — 06 & 07 Novembre 2026</p>
+    <h1 data-en="Scientific Program" data-fr="Programme Scientifique">Scientific Program</h1>
+    <p data-en="National Thoracic Surgery Congress — November 06 & 07, 2026" data-fr="Congrès National de Chirurgie Thoracique — 06 & 07 Novembre 2026">National Thoracic Surgery Congress — November 06 & 07, 2026</p>
   </div>
 </header>
 
@@ -491,14 +522,14 @@
     
     <!-- Day Tabs -->
     <div class="days-tab-container">
-      <button class="day-tab-btn active" onclick="filterDay('all')" id="tab-all">
-        Tous les Jours
+      <button class="day-tab-btn active" onclick="filterDay('all')" id="tab-all" data-en="All Days" data-fr="Tous les Jours">
+        All Days
       </button>
-      <button class="day-tab-btn" onclick="filterDay('day1')" id="tab-day1">
-        Vendredi 06 Nov 2026
+      <button class="day-tab-btn" onclick="filterDay('day1')" id="tab-day1" data-en="Friday Nov 06, 2026" data-fr="Vendredi 06 Nov 2026">
+        Friday Nov 06, 2026
       </button>
-      <button class="day-tab-btn" onclick="filterDay('day2')" id="tab-day2">
-        Samedi 07 Nov 2026
+      <button class="day-tab-btn" onclick="filterDay('day2')" id="tab-day2" data-en="Saturday Nov 07, 2026" data-fr="Samedi 07 Nov 2026">
+        Saturday Nov 07, 2026
       </button>
     </div>
 
@@ -506,24 +537,30 @@
     <div class="filters-row">
       <div class="search-box-wrap">
         <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="Rechercher un sujet, intervenant, session..." onkeyup="handleSearch()"/>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, speaker, room..." data-en-placeholder="Search by topic, speaker, room..." data-fr-placeholder="Rechercher un sujet, intervenant, session..." onkeyup="handleSearch()"/>
       </div>
 
       <div class="action-btns-group">
+        <!-- Language Switcher Pill -->
+        <div class="lang-switcher-pill">
+          <button class="lang-btn active" id="lang-btn-en" onclick="setLanguage('en')">🇬🇧 EN</button>
+          <button class="lang-btn" id="lang-btn-fr" onclick="setLanguage('fr')">🇫🇷 FR</button>
+        </div>
+
         <button class="btn-action" onclick="window.print()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-          Imprimer / PDF
+          <span data-en="Print / PDF" data-fr="Imprimer / PDF">Print / PDF</span>
         </button>
       </div>
     </div>
 
     <!-- Category Filters -->
     <div class="cat-filters-container">
-      <button class="cat-btn active" onclick="filterCategory('all', this)">Tous</button>
-      <button class="cat-btn" onclick="filterCategory('workshop', this)">Workshops & Ateliers</button>
-      <button class="cat-btn" onclick="filterCategory('session', this)">Sessions Thématiques</button>
-      <button class="cat-btn" onclick="filterCategory('posters', this)">Communications & Posters</button>
-      <button class="cat-btn" onclick="filterCategory('pause', this)">Pauses & Événements</button>
+      <button class="cat-btn active" onclick="filterCategory('all', this)" data-en="All" data-fr="Tous">All</button>
+      <button class="cat-btn" onclick="filterCategory('workshop', this)" data-en="Workshops & Labs" data-fr="Workshops & Ateliers">Workshops & Labs</button>
+      <button class="cat-btn" onclick="filterCategory('session', this)" data-en="Thematic Sessions" data-fr="Sessions Thématiques">Thematic Sessions</button>
+      <button class="cat-btn" onclick="filterCategory('posters', this)" data-en="Papers & Posters" data-fr="Communications & Posters">Papers & Posters</button>
+      <button class="cat-btn" onclick="filterCategory('pause', this)" data-en="Breaks & Events" data-fr="Pauses & Événements">Breaks & Events</button>
     </div>
 
   </div>
@@ -533,24 +570,24 @@
     
     <div class="day-section-header">
       <div>
-        <h2>Vendredi 06 Novembre 2026</h2>
-        <div class="sub-info">Workshops, Ateliers Paramédicaux & Sessions Posters</div>
+        <h2 data-en="Friday, November 06, 2026" data-fr="Vendredi 06 Novembre 2026">Friday, November 06, 2026</h2>
+        <div class="sub-info" data-en="Workshops, Paramedical Workshops & Poster Sessions" data-fr="Workshops, Ateliers Paramédicaux & Sessions Posters">Workshops, Paramedical Workshops & Poster Sessions</div>
       </div>
-      <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;">Jour 1</span>
+      <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;" data-en="Day 1" data-fr="Jour 1">Day 1</span>
     </div>
 
     <div class="timeline-list">
 
       <!-- 08h00 - 12h30 -->
-      <div class="session-card" data-day="day1" data-cat="workshop" data-search="workshop initiation chirurgie robotique mohammed ben amar grande salle petite salle">
+      <div class="session-card" data-day="day1" data-cat="workshop" data-search="workshop initiation chirurgie robotique introduction to robotic surgery mohammed ben amar grande salle petite salle main hall small hall">
         <div class="session-card-header">
           <div class="time-badge">08h00 - 12h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Workshop: Initiation à la chirurgie robotique</div>
+            <div class="session-title-text" data-en="Workshop: Introduction to Robotic Surgery" data-fr="Workshop: Initiation à la chirurgie robotique">Workshop: Introduction to Robotic Surgery</div>
             <div class="session-subtitle-text">Dr Mohammed BEN AMAR (TUN) 🇹🇳</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Salle 1: grande salle</span>
-              <span class="tag-badge tag-room-alt">Salle 2: petite salle</span>
+              <span class="tag-badge tag-room" data-en="Hall 1: Main hall" data-fr="Salle 1: grande salle">Hall 1: Main hall</span>
+              <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
               <span class="tag-badge tag-type">Workshop</span>
             </div>
           </div>
@@ -558,69 +595,69 @@
       </div>
 
       <!-- 12h30 - 13h00 -->
-      <div class="session-card" data-day="day1" data-cat="pause" data-search="pause transition">
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="pause transition break">
         <div class="session-card-header">
           <div class="time-badge break">12h30 - 13h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Pause / Transition</div>
+            <div class="session-title-text" data-en="Break / Transition" data-fr="Pause / Transition">Break / Transition</div>
           </div>
         </div>
       </div>
 
       <!-- 13h00 - 14h00 -->
-      <div class="session-card" data-day="day1" data-cat="pause" data-search="déjeuner pause midi">
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="déjeuner pause midi lunch break">
         <div class="session-card-header">
           <div class="time-badge break">13h00 - 14h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Pause Déjeuner</div>
+            <div class="session-title-text" data-en="Lunch Break 🍽️" data-fr="Pause Déjeuner 🍽️">Lunch Break 🍽️</div>
           </div>
         </div>
       </div>
 
       <!-- 14h00 - 15h30 -->
-      <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier médical ergonomie personnel de santé majda alila atelier paramédical anesthésie chirurgie thoracique mariem bousarsar hbiba ksouri">
+      <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier médical ergonomics healthcare personnel majda alila atelier paramédical anesthesia thoracic surgery mariem bousarsar hbiba ksouri">
         <div class="session-card-header">
           <div class="time-badge">14h00 - 15h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Ateliers en Sessions Parallèles</div>
+            <div class="session-title-text" data-en="Parallel Workshops" data-fr="Ateliers en Sessions Parallèles">Parallel Workshops</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-type">Sessions Parallèles</span>
+              <span class="tag-badge tag-type" data-en="Parallel Sessions" data-fr="Sessions Parallèles">Parallel Sessions</span>
             </div>
           </div>
         </div>
         <div class="parallel-grid">
           <div class="track-column">
-            <div class="track-header">Salle 1: Grande Salle</div>
-            <div class="presentation-title">Atelier médical: Ergonomie du personnel de santé</div>
+            <div class="track-header" data-en="Hall 1: Main Hall" data-fr="Salle 1: Grande Salle">Hall 1: Main Hall</div>
+            <div class="presentation-title" data-en="Medical Workshop: Ergonomics of Healthcare Personnel" data-fr="Atelier médical: Ergonomie du personnel de santé">Medical Workshop: Ergonomics of Healthcare Personnel</div>
             <div class="presentation-speaker">Majda ALILA (TUN) 🇹🇳</div>
           </div>
           <div class="track-column">
-            <div class="track-header">Salle 2: Petite Salle</div>
-            <div class="presentation-title">Atelier paramédical 1: Anesthésie en chirurgie thoracique</div>
+            <div class="track-header" data-en="Hall 2: Small Hall" data-fr="Salle 2: Petite Salle">Hall 2: Small Hall</div>
+            <div class="presentation-title" data-en="Paramedical Workshop 1: Anesthesia in Thoracic Surgery" data-fr="Atelier paramédical 1: Anesthésie en chirurgie thoracique">Paramedical Workshop 1: Anesthesia in Thoracic Surgery</div>
             <div class="presentation-speaker">Dr Mariem BOUSARSAR (TUN) 🇹🇳 & Mme Hbiba KSOURI (TUN) 🇹🇳</div>
           </div>
         </div>
       </div>
 
       <!-- 15h30 - 16h30 -->
-      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 1 atelier paramédical 2 instrumentation chirurgie robotique mohamed ben amor sirine boulila">
+      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 1 atelier paramédical 2 instrumentation chirurgie robotique robotic surgery mohamed ben amor sirine boulila">
         <div class="session-card-header">
           <div class="time-badge">15h30 - 16h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Posters & Atelier Paramédical</div>
+            <div class="session-title-text" data-en="Posters & Paramedical Workshop" data-fr="Posters & Atelier Paramédical">Posters & Paramedical Workshop</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-type">Sessions Parallèles</span>
+              <span class="tag-badge tag-type" data-en="Parallel Sessions" data-fr="Sessions Parallèles">Parallel Sessions</span>
             </div>
           </div>
         </div>
         <div class="parallel-grid">
           <div class="track-column">
-            <div class="track-header">Salle 1: Grande Salle</div>
-            <div class="presentation-title">Session Posters commentés 1</div>
+            <div class="track-header" data-en="Hall 1: Main Hall" data-fr="Salle 1: Grande Salle">Hall 1: Main Hall</div>
+            <div class="presentation-title" data-en="Commented Posters Session 1" data-fr="Session Posters commentés 1">Commented Posters Session 1</div>
           </div>
           <div class="track-column">
-            <div class="track-header">Salle 2: Petite Salle</div>
-            <div class="presentation-title">Atelier paramédical 2: Instrumentation en chirurgie robotique</div>
+            <div class="track-header" data-en="Hall 2: Small Hall" data-fr="Salle 2: Petite Salle">Hall 2: Small Hall</div>
+            <div class="presentation-title" data-en="Paramedical Workshop 2: Instrumentation in Robotic Surgery" data-fr="Atelier paramédical 2: Instrumentation en chirurgie robotique">Paramedical Workshop 2: Instrumentation in Robotic Surgery</div>
             <div class="presentation-speaker">Dr Mohamed Ben Amor & Mme Sirine BOULILA</div>
           </div>
         </div>
@@ -631,65 +668,65 @@
         <div class="session-card-header">
           <div class="time-badge break">16h30 - 17h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Pause café ☕</div>
+            <div class="session-title-text" data-en="Coffee Break ☕" data-fr="Pause café ☕">Coffee Break ☕</div>
           </div>
         </div>
       </div>
 
       <!-- 17h00 - 18h00 -->
-      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 2 atelier paramédical 2 gestion anticoagulation sonia ouerghi">
+      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 2 atelier paramédical 2 gestion anticoagulation sonia ouerghi perioperative anticoagulation">
         <div class="session-card-header">
           <div class="time-badge">17h00 - 18h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Posters & Atelier Paramédical</div>
+            <div class="session-title-text" data-en="Posters & Paramedical Workshop" data-fr="Posters & Atelier Paramédical">Posters & Paramedical Workshop</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-type">Sessions Parallèles</span>
+              <span class="tag-badge tag-type" data-en="Parallel Sessions" data-fr="Sessions Parallèles">Parallel Sessions</span>
             </div>
           </div>
         </div>
         <div class="parallel-grid">
           <div class="track-column">
-            <div class="track-header">Salle 1: Grande Salle</div>
-            <div class="presentation-title">Session Posters commentés 2</div>
+            <div class="track-header" data-en="Hall 1: Main Hall" data-fr="Salle 1: Grande Salle">Hall 1: Main Hall</div>
+            <div class="presentation-title" data-en="Commented Posters Session 2" data-fr="Session Posters commentés 2">Commented Posters Session 2</div>
           </div>
           <div class="track-column">
-            <div class="track-header">Salle 2: Petite Salle</div>
-            <div class="presentation-title">Atelier paramédical 2: Gestion de l’anticoagulation en péri opératoire</div>
+            <div class="track-header" data-en="Hall 2: Small Hall" data-fr="Salle 2: Petite Salle">Hall 2: Small Hall</div>
+            <div class="presentation-title" data-en="Paramedical Workshop 2: Perioperative Anticoagulation Management" data-fr="Atelier paramédical 2: Gestion de l’anticoagulation en péri opératoire">Paramedical Workshop 2: Perioperative Anticoagulation Management</div>
             <div class="presentation-speaker">Dr Sonia OUERGHI (TUN) 🇹🇳</div>
           </div>
         </div>
       </div>
 
       <!-- 18h00 - 19h00 -->
-      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 3 communications orales paramédicales">
+      <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 3 communications orales paramédicales oral communications">
         <div class="session-card-header">
           <div class="time-badge">18h00 - 19h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Posters & Communications Orales</div>
+            <div class="session-title-text" data-en="Posters & Oral Communications" data-fr="Posters & Communications Orales">Posters & Oral Communications</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-type">Sessions Parallèles</span>
+              <span class="tag-badge tag-type" data-en="Parallel Sessions" data-fr="Sessions Parallèles">Parallel Sessions</span>
             </div>
           </div>
         </div>
         <div class="parallel-grid">
           <div class="track-column">
-            <div class="track-header">Salle 1: Grande Salle</div>
-            <div class="presentation-title">Session Posters commentés 3</div>
+            <div class="track-header" data-en="Hall 1: Main Hall" data-fr="Salle 1: Grande Salle">Hall 1: Main Hall</div>
+            <div class="presentation-title" data-en="Commented Posters Session 3" data-fr="Session Posters commentés 3">Commented Posters Session 3</div>
           </div>
           <div class="track-column">
-            <div class="track-header">Salle 2: Petite Salle</div>
-            <div class="presentation-title">Communications orales Paramédicales</div>
+            <div class="track-header" data-en="Hall 2: Small Hall" data-fr="Salle 2: Petite Salle">Hall 2: Small Hall</div>
+            <div class="presentation-title" data-en="Paramedical Oral Communications" data-fr="Communications orales Paramédicales">Paramedical Oral Communications</div>
           </div>
         </div>
       </div>
 
       <!-- 19h00 -->
-      <div class="session-card" data-day="day1" data-cat="pause" data-search="cocktail de bienvenue reception networking">
+      <div class="session-card" data-day="day1" data-cat="pause" data-search="cocktail de bienvenue welcome cocktail reception networking">
         <div class="session-card-header">
           <div class="time-badge event">19h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Cocktail de bienvenue 🍸</div>
-            <div class="session-subtitle-text">Réception d'ouverture et networking</div>
+            <div class="session-title-text" data-en="Welcome Cocktail 🍸" data-fr="Cocktail de bienvenue 🍸">Welcome Cocktail 🍸</div>
+            <div class="session-subtitle-text" data-en="Opening reception & networking" data-fr="Réception d'ouverture et networking">Opening reception & networking</div>
           </div>
         </div>
       </div>
@@ -702,50 +739,50 @@
     
     <div class="day-section-header">
       <div>
-        <h2>Samedi 07 Novembre 2026</h2>
-        <div class="sub-info">Grande Salle — Sessions Thématiques, SFCTCV, APACS & Dîner Gala</div>
+        <h2 data-en="Saturday, November 07, 2026" data-fr="Samedi 07 Novembre 2026">Saturday, November 07, 2026</h2>
+        <div class="sub-info" data-en="Main Hall — Thematic Sessions, SFCTCV, APACS & Gala Dinner" data-fr="Grande Salle — Sessions Thématiques, SFCTCV, APACS & Dîner Gala">Main Hall — Thematic Sessions, SFCTCV, APACS & Gala Dinner</div>
       </div>
-      <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;">Jour 2</span>
+      <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;" data-en="Day 2" data-fr="Jour 2">Day 2</span>
     </div>
 
     <div class="timeline-list">
 
       <!-- 08h00 - 08h30 -->
-      <div class="session-card" data-day="day2" data-cat="pause" data-search="accueil inscription registration">
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="accueil inscription welcome registration">
         <div class="session-card-header">
           <div class="time-badge break">08h00 - 08h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Accueil et inscription</div>
+            <div class="session-title-text" data-en="Welcome & Registration" data-fr="Accueil et inscription">Welcome & Registration</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 08h30 - 09h30 -->
-      <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 1 kyste hydatique du thorax">
+      <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 1 free communications kyste hydatique du thorax thoracic hydatid cyst">
         <div class="session-card-header">
           <div class="time-badge">08h30 - 09h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Communications libres 1: Kyste Hydatique du thorax</div>
+            <div class="session-title-text" data-en="Free Communications 1: Thoracic Hydatid Cyst" data-fr="Communications libres 1: Kyste Hydatique du thorax">Free Communications 1: Thoracic Hydatid Cyst</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
-              <span class="tag-badge tag-type">Communications Libres</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+              <span class="tag-badge tag-type" data-en="Free Papers" data-fr="Communications Libres">Free Papers</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 09h30 - 10h30 -->
-      <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 2 traumatisme thoracique">
+      <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 2 free communications traumatisme thoracique thoracic trauma">
         <div class="session-card-header">
           <div class="time-badge">09h30 - 10h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Communications libres 2: Traumatisme thoracique</div>
+            <div class="session-title-text" data-en="Free Communications 2: Thoracic Trauma" data-fr="Communications libres 2: Traumatisme thoracique">Free Communications 2: Thoracic Trauma</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
-              <span class="tag-badge tag-type">Communications Libres</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+              <span class="tag-badge tag-type" data-en="Free Papers" data-fr="Communications Libres">Free Papers</span>
             </div>
           </div>
         </div>
@@ -756,22 +793,22 @@
         <div class="session-card-header">
           <div class="time-badge break">10h30 - 11h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Pause café ☕</div>
+            <div class="session-title-text" data-en="Coffee Break ☕" data-fr="Pause café ☕">Coffee Break ☕</div>
           </div>
         </div>
       </div>
 
       <!-- 11h00 - 12h30 -->
-      <div class="session-card" data-day="day2" data-cat="session" data-search="session 1 chirurgie robotique sfctcv stephane renaud ludovic fournel joseph seitlinger">
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 1 robotic surgery chirurgie robotique sfctcv stephane renaud ludovic fournel joseph seitlinger">
         <div class="session-card-header">
           <div class="time-badge">11h00 - 12h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Session 1: Chirurgie robotique (SFCTCV)</div>
-            <div class="session-subtitle-text">Présidé par Dr Stephane RENAUD</div>
+            <div class="session-title-text" data-en="Session 1: Robotic Surgery (SFCTCV)" data-fr="Session 1: Chirurgie robotique (SFCTCV)">Session 1: Robotic Surgery (SFCTCV)</div>
+            <div class="session-subtitle-text" data-en="Chaired by Dr Stephane RENAUD" data-fr="Présidé par Dr Stephane RENAUD">Chaired by Dr Stephane RENAUD</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
               <span class="tag-badge tag-chair">SFCTCV</span>
-              <span class="tag-badge tag-type">Session Thématique</span>
+              <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
           </div>
         </div>
@@ -779,30 +816,30 @@
           <div class="presentations-list">
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Programme de chirurgie thoracique robotique</div>
+                <div class="presentation-title" data-en="Robotic Thoracic Surgery Program" data-fr="Programme de chirurgie thoracique robotique">Robotic Thoracic Surgery Program</div>
                 <div class="presentation-speaker">Dr Ludovic Fournel</div>
               </div>
-              <span class="duration-chip">20 mn</span>
+              <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Rentabilisation d’un programme robotique</div>
+                <div class="presentation-title" data-en="Profitability of a Robotic Program" data-fr="Rentabilisation d’un programme robotique">Profitability of a Robotic Program</div>
                 <div class="presentation-speaker">Dr Joseph Seitlinger</div>
               </div>
-              <span class="duration-chip">20 mn</span>
+              <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Chirurgie thoracique robotique et pièges à éviter</div>
+                <div class="presentation-title" data-en="Robotic Thoracic Surgery and Pitfalls to Avoid" data-fr="Chirurgie thoracique robotique et pièges à éviter">Robotic Thoracic Surgery and Pitfalls to Avoid</div>
                 <div class="presentation-speaker">Pr Stéphane Renaud</div>
               </div>
-              <span class="duration-chip">20 mn</span>
+              <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
             </div>
             <div class="presentation-item" style="background:#f1f5f9;">
               <div class="presentation-content">
-                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+                <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
               </div>
-              <span class="duration-chip" style="background:#e2e8f0;">30 mn</span>
+              <span class="duration-chip" style="background:#e2e8f0;" data-en="30 min" data-fr="30 mn">30 min</span>
             </div>
           </div>
         </div>
@@ -815,7 +852,7 @@
           <div class="session-main-info">
             <div class="session-title-text">Symposium</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
             </div>
           </div>
         </div>
@@ -826,22 +863,22 @@
         <div class="session-card-header">
           <div class="time-badge break">13h00 - 14h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Déjeuner 🍽️</div>
+            <div class="session-title-text" data-en="Lunch Break 🍽️" data-fr="Déjeuner 🍽️">Lunch Break 🍽️</div>
           </div>
         </div>
       </div>
 
       <!-- 14h00 - 15h30 -->
-      <div class="session-card" data-day="day2" data-cat="session" data-search="session 2 pathologie thymique association tunisienne de neurologie amina gargouri imen bouassida mohammed sadok boudaya afef khanfir myasthénie thymome">
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 2 pathologie thymique thymic pathology association tunisienne de neurologie amina gargouri imen bouassida mohammed sadok boudaya afef khanfir myasthénie myasthenia thymome thymoma">
         <div class="session-card-header">
           <div class="time-badge">14h00 - 15h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Session 2: Pathologie thymique</div>
-            <div class="session-subtitle-text">Association Tunisienne de Neurologie</div>
+            <div class="session-title-text" data-en="Session 2: Thymic Pathology" data-fr="Session 2: Pathologie thymique">Session 2: Thymic Pathology</div>
+            <div class="session-subtitle-text" data-en="Tunisian Association of Neurology" data-fr="Association Tunisienne de Neurologie">Tunisian Association of Neurology</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
               <span class="tag-badge tag-chair">ATN</span>
-              <span class="tag-badge tag-type">Session Thématique</span>
+              <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
           </div>
         </div>
@@ -849,53 +886,53 @@
           <div class="presentations-list">
             <div class="presentation-item" style="border-left:4px solid var(--red);">
               <div class="presentation-content">
-                <div class="presentation-title" style="color:var(--red-dark);">Les nouvelles recommandations de la prise en charge de la myasthénie</div>
+                <div class="presentation-title" style="color:var(--red-dark);" data-en="New guidelines for the management of myasthenia gravis" data-fr="Les nouvelles recommandations de la prise en charge de la myasthénie">New guidelines for the management of myasthenia gravis</div>
                 <div class="presentation-speaker">Dr Amina GARGOURI (TUN) 🇹🇳</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">La place du curage ganglionnaire dans la chirurgie des thymomes</div>
+                <div class="presentation-title" data-en="Role of lymph node dissection in thymoma surgery" data-fr="La place du curage ganglionnaire dans la chirurgie des thymomes">Role of lymph node dissection in thymoma surgery</div>
                 <div class="presentation-speaker">Dr Imen BOUASSIDA (TUN) 🇹🇳</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Thymectomie par voies mini-invasives : quelle approche ?</div>
+                <div class="presentation-title" data-en="Minimally invasive thymectomy: which approach?" data-fr="Thymectomie par voies mini-invasives : quelle approche ?">Minimally invasive thymectomy: which approach?</div>
                 <div class="presentation-speaker">Dr Mohammed Sadok BOUDAYA (TUN) 🇹🇳</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Thymome localement avancé : quelles options en néoadjuvant en 2026 ?</div>
+                <div class="presentation-title" data-en="Locally advanced thymoma: neoadjuvant options in 2026?" data-fr="Thymome localement avancé : quelles options en néoadjuvant en 2026 ?">Locally advanced thymoma: neoadjuvant options in 2026?</div>
                 <div class="presentation-speaker">Dr Afef KHANFIR (TUN) 🇹🇳</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item" style="background:#f1f5f9;">
               <div class="presentation-content">
-                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+                <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
               </div>
-              <span class="duration-chip" style="background:#e2e8f0;">30 mn</span>
+              <span class="duration-chip" style="background:#e2e8f0;" data-en="30 min" data-fr="30 mn">30 min</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 15h30 - 16h30 -->
-      <div class="session-card" data-day="day2" data-cat="session" data-search="session 3 approche endobronchique marc filaire sfctcv laura filaire géraud galvaing ebus sténoses trachéales">
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 3 endobronchial approach approche endobronchique marc filaire sfctcv laura filaire géraud galvaing ebus tracheal stenosis sténoses trachéales">
         <div class="session-card-header">
           <div class="time-badge">15h30 - 16h30</div>
           <div class="session-main-info">
-            <div class="session-title-text">Session 3: Approche Endobronchique</div>
-            <div class="session-subtitle-text">Présidé par Pr Marc FILAIRE (SFCTCV)</div>
+            <div class="session-title-text" data-en="Session 3: Endobronchial Approach" data-fr="Session 3: Approche Endobronchique">Session 3: Endobronchial Approach</div>
+            <div class="session-subtitle-text" data-en="Chaired by Pr Marc FILAIRE (SFCTCV)" data-fr="Présidé par Pr Marc FILAIRE (SFCTCV)">Chaired by Pr Marc FILAIRE (SFCTCV)</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
               <span class="tag-badge tag-chair">SFCTCV</span>
-              <span class="tag-badge tag-type">Session Thématique</span>
+              <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
           </div>
         </div>
@@ -903,30 +940,30 @@
           <div class="presentations-list">
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Staging ganglionnaire : de la médiastinoscopie à l’EBUS</div>
+                <div class="presentation-title" data-en="Lymph node staging: from mediastinoscopy to EBUS" data-fr="Staging ganglionnaire : de la médiastinoscopie à l’EBUS">Lymph node staging: from mediastinoscopy to EBUS</div>
                 <div class="presentation-speaker">Dr Laura Filaire</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Prise en charge des sténoses trachéales</div>
+                <div class="presentation-title" data-en="Management of tracheal stenosis" data-fr="Prise en charge des sténoses trachéales">Management of tracheal stenosis</div>
                 <div class="presentation-speaker">Dr Géraud Galvaing</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Bronchoscopie rigide et tumeurs endobronchiques</div>
+                <div class="presentation-title" data-en="Rigid bronchoscopy and endobronchial tumors" data-fr="Bronchoscopie rigide et tumeurs endobronchiques">Rigid bronchoscopy and endobronchial tumors</div>
                 <div class="presentation-speaker">Pr Marc Filaire</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item" style="background:#f1f5f9;">
               <div class="presentation-content">
-                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+                <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
               </div>
-              <span class="duration-chip" style="background:#e2e8f0;">15 mn</span>
+              <span class="duration-chip" style="background:#e2e8f0;" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
           </div>
         </div>
@@ -937,22 +974,22 @@
         <div class="session-card-header">
           <div class="time-badge break">16h30 - 17h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Pause café ☕</div>
+            <div class="session-title-text" data-en="Coffee Break ☕" data-fr="Pause café ☕">Coffee Break ☕</div>
           </div>
         </div>
       </div>
 
       <!-- 17h00 - 18h00 -->
-      <div class="session-card" data-day="day2" data-cat="session" data-search="session 4 apacs la gestion périopératoire abdessalem hentati walid feki rym zaimi bullage réhabilitation douleur">
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 4 apacs perioperative management gestion périopératoire abdessalem hentati walid feki rym zaimi air leak bullage réhabilitation douleur pain">
         <div class="session-card-header">
           <div class="time-badge">17h00 - 18h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Session 4: La gestion périopératoire</div>
+            <div class="session-title-text" data-en="Session 4: Perioperative Management" data-fr="Session 4: La gestion périopératoire">Session 4: Perioperative Management</div>
             <div class="session-subtitle-text">APACS</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
               <span class="tag-badge tag-chair">APACS</span>
-              <span class="tag-badge tag-type">Session Thématique</span>
+              <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
           </div>
         </div>
@@ -960,56 +997,56 @@
           <div class="presentations-list">
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Bullage prolongé en post opératoire : prévention et traitement</div>
+                <div class="presentation-title" data-en="Prolonged postoperative air leak: prevention and treatment" data-fr="Bullage prolongé en post opératoire : prévention et traitement">Prolonged postoperative air leak: prevention and treatment</div>
                 <div class="presentation-speaker">Dr Abdessalem HENTATI (TUN) 🇹🇳</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Réhabilitation préopératoire : indications et intérêts</div>
+                <div class="presentation-title" data-en="Preoperative rehabilitation: indications and benefits" data-fr="Réhabilitation préopératoire : indications et intérêts">Preoperative rehabilitation: indications and benefits</div>
                 <div class="presentation-speaker">Dr Walid FEKI (TUN) 🇹🇳</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item">
               <div class="presentation-content">
-                <div class="presentation-title">Douleur chronique post opératoire : étiologies et prise en charge</div>
+                <div class="presentation-title" data-en="Postoperative chronic pain: etiologies and management" data-fr="Douleur chronique post opératoire : étiologies et prise en charge">Postoperative chronic pain: etiologies and management</div>
                 <div class="presentation-speaker">Dr Rym ZAIMI (FRA) 🇫🇷</div>
               </div>
-              <span class="duration-chip">15 mn</span>
+              <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
             <div class="presentation-item" style="background:#f1f5f9;">
               <div class="presentation-content">
-                <div class="presentation-title" style="color:var(--blue);">Discussion générale</div>
+                <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
               </div>
-              <span class="duration-chip" style="background:#e2e8f0;">15 mn</span>
+              <span class="duration-chip" style="background:#e2e8f0;" data-en="15 min" data-fr="15 mn">15 min</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 18h00 - 19h00 -->
-      <div class="session-card" data-day="day2" data-cat="session" data-search="session 5 séance vidéo">
+      <div class="session-card" data-day="day2" data-cat="session" data-search="session 5 video session séance vidéo">
         <div class="session-card-header">
           <div class="time-badge">18h00 - 19h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Session 5: Séance vidéo</div>
+            <div class="session-title-text" data-en="Session 5: Video Session" data-fr="Session 5: Séance vidéo">Session 5: Video Session</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room">Grande salle</span>
-              <span class="tag-badge tag-type">Séance Vidéo</span>
+              <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+              <span class="tag-badge tag-type" data-en="Video Session" data-fr="Séance Vidéo">Video Session</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 19h00 -->
-      <div class="session-card" data-day="day2" data-cat="pause" data-search="dîner gala dinner soirée">
+      <div class="session-card" data-day="day2" data-cat="pause" data-search="dîner gala dinner soirée closing evening">
         <div class="session-card-header">
           <div class="time-badge event">19h00</div>
           <div class="session-main-info">
-            <div class="session-title-text">Dîner Gala 🎆</div>
-            <div class="session-subtitle-text">Soirée officielle de clôture du Congrès TTSA</div>
+            <div class="session-title-text" data-en="Gala Dinner 🎆" data-fr="Dîner Gala 🎆">Gala Dinner 🎆</div>
+            <div class="session-subtitle-text" data-en="Official TTSA Congress Closing Evening" data-fr="Soirée officielle de clôture du Congrès TTSA">Official TTSA Congress Closing Evening</div>
           </div>
         </div>
       </div>
@@ -1019,16 +1056,16 @@
 
   <!-- Empty Search Result -->
   <div id="no-results" class="empty-state" style="display:none;">
-    <h3>Aucune session trouvée</h3>
-    <p>Essayez de modifier votre recherche ou de changer les filtres sélectionnés.</p>
+    <h3 data-en="No sessions found" data-fr="Aucune session trouvée">No sessions found</h3>
+    <p data-en="Try adjusting your search query or switching active filters." data-fr="Essayez de modifier votre recherche ou de changer les filtres sélectionnés.">Try adjusting your search query or switching active filters.</p>
   </div>
 
   <!-- CTA Box -->
   <div class="cta-box">
-    <h3>Prêt à participer au Congrès TTSA 2026 ?</h3>
-    <p>Soumettez votre résumé scientifique ou créez un compte pour vous inscrire.</p>
+    <h3 data-en="Ready to participate in the TTSA Congress 2026?" data-fr="Prêt à participer au Congrès TTSA 2026 ?">Ready to participate in the TTSA Congress 2026?</h3>
+    <p data-en="Submit your scientific abstract or create an account to register." data-fr="Soumettez votre résumé scientifique ou créez un compte pour vous inscrire.">Submit your scientific abstract or create an account to register.</p>
     <a href="/register.html" class="cta-btn">
-      <span>S'inscrire / Soumettre un résumé</span>
+      <span data-en="Register / Submit Abstract" data-fr="S'inscrire / Soumettre un résumé">Register / Submit Abstract</span>
     </a>
   </div>
 
@@ -1037,13 +1074,42 @@
 <!-- Footer -->
 <footer class="footer">
   <div class="footer-bottom container" style="border:none">
-    <p>&copy; 2026 Tunisian Thoracic Surgery Association. Tous droits réservés.</p>
+    <p data-en="&copy; 2026 Tunisian Thoracic Surgery Association. All rights reserved." data-fr="&copy; 2026 Tunisian Thoracic Surgery Association. Tous droits réservés.">&copy; 2026 Tunisian Thoracic Surgery Association. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
+let currentLang = 'en'; // Default language is English
 let currentDay = 'all';
 let currentCategory = 'all';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('ttsa_program_lang', lang);
+
+  // Update Language Buttons Active State
+  document.getElementById('lang-btn-en').classList.toggle('active', lang === 'en');
+  document.getElementById('lang-btn-fr').classList.toggle('active', lang === 'fr');
+
+  // Update HTML Document Language
+  document.documentElement.lang = lang;
+
+  // Translate all elements with data-en and data-fr attributes
+  document.querySelectorAll('[data-en][data-fr]').forEach(el => {
+    const text = el.getAttribute('data-' + lang);
+    if (text) {
+      el.textContent = text;
+    }
+  });
+
+  // Update Input Placeholders
+  document.querySelectorAll('[data-en-placeholder][data-fr-placeholder]').forEach(el => {
+    const placeholder = el.getAttribute('data-' + lang + '-placeholder');
+    if (placeholder) {
+      el.placeholder = placeholder;
+    }
+  });
+}
 
 function filterDay(day) {
   currentDay = day;
@@ -1120,6 +1186,10 @@ function applyFilters() {
     noResults.style.display = 'none';
   }
 }
+
+// Initialize Language on Load (Default to English)
+const savedLang = localStorage.getItem('ttsa_program_lang') || 'en';
+setLanguage(savedLang);
 </script>
 </body>
 </html>
