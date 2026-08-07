@@ -372,6 +372,54 @@
     .tag-chair { background: var(--gray-100); color: var(--gray-700); }
     .tag-type { background: #f1f5f9; color: #334155; }
 
+    /* Color-coded session cards */
+    /* 1. Workshops: Yellow Accent */
+    .session-card[data-cat="workshop"] {
+      border-left: 6px solid #eab308;
+    }
+    .session-card[data-cat="workshop"] .time-badge {
+      background: #fef9c3;
+      color: #854d0e;
+      border-color: #fef08a;
+    }
+    .session-card[data-cat="workshop"] .tag-type {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    /* 2. Conference (Thematic Sessions): Red Accent */
+    .session-card[data-cat="session"] {
+      border-left: 6px solid #b82538;
+    }
+    .session-card[data-cat="session"] .time-badge {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+    .session-card[data-cat="session"] .tag-type {
+      background: #fdeaed;
+      color: #b82538;
+    }
+
+    /* 3. Communications (Free Papers / Posters): Blue Accent */
+    .session-card[data-cat="posters"] {
+      border-left: 6px solid #0C589A;
+    }
+    .session-card[data-cat="posters"] .time-badge {
+      background: #e8f2fc;
+      color: #0C589A;
+      border-color: #bae6fd;
+    }
+    .session-card[data-cat="posters"] .tag-type {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* 4. Breaks & Meals: Green Accent */
+    .session-card[data-cat="pause"] {
+      border-left: 6px solid #10b981;
+    }
+
     /* Presentations Container */
     .presentations-container {
       padding: 16px 24px 20px 24px;
