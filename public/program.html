@@ -428,6 +428,18 @@
       border-color: #bbf7d0;
     }
 
+    /* 5. Symposium: Purple Accent & Light Background */
+    .session-card.purple, .session-card[data-cat="symposium"] {
+      border-left: 6px solid #8b5cf6;
+      background: #f5f3ff;
+      border-color: #ddd6fe;
+    }
+    .session-card.purple .time-badge, .session-card[data-cat="symposium"] .time-badge {
+      background: #ede9fe;
+      color: #6d28d9;
+      border-color: #c4b5fd;
+    }
+
     /* Presentations Container */
     .presentations-container {
       padding: 16px 24px 20px 24px;
@@ -912,13 +924,14 @@
       </div>
 
       <!-- 12h30 - 13h00 -->
-      <div class="session-card" data-day="day2" data-cat="session" data-search="symposium">
+      <div class="session-card purple" data-day="day2" data-cat="symposium" data-search="symposium">
         <div class="session-card-header">
           <div class="time-badge">12h30 - 13h00</div>
           <div class="session-main-info">
             <div class="session-title-text">Symposium</div>
             <div class="session-tags-row">
               <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+              <span class="tag-badge tag-type">Symposium</span>
             </div>
           </div>
         </div>
