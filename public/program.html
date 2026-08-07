@@ -94,6 +94,82 @@
       flex-wrap: wrap;
     }
 
+    /* Color Category Filters */
+    .cat-filters-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      padding-top: 16px;
+      border-top: 1px solid var(--gray-200);
+    }
+
+    .cat-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 20px;
+      border: 1px solid var(--gray-300);
+      background: var(--white);
+      color: var(--gray-700);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .cat-btn:hover {
+      border-color: var(--gray-400);
+      transform: translateY(-1px);
+    }
+
+    .color-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .dot-all { background: var(--gray-600); }
+    .dot-yellow { background: #eab308; }
+    .dot-red { background: #b82538; }
+    .dot-blue { background: #0C589A; }
+    .dot-purple { background: #8b5cf6; }
+    .dot-green { background: #10b981; }
+
+    /* Active filter states matching card colors */
+    .cat-btn.active.btn-yellow, .cat-btn.btn-yellow:hover {
+      background: #fffbeb;
+      border-color: #eab308;
+      color: #854d0e;
+    }
+    .cat-btn.active.btn-red, .cat-btn.btn-red:hover {
+      background: #fff5f5;
+      border-color: #b82538;
+      color: #991b1b;
+    }
+    .cat-btn.active.btn-blue, .cat-btn.btn-blue:hover {
+      background: #f0f7ff;
+      border-color: #0C589A;
+      color: #0369a1;
+    }
+    .cat-btn.active.btn-purple, .cat-btn.btn-purple:hover {
+      background: #f5f3ff;
+      border-color: #8b5cf6;
+      color: #6d28d9;
+    }
+    .cat-btn.active.btn-green, .cat-btn.btn-green:hover {
+      background: #f0fdf4;
+      border-color: #10b981;
+      color: #065f46;
+    }
+    .cat-btn.active {
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
     .day-tab-btn {
       padding: 12px 24px;
       border-radius: var(--radius);
@@ -645,6 +721,33 @@
       </div>
     </div>
 
+    <!-- Color Category Filters -->
+    <div class="cat-filters-container">
+      <button class="cat-btn active" onclick="filterCategory('all', this)">
+        <span class="color-dot dot-all"></span>
+        <span data-en="All" data-fr="Tous">All</span>
+      </button>
+      <button class="cat-btn btn-yellow" onclick="filterCategory('workshop', this)">
+        <span class="color-dot dot-yellow"></span>
+        <span data-en="Workshops" data-fr="Workshops">Workshops</span>
+      </button>
+      <button class="cat-btn btn-red" onclick="filterCategory('session', this)">
+        <span class="color-dot dot-red"></span>
+        <span data-en="Thematic Sessions" data-fr="Sessions Thématiques">Thematic Sessions</span>
+      </button>
+      <button class="cat-btn btn-blue" onclick="filterCategory('posters', this)">
+        <span class="color-dot dot-blue"></span>
+        <span data-en="Communications" data-fr="Communications">Communications</span>
+      </button>
+      <button class="cat-btn btn-purple" onclick="filterCategory('symposium', this)">
+        <span class="color-dot dot-purple"></span>
+        <span data-en="Symposium" data-fr="Symposium">Symposium</span>
+      </button>
+      <button class="cat-btn btn-green" onclick="filterCategory('pause', this)">
+        <span class="color-dot dot-green"></span>
+        <span data-en="Breaks & Events" data-fr="Pauses & Événements">Breaks & Events</span>
+      </button>
+    </div>
 
   </div>
 
