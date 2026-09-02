@@ -396,7 +396,7 @@ router.get('/me', require('../middleware/auth').requireAnyAuth, (req, res) => {
   let user;
   if (role === 'admin') user = db.prepare('SELECT id, email, first_name, last_name FROM admins WHERE id = ?').get(id);
   else if (role === 'reviewer') user = db.prepare('SELECT id, email, first_name, last_name FROM reviewers WHERE id = ?').get(id);
-  else user = db.prepare('SELECT id, email, first_name, last_name, nationality, profession, specialty, seniority FROM users WHERE id = ?').get(id);
+  else user = db.prepare('SELECT id, email, first_name, last_name, nationality, country, profession, specialty, specialty_details, seniority, created_at FROM users WHERE id = ?').get(id);
   if (!user) return res.status(404).json({ error: 'User not found' });
   res.json({ ...user, role });
 });
