@@ -26,14 +26,14 @@ function autoSubmitDrafts() {
   // Only act once the deadline has passed
   if (new Date() <= deadline) return;
 
-  const now = new Date().toISOString();
+  const nowUnix = Math.floor(Date.now() / 1000);
 
   const result = db.prepare(`
     UPDATE abstracts
-    SET    status       = 'Submitted',
-           submitted_at = ?
+    SET    status     = 'Submitted',
+           updated_at = ?
     WHERE  status = 'Draft'
-  `).run(now);
+  `).run(nowUnix);
 
   if (result.changes > 0) {
     console.log(`[Scheduler] ✅ Auto-submitted ${result.changes} draft abstract(s) after deadline.`);
