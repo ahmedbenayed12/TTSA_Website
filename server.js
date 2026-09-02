@@ -73,6 +73,10 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: message });
 });
 
+// ─── Background Jobs ─────────────────────────────────────────────────────────
+const { startScheduler } = require('./services/scheduler');
+startScheduler();
+
 // ─── Start ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
