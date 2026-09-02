@@ -87,16 +87,6 @@ router.get('/abstracts/:id', requireAdmin, (req, res) => {
   res.json(abstract);
 });
 
-// TEMP — GET /api/admin/abstracts/:id/revert-draft — revert abstract back to Draft
-router.get('/abstracts/:id/revert-draft', requireAdmin, (req, res) => {
-  const result = db.prepare(`
-    UPDATE abstracts
-    SET status = 'Draft', is_locked = 0, submission_number = NULL, updated_at = unixepoch()
-    WHERE id = ?
-  `).run(req.params.id);
-  if (result.changes === 0) return res.status(404).json({ error: 'Abstract not found' });
-  res.json({ message: `Abstract ${req.params.id} reverted to Draft` });
-});
 
 // ─── REVIEWER MANAGEMENT ─────────────────────────────────────────────────────
 
