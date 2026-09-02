@@ -197,11 +197,41 @@
     }
     .note-box strong { display: block; margin-bottom: 2px; }
 
+
+    /* Sub-rate rows inside pricing cards */
+    .sub-rate-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin-bottom: 4px; }
+    .sub-rate {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px; gap: 12px;
+    }
+    .sub-rate.member { background: var(--blue-light); border-bottom: 1px solid var(--gray-200); }
+    .sub-rate.others { background: var(--gray-50); }
+    .sub-rate-label { font-size: .85rem; color: var(--gray-700); font-weight: 500; }
+    .sub-rate-price { font-size: 1.35rem; font-weight: 800; color: var(--blue-dark); white-space: nowrap; }
+    .currency-sm { font-size: .75rem; font-weight: 700; color: var(--gray-500); vertical-align: super; margin-right: 2px; }
+    .member-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--blue); color: #fff;
+      font-size: .72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Footnotes */
+    .footnotes-box {
+      margin-top: 24px; padding: 16px 20px;
+      background: var(--gray-50); border-left: 3px solid var(--gray-300);
+      border-radius: var(--radius); font-size: .83rem; color: var(--gray-600);
+    }
+    .footnotes-box p { margin-bottom: 6px; color: var(--gray-600); }
+    .footnotes-box p:last-child { margin-bottom: 0; }
+
     @media (max-width: 600px) {
       .date-pill { border-right: none; border-bottom: 1px solid var(--gray-200); width: 100%; }
       .date-pill:last-child { border-bottom: none; }
       .fees-table thead th, .fees-table td { padding: 10px 12px; font-size: .82rem; }
     }
+
   </style>
 </head>
 <body>
@@ -260,29 +290,31 @@
   <div class="container">
     <div class="section-title">
       <h2>Registration Categories &amp; Fees</h2>
-      <p>All registrations include full access to the two-day scientific program. Toggle Tunisian / Foreign to see your rate.</p>
+      <p>All fees are in Tunisian Dinars (TD). Workshops are <strong>not included</strong> in the registration fee.</p>
     </div>
 
     <div class="pricing-grid">
 
-      <!-- Card 1: Senior Medical -->
-      <div class="price-card featured" id="card-senior-medical">
+      <!-- Card 1: Qualified Doctor -->
+      <div class="price-card featured" id="card-doctor">
         <div class="price-card-header">
           <div class="price-card-icon blue">🩺</div>
-          <h3>Senior Physician</h3>
-          <div class="subtitle">Medical · Specialist / Consultant</div>
+          <h3>Qualified Doctor</h3>
+          <div class="subtitle">Specialist / Consultant Physician</div>
         </div>
         <div class="price-card-body">
-          <div class="nat-tabs">
-            <button class="nat-tab active" onclick="switchNat('senior-medical','tn',this)">🇹🇳 Tunisian</button>
-            <button class="nat-tab" onclick="switchNat('senior-medical','fo',this)">🌍 Foreign</button>
-          </div>
-          <div class="price-display" id="price-senior-medical">
-            <div class="amount">
-              <span class="currency">TND</span><span class="price-tag-tn">250</span><span class="price-tag-fo" style="display:none">€ 120</span>
+          <!-- Sub-rates -->
+          <div class="sub-rate-list">
+            <div class="sub-rate member">
+              <div class="sub-rate-label">
+                <span class="member-badge">★ TTSA Member<sup>**</sup></span>
+              </div>
+              <div class="sub-rate-price"><span class="currency-sm">TD</span> 150</div>
             </div>
-            <span class="period">per person · full congress (2 days)</span>
-            <span class="foreign-note">Payable in EUR at the registration desk</span>
+            <div class="sub-rate others">
+              <div class="sub-rate-label">Others</div>
+              <div class="sub-rate-price"><span class="currency-sm">TD</span> 300</div>
+            </div>
           </div>
           <hr class="divider"/>
           <ul class="include-list">
@@ -293,28 +325,29 @@
           </ul>
         </div>
         <div class="price-card-footer">
-          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-senior-medical">Register Now →</a>
+          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-doctor">Register Now →</a>
         </div>
       </div>
 
-      <!-- Card 2: Resident Medical -->
-      <div class="price-card" id="card-resident-medical">
+      <!-- Card 2: Medical Resident -->
+      <div class="price-card" id="card-resident">
         <div class="price-card-header">
           <div class="price-card-icon gold">🎓</div>
-          <h3>Resident / Intern</h3>
-          <div class="subtitle">Medical · In-training physician</div>
+          <h3>Medical Resident</h3>
+          <div class="subtitle">In-training physician</div>
         </div>
         <div class="price-card-body">
-          <div class="nat-tabs">
-            <button class="nat-tab active" onclick="switchNat('resident-medical','tn',this)">🇹🇳 Tunisian</button>
-            <button class="nat-tab" onclick="switchNat('resident-medical','fo',this)">🌍 Foreign</button>
-          </div>
-          <div class="price-display" id="price-resident-medical">
-            <div class="amount">
-              <span class="currency">TND</span><span class="price-tag-tn">100</span><span class="price-tag-fo" style="display:none">€ 60</span>
+          <div class="sub-rate-list">
+            <div class="sub-rate member">
+              <div class="sub-rate-label">
+                <span class="member-badge">★ TTSA Member<sup>***</sup></span>
+              </div>
+              <div class="sub-rate-price"><span class="currency-sm">TD</span> 100</div>
             </div>
-            <span class="period">per person · full congress (2 days)</span>
-            <span class="foreign-note">Payable in EUR at the registration desk</span>
+            <div class="sub-rate others">
+              <div class="sub-rate-label">Others</div>
+              <div class="sub-rate-price"><span class="currency-sm">TD</span> 200</div>
+            </div>
           </div>
           <hr class="divider"/>
           <ul class="include-list">
@@ -322,15 +355,14 @@
             <li>Congress bag &amp; printed materials</li>
             <li>Lunch &amp; coffee breaks (both days)</li>
             <li>Official certificate of attendance</li>
-            <li>Special resident networking session</li>
           </ul>
         </div>
         <div class="price-card-footer">
-          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-resident-medical">Register Now →</a>
+          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-resident">Register Now →</a>
         </div>
       </div>
 
-      <!-- Card 3: Paramedical -->
+      <!-- Card 3: Paramedical Staff -->
       <div class="price-card" id="card-paramedical">
         <div class="price-card-header">
           <div class="price-card-icon red">💉</div>
@@ -338,22 +370,22 @@
           <div class="subtitle">Nurse · Physiotherapist · Allied Health</div>
         </div>
         <div class="price-card-body">
-          <div class="nat-tabs">
-            <button class="nat-tab active" onclick="switchNat('paramedical','tn',this)">🇹🇳 Tunisian</button>
-            <button class="nat-tab" onclick="switchNat('paramedical','fo',this)">🌍 Foreign</button>
-          </div>
-          <div class="price-display" id="price-paramedical">
-            <div class="amount">
-              <span class="currency">TND</span><span class="price-tag-tn">50</span><span class="price-tag-fo" style="display:none">€ 30</span>
+          <div class="sub-rate-list">
+            <div class="sub-rate member">
+              <div class="sub-rate-label">
+                <span class="member-badge">🏢 With third party support</span>
+              </div>
+              <div class="sub-rate-price"><span class="currency-sm">TD</span> 200</div>
             </div>
-            <span class="period">per person · full congress (2 days)</span>
-            <span class="foreign-note">Payable in EUR at the registration desk</span>
+            <div class="sub-rate others">
+              <div class="sub-rate-label">Others</div>
+              <div class="sub-rate-price"><span class="currency-sm">TD</span> 100</div>
+            </div>
           </div>
           <hr class="divider"/>
           <ul class="include-list">
             <li>Access to paramedical &amp; allied health sessions</li>
             <li>Dedicated Anesthesia &amp; Access workshop</li>
-            <li>Healthcare Ergonomics workshop</li>
             <li>Lunch &amp; coffee breaks (both days)</li>
             <li>Certificate of attendance</li>
           </ul>
@@ -365,11 +397,18 @@
 
     </div>
 
+    <!-- Footnotes -->
+    <div class="footnotes-box">
+      <p>* Workshops are <strong>not included</strong> in the registration fee.</p>
+      <p>** TTSA 2026 membership fees (Thoracic Surgeon): <strong>70 dinars</strong>.</p>
+      <p>*** TTSA 2026 membership fees (Thoracic Surgery Resident): <strong>50 dinars</strong>.</p>
+    </div>
+
     <div class="note-box">
       <span style="font-size:1.3rem;flex-shrink:0;">⚠️</span>
       <div>
         <strong>Payment &amp; On-site Registration</strong>
-        Payment is collected on-site at the registration desk upon arrival. A valid proof of identity and, for residents, a certificate of enrollment may be required. Fees are non-refundable after October 25, 2026.
+        Payment is collected on-site at the registration desk upon arrival. A valid proof of identity and, for residents, a certificate of enrollment may be required.
       </div>
     </div>
   </div>
@@ -380,42 +419,60 @@
   <div class="container">
     <div class="section-title">
       <h2>Complete Fee Schedule</h2>
-      <p>Quick-reference summary of all registration fees by category and nationality.</p>
+      <p>Quick-reference summary of all registration fees. All amounts in Tunisian Dinars (TD).</p>
     </div>
     <div class="fees-table-wrap">
       <table class="fees-table">
         <thead>
           <tr>
             <th>Category</th>
-            <th>Profile</th>
-            <th>🇹🇳 Tunisian (TND)</th>
-            <th>🌍 Foreign (EUR)</th>
+            <th>Sub-category</th>
+            <th>Fee (TD)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><span class="cat-badge">🩺 Senior Physician</span></td>
-            <td>Specialist / Consultant (Medical)</td>
-            <td><strong>250 TND</strong></td>
-            <td><strong>€ 120</strong></td>
+            <td rowspan="2" style="vertical-align:middle;"><span class="cat-badge">🩺 Qualified Doctor</span></td>
+            <td>TTSA Member <sup style="color:var(--blue);">**</sup></td>
+            <td><strong>150 TD</strong></td>
           </tr>
           <tr>
-            <td><span class="cat-badge gold">🎓 Resident / Intern</span></td>
-            <td>In-training physician (Medical)</td>
-            <td><strong>100 TND</strong></td>
-            <td><strong>€ 60</strong></td>
+            <td>Others</td>
+            <td><strong>300 TD</strong></td>
+          </tr>
+          <tr style="background:var(--gray-50);">
+            <td rowspan="2" style="vertical-align:middle;"><span class="cat-badge gold">🎓 Medical Resident</span></td>
+            <td>TTSA Member <sup style="color:var(--blue);">***</sup></td>
+            <td><strong>100 TD</strong></td>
+          </tr>
+          <tr style="background:var(--gray-50);">
+            <td>Others</td>
+            <td><strong>200 TD</strong></td>
           </tr>
           <tr>
-            <td><span class="cat-badge red">💉 Paramedical</span></td>
-            <td>Nurse, Physiotherapist, Allied Health</td>
-            <td><strong>50 TND</strong></td>
-            <td><strong>€ 30</strong></td>
+            <td rowspan="2" style="vertical-align:middle;"><span class="cat-badge red">💉 Paramedical Staff</span></td>
+            <td>With third party support</td>
+            <td><strong>200 TD</strong></td>
+          </tr>
+          <tr>
+            <td>Others</td>
+            <td><strong>100 TD</strong></td>
           </tr>
         </tbody>
       </table>
     </div>
+    <div class="footnotes-box" style="margin-top:20px;">
+      <p>* Workshops are <strong>not included</strong> in the registration fee.</p>
+      <p>** TTSA 2026 membership fees (Thoracic Surgeon): <strong>70 dinars</strong>.</p>
+      <p>*** TTSA 2026 membership fees (Thoracic Surgery Resident): <strong>50 dinars</strong>.</p>
+    </div>
   </div>
 </section>
+
+
+
+
+
 
 <!-- WHAT'S INCLUDED -->
 <section class="section">
