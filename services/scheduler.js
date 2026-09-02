@@ -64,7 +64,15 @@ function autoSubmitDrafts() {
 }
 
 function startScheduler() {
-  // Run every minute: '* * * * *'
+  // ── Run immediately on startup ──────────────────────────────────────────────
+  console.log('[Scheduler] 🚀 Running auto-submit check on startup...');
+  try {
+    autoSubmitDrafts();
+  } catch (err) {
+    console.error('[Scheduler] ❌ Startup auto-submit error:', err.message);
+  }
+
+  // ── Then run every minute ───────────────────────────────────────────────────
   cron.schedule('* * * * *', () => {
     try {
       autoSubmitDrafts();
