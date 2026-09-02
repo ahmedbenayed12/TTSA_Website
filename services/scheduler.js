@@ -26,17 +26,40 @@ function autoSubmitDrafts() {
   // Only act once the deadline has passed
   if (new Date() <= deadline) return;
 
-  const nowUnix = Math.floor(Date.now() / 1000);
+  // Fetch all drafts ordered by id (oldest first = lower submission numbers)
+  const drafts = db.prepare(
+    "SELECT id FROM abstracts WHERE status = 'Draft' ORDER BY id ASC"
+  ).all();
 
-  const result = db.prepare(`
-    UPDATE abstracts
-    SET    status     = 'Submitted',
-           updated_at = ?
-    WHERE  status = 'Draft'
-  `).run(nowUnix);
+  if (drafts.length === 0) return;
 
-  if (result.changes > 0) {
-    console.log(`[Scheduler] ✅ Auto-submitted ${result.changes} draft abstract(s) after deadline.`);
+  // Wrap in a transaction so numbers are assigned atomically
+  const promote = db.transaction(() => {
+    let promoted = 0;
+    for (const draft of drafts) {
+      // Get next submission_number (same logic as the /confirm route)
+      const nextNum = db.prepare(
+        "SELECT COALESCE(MAX(submission_number), 0) + 1 AS n FROM abstracts WHERE submission_number IS NOT NULL"
+      ).get().n;
+
+      db.prepare(`
+        UPDATE abstracts
+        SET    status            = 'Submitted',
+               is_locked        = 1,
+               submission_number = ?,
+               updated_at       = unixepoch()
+        WHERE  id = ?
+      `).run(nextNum, draft.id);
+
+      promoted++;
+    }
+    return promoted;
+  });
+
+  const count = promote();
+
+  if (count > 0) {
+    console.log(`[Scheduler] ✅ Auto-submitted ${count} draft abstract(s) after deadline.`);
   }
 }
 
