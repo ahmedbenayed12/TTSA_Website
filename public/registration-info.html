@@ -77,15 +77,6 @@
       position: relative;
     }
     .price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
-    .price-card.featured { border-color: var(--blue); }
-    .price-card.featured::before {
-      content: '★ Most Common';
-      position: absolute; top: 14px; right: 14px;
-      background: var(--blue); color: #fff;
-      font-size: .68rem; font-weight: 700;
-      padding: 4px 10px; border-radius: 999px;
-      text-transform: uppercase; letter-spacing: .05em;
-    }
     .price-card-header { padding: 24px 24px 16px; border-bottom: 1px solid var(--gray-100); }
     .price-card-icon {
       width: 48px; height: 48px; border-radius: var(--radius);
@@ -264,7 +255,7 @@
     <div class="pricing-grid">
 
       <!-- Card 1: Qualified Doctor -->
-      <div class="price-card featured" id="card-doctor">
+      <div class="price-card" id="card-doctor">
         <div class="price-card-header">
           <h3>Qualified Doctor</h3>
           <div class="subtitle">Specialist / Consultant Physician</div>
