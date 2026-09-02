@@ -5,6 +5,7 @@
   <title>My Dashboard – TTSA Participant Portal</title>
   <link rel="icon" type="image/svg+xml" href="/img/favicon.svg"/>
   <link rel="stylesheet" href="/css/global.css"/>
+  <link rel="stylesheet" href="/css/member-portal-views.css"/>
   <style>
     .slot-card { cursor:pointer; }
     .slot-card:hover { transform:translateY(-2px); box-shadow:var(--shadow); }
@@ -30,13 +31,54 @@
       <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
       <div class="sidebar-logo-text"><div class="t1">Submission Portal</div><div class="t2">Participant Area</div></div>
     </div>
+    
+    <!-- 4 Navigation Buttons -->
     <nav class="sidebar-nav">
-      <div class="sidebar-nav-label">Main</div>
-      <a href="/member/dashboard.html" class="active" style="justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>Dashboard</a>
-      <a href="/member/submit.html" id="navNewAbsBtn" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:10px 14px;margin:12px 0;border-radius:var(--radius);background:var(--red);color:#fff;font-weight:700;font-size:.88rem;text-decoration:none;box-shadow:var(--shadow-sm);"><span style="font-size:1.2rem;line-height:1;margin-bottom:2px;">+</span> New Abstract</a>
-      <div class="sidebar-nav-label" style="margin-top:8px">My Submissions</div>
-      <div id="sidebarAbstracts"></div>
+      <div class="sidebar-nav-label">Navigation</div>
+      
+      <!-- 1. Dashboard -->
+      <a href="#dashboard" id="nav-dashboard" class="sidebar-link active" onclick="switchPortalTab('dashboard'); return false;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>
+        </svg>
+        <span>Dashboard</span>
+      </a>
+
+      <!-- 2. Abstracts -->
+      <a href="#abstracts" id="nav-abstracts" class="sidebar-link" onclick="switchPortalTab('abstracts'); return false;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+          <polyline points="10 9 9 9 8 9"></polyline>
+        </svg>
+        <span>Abstracts</span>
+      </a>
+
+      <!-- 3. Program -->
+      <a href="#program" id="nav-program" class="sidebar-link" onclick="switchPortalTab('program'); return false;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+        <span>Program</span>
+      </a>
+
+      <!-- 4. Registration -->
+      <a href="#registration" id="nav-registration" class="sidebar-link" onclick="switchPortalTab('registration'); return false;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"></path>
+          <path d="M13 5v2"></path>
+          <path d="M13 17v2"></path>
+          <path d="M13 11v2"></path>
+        </svg>
+        <span>Registration</span>
+      </a>
     </nav>
+
     <div class="sidebar-footer">
       <div class="sidebar-user">
         <div class="sidebar-avatar" id="sidebarAvatar"><svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></div>
@@ -51,60 +93,793 @@
     </div>
   </aside>
 
-  <!-- Main -->
+  <!-- Main Area -->
   <main class="portal-main">
     <div class="portal-topbar">
-      <h2>My Dashboard</h2>
-      <div style="display:flex;align-items:center;gap:12px">
+      <h2 id="topbarTitle">My Dashboard</h2>
+      <div id="topbarActions" style="display:flex;align-items:center;gap:12px">
         <span id="deadlineBadge" class="badge"></span>
         <a href="/member/submit.html" id="topNewAbsBtn" class="btn btn-danger btn-sm">+ New Abstract</a>
       </div>
     </div>
+
     <div class="portal-body">
 
-      <!-- Deadline alert -->
-      <div id="deadlineAlert" class="alert alert-info" style="margin-bottom:24px">
-        <span id="deadlineText">Loading deadline…</span>
-      </div>
-
-      <!-- Integrated Submission Slots -->
-      <div style="margin-bottom:32px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-          <h3>My Submission Slots</h3>
-          <span style="font-size:.82rem;color:var(--gray-500)">Max 5 abstracts per participant</span>
+      <!-- ============================================== -->
+      <!-- VIEW 1: DASHBOARD VIEW                         -->
+      <!-- ============================================== -->
+      <div id="view-dashboard" class="portal-view">
+        <!-- Deadline alert -->
+        <div id="deadlineAlert" class="alert alert-info" style="margin-bottom:24px">
+          <span id="deadlineText">Loading deadline…</span>
         </div>
-        <div id="slotList" style="display:flex;flex-direction:column;gap:14px">
-          <div class="loading-center"><div class="spinner"></div></div>
-        </div>
-      </div>
 
-      <!-- Timeline -->
-      <div class="card" style="margin-top:24px">
-        <div class="card-header"><h3>Abstract Workflow</h3></div>
-        <div class="card-body">
-          <div class="status-timeline">
-            <div class="timeline-item done">
-              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
-              <div class="timeline-content"><h4>Register & Verify Email</h4><p>Create your account and confirm with OTP.</p></div>
+        <!-- Integrated Submission Slots -->
+        <div id="slotsSection" style="margin-bottom:32px;border-radius:var(--radius-lg);transition:box-shadow 0.3s ease;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div>
+              <h3 style="margin-bottom:2px">My Submission Slots</h3>
+              <span style="font-size:.82rem;color:var(--gray-500)">Max 5 abstracts per participant</span>
             </div>
-            <div class="timeline-item active" id="tl-submit">
-              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
-              <div class="timeline-content"><h4>Submit Abstract</h4><p>Submit up to 3 abstracts before the deadline.</p></div>
-            </div>
-            <div class="timeline-item" id="tl-review">
-              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
-              <div class="timeline-content"><h4>Peer Review</h4><p>Assigned reviewers evaluate your submission.</p></div>
-            </div>
-            <div class="timeline-item" id="tl-result">
-              <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
-              <div class="timeline-content"><h4>Receive Verdict</h4><p>You'll be notified by email with the decision.</p></div>
-            </div>
-            <div class="timeline-item" id="tl-upload">
-              <div class="timeline-dot"><div class="dot"></div></div>
-              <div class="timeline-content"><h4>Upload Presentation</h4><p>Accepted authors upload their final PPT/Poster.</p></div>
+            <a href="/member/submit.html" class="btn btn-outline btn-sm" id="slotsAddBtn">+ Submit Abstract</a>
+          </div>
+          <div id="slotList" style="display:flex;flex-direction:column;gap:14px">
+            <div class="loading-center"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="card" style="margin-top:24px">
+          <div class="card-header"><h3>Abstract Workflow</h3></div>
+          <div class="card-body">
+            <div class="status-timeline">
+              <div class="timeline-item done">
+                <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+                <div class="timeline-content"><h4>Register & Verify Email</h4><p>Create your account and confirm with OTP.</p></div>
+              </div>
+              <div class="timeline-item active" id="tl-submit">
+                <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+                <div class="timeline-content"><h4>Submit Abstract</h4><p>Submit up to 3 abstracts before the deadline.</p></div>
+              </div>
+              <div class="timeline-item" id="tl-review">
+                <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+                <div class="timeline-content"><h4>Peer Review</h4><p>Assigned reviewers evaluate your submission.</p></div>
+              </div>
+              <div class="timeline-item" id="tl-result">
+                <div class="timeline-dot"><div class="dot"></div><div class="line"></div></div>
+                <div class="timeline-content"><h4>Receive Verdict</h4><p>You'll be notified by email with the decision.</p></div>
+              </div>
+              <div class="timeline-item" id="tl-upload">
+                <div class="timeline-dot"><div class="dot"></div></div>
+                <div class="timeline-content"><h4>Upload Presentation</h4><p>Accepted authors upload their final PPT/Poster.</p></div>
+              </div>
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- VIEW 2: PROGRAM VIEW (SCIENTIFIC PROGRAM)      -->
+      <!-- ============================================== -->
+      <div id="view-program" class="portal-view" style="display:none">
+        
+        <!-- Hero Header -->
+        <header class="embedded-hero">
+          <div class="hero-badge" data-en="5th National Thoracic Surgery Congress" data-fr="5ème Congrès National de Chirurgie Thoracique">
+            5th National Thoracic Surgery Congress
+          </div>
+          <h1 data-en="Scientific Program" data-fr="Programme Scientifique">Scientific Program</h1>
+          <p data-en="National Thoracic Surgery Congress — November 06 & 07, 2026" data-fr="Congrès National de Chirurgie Thoracique — 06 & 07 Novembre 2026">National Thoracic Surgery Congress — November 06 & 07, 2026</p>
+        </header>
+
+        <!-- Interactive Controls Card -->
+        <div class="controls-card">
+          
+          <!-- Day Tabs -->
+          <div class="days-tab-container">
+            <button class="day-tab-btn active" onclick="filterDay('all')" id="tab-all" data-en="All Days" data-fr="Tous les Jours">
+              All Days
+            </button>
+            <button class="day-tab-btn" onclick="filterDay('day1')" id="tab-day1" data-en="Friday Nov 06, 2026" data-fr="Vendredi 06 Nov 2026">
+              Friday Nov 06, 2026
+            </button>
+            <button class="day-tab-btn" onclick="filterDay('day2')" id="tab-day2" data-en="Saturday Nov 07, 2026" data-fr="Samedi 07 Nov 2026">
+              Saturday Nov 07, 2026
+            </button>
+          </div>
+
+          <!-- Filters & Search Row -->
+          <div class="filters-row">
+            <div class="search-box-wrap">
+              <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, speaker, room..." data-en-placeholder="Search by topic, speaker, room..." data-fr-placeholder="Rechercher un sujet, intervenant, session..." onkeyup="handleSearch()"/>
+            </div>
+
+            <div class="action-btns-group">
+              <!-- Language Switcher Pill -->
+              <div class="lang-switcher-pill">
+                <button class="lang-btn active" id="lang-btn-en" onclick="setLanguage('en')"><svg class="flag-icon-svg" viewBox="0 0 60 30" width="18" height="12" style="border-radius:2px;vertical-align:middle;margin-right:5px;display:inline-block;"><clipPath id="s_dash"><path d="M0,0 v30 h60 v-30 z"/></clipPath><clipPath id="t_dash"><path d="M30,15 h30 v15 z M30,15 h-30 v-15 z M30,15 h-30 v15 z M30,15 h30 v-15 z"/></clipPath><g clip-path="url(#s_dash)"><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#t_dash)" stroke="#C8102E" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#C8102E" stroke-width="6"/></g></svg> EN</button>
+                <button class="lang-btn" id="lang-btn-fr" onclick="setLanguage('fr')"><svg class="flag-icon-svg" viewBox="0 0 3 2" width="18" height="12" style="border-radius:2px;vertical-align:middle;margin-right:5px;display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg> FR</button>
+              </div>
+
+              <button class="btn-action" onclick="window.print()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                <span data-en="Print / PDF" data-fr="Imprimer / PDF">Print / PDF</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Color Category Filters -->
+          <div class="cat-filters-container">
+            <button class="cat-btn active" onclick="filterCategory('all', this)">
+              <span class="color-dot dot-all"></span>
+              <span data-en="All" data-fr="Tous">All</span>
+            </button>
+            <button class="cat-btn btn-yellow" onclick="filterCategory('workshop', this)">
+              <span class="color-dot dot-yellow"></span>
+              <span data-en="Workshops" data-fr="Workshops">Workshops</span>
+            </button>
+            <button class="cat-btn btn-red" onclick="filterCategory('session', this)">
+              <span class="color-dot dot-red"></span>
+              <span data-en="Thematic Sessions" data-fr="Sessions Thématiques">Thematic Sessions</span>
+            </button>
+            <button class="cat-btn btn-blue" onclick="filterCategory('posters', this)">
+              <span class="color-dot dot-blue"></span>
+              <span data-en="Communications" data-fr="Communications">Communications</span>
+            </button>
+            <button class="cat-btn btn-purple" onclick="filterCategory('symposium', this)">
+              <span class="color-dot dot-purple"></span>
+              <span data-en="Symposium" data-fr="Symposium">Symposium</span>
+            </button>
+            <button class="cat-btn btn-green" onclick="filterCategory('pause', this)">
+              <span class="color-dot dot-green"></span>
+              <span data-en="Breaks & Events" data-fr="Pauses & Événements">Breaks & Events</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Container for Day 1 -->
+        <div id="day1-container" class="day-group">
+          
+          <div class="day-section-header">
+            <div>
+              <h2 data-en="Friday, November 06, 2026" data-fr="Vendredi 06 Novembre 2026">Friday, November 06, 2026</h2>
+              <div class="sub-info" data-en="Workshops & Communications" data-fr="Workshops & Communications">Workshops & Communications</div>
+            </div>
+            <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;" data-en="Day 1" data-fr="Jour 1">Day 1</span>
+          </div>
+
+          <div class="timeline-list">
+
+            <!-- 08h00 - 12h30 -->
+            <div class="session-card" data-day="day1" data-cat="workshop" data-search="workshop initiation chirurgie robotique introduction to robotic surgery mohammed ben amar grande salle petite salle main hall small hall">
+              <div class="session-card-header">
+                <div class="time-badge">08h00 - 12h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Workshop: Introduction to Robotic Surgery" data-fr="Workshop: Initiation à la chirurgie robotique">Workshop: Introduction to Robotic Surgery</div>
+                  <div class="session-subtitle-text">Dr Mohammed BEN AMAR <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-type">Workshop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 12h30 - 13h00 -->
+            <div class="session-card" data-day="day1" data-cat="pause" data-search="pause transition break">
+              <div class="session-card-header">
+                <div class="time-badge break">12h30 - 13h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Break / Transition" data-fr="Pause / Transition">Break / Transition</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 13h00 - 14h00 -->
+            <div class="session-card" data-day="day1" data-cat="pause" data-search="déjeuner pause midi lunch break">
+              <div class="session-card-header">
+                <div class="time-badge break">13h00 - 14h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Lunch Break" data-fr="Pause Déjeuner">Lunch Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"></path><path d="M15 2v16"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"></path><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path></svg></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 14h00 - 15h30 (Card 1: Medical Workshop) -->
+            <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier médical ergonomics healthcare personnel majda alila ergonomie personnel santé grande salle hall 1">
+              <div class="session-card-header">
+                <div class="time-badge">14h00 - 15h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Medical Workshop: Ergonomics of Healthcare Personnel" data-fr="Atelier médical: Ergonomie du personnel de santé">Medical Workshop: Ergonomics of Healthcare Personnel</div>
+                  <div class="session-subtitle-text">Majda ALILA <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Hall 1: Main hall" data-fr="Salle 1: grande salle">Hall 1: Main hall</span>
+                    <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 14h00 - 15h30 (Card 2: Paramedical Workshop 1) -->
+            <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier paramédical 1 anesthesia thoracic surgery anesthésie chirurgie thoracique mariem bousarsar hbiba ksouri petite salle hall 2">
+              <div class="session-card-header">
+                <div class="time-badge">14h00 - 15h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Paramedical Workshop 1: Anesthesia in Thoracic Surgery" data-fr="Atelier paramédical 1: Anesthésie en chirurgie thoracique">Paramedical Workshop 1: Anesthesia in Thoracic Surgery</div>
+                  <div class="session-subtitle-text">Dr Mariem BOUSARSAR <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg> & Mme Hbiba KSOURI <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
+                    <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 15h30 - 16h30 (Card 1: Commented Posters 1) -->
+            <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 1 commented posters session 1 grande salle hall 1">
+              <div class="session-card-header">
+                <div class="time-badge">15h30 - 16h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Commented Posters Session 1" data-fr="Session Posters commentés 1">Commented Posters Session 1</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Hall 1: Main hall" data-fr="Salle 1: grande salle">Hall 1: Main hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 15h30 - 16h30 (Card 2: Paramedical Workshop 2) -->
+            <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier paramédical 2 instrumentation chirurgie robotique robotic surgery mohamed ben amor sirine boulila petite salle hall 2">
+              <div class="session-card-header">
+                <div class="time-badge">15h30 - 16h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Paramedical Workshop 2: Instrumentation in Robotic Surgery" data-fr="Atelier paramédical 2: Instrumentation en chirurgie robotique">Paramedical Workshop 2: Instrumentation in Robotic Surgery</div>
+                  <div class="session-subtitle-text">Dr Mohamed Ben Amor <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg> & Mme Sirine BOULILA <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
+                    <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 16h30 - 17h00 -->
+            <div class="session-card" data-day="day1" data-cat="pause" data-search="pause café coffee break">
+              <div class="session-card-header">
+                <div class="time-badge break">16h30 - 17h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Coffee Break" data-fr="Pause café">Coffee Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 17h00 - 18h00 (Card 1: Commented Posters 2) -->
+            <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 2 commented posters session 2 grande salle hall 1">
+              <div class="session-card-header">
+                <div class="time-badge">17h00 - 18h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Commented Posters Session 2" data-fr="Session Posters commentés 2">Commented Posters Session 2</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Hall 1: Main hall" data-fr="Salle 1: grande salle">Hall 1: Main hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 17h00 - 18h00 (Card 2: Paramedical Workshop 2 - Anticoagulation) -->
+            <div class="session-card" data-day="day1" data-cat="workshop" data-search="atelier paramédical 2 gestion anticoagulation sonia ouerghi perioperative anticoagulation management petite salle hall 2">
+              <div class="session-card-header">
+                <div class="time-badge">17h00 - 18h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Paramedical Workshop 2: Perioperative Anticoagulation Management" data-fr="Atelier paramédical 2: Gestion de l’anticoagulation en péri opératoire">Paramedical Workshop 2: Perioperative Anticoagulation Management</div>
+                  <div class="session-subtitle-text">Dr Sonia OUERGHI <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
+                    <span class="tag-badge tag-type" data-en="Workshop" data-fr="Workshop">Workshop</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 18h00 - 19h00 (Card 1: Commented Posters 3) -->
+            <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 3 commented posters session 3 grande salle hall 1">
+              <div class="session-card-header">
+                <div class="time-badge">18h00 - 19h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Commented Posters Session 3" data-fr="Session Posters commentés 3">Commented Posters Session 3</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Hall 1: Main hall" data-fr="Salle 1: grande salle">Hall 1: Main hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 18h00 - 19h00 (Card 2: Paramedical Oral Communications) -->
+            <div class="session-card" data-day="day1" data-cat="posters" data-search="communications orales paramédicales paramedical oral communications petite salle hall 2">
+              <div class="session-card-header">
+                <div class="time-badge">18h00 - 19h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Paramedical Oral Communications" data-fr="Communications orales Paramédicales">Paramedical Oral Communications</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room-alt" data-en="Hall 2: Small hall" data-fr="Salle 2: petite salle">Hall 2: Small hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 19h00 -->
+            <div class="session-card" data-day="day1" data-cat="pause" data-search="cocktail de bienvenue welcome cocktail reception networking">
+              <div class="session-card-header">
+                <div class="time-badge">19h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Welcome Cocktail" data-fr="Cocktail de bienvenue">Welcome Cocktail <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 22h8"></path><path d="M12 11v11"></path><path d="M19 3L12 11 5 3z"></path><path d="M5 3h14"></path></svg></div>
+                  <div class="session-subtitle-text" data-en="Opening reception & networking" data-fr="Réception d'ouverture et networking">Opening reception & networking</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Container for Day 2 -->
+        <div id="day2-container" class="day-group">
+          
+          <div class="day-section-header">
+            <div>
+              <h2 data-en="Saturday, November 07, 2026" data-fr="Samedi 07 Novembre 2026">Saturday, November 07, 2026</h2>
+              <div class="sub-info" data-en="Thematic Sessions & Communications" data-fr="Sessions Thématiques & Communications">Thematic Sessions & Communications</div>
+            </div>
+            <span class="tag-badge tag-type" style="background:rgba(255,255,255,0.15);color:#fff;" data-en="Day 2" data-fr="Jour 2">Day 2</span>
+          </div>
+
+          <div class="timeline-list">
+
+            <!-- 08h00 - 08h30 -->
+            <div class="session-card" data-day="day2" data-cat="pause" data-search="accueil inscription welcome registration">
+              <div class="session-card-header">
+                <div class="time-badge break">08h00 - 08h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Welcome & Registration" data-fr="Accueil et inscription">Welcome & Registration</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 08h30 - 09h30 -->
+            <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 1 free communications kyste hydatique du thorax thoracic hydatid cyst">
+              <div class="session-card-header">
+                <div class="time-badge">08h30 - 09h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Free Communications 1: Thoracic Hydatid Cyst" data-fr="Communications libres 1: Kyste Hydatique du thorax">Free Communications 1: Thoracic Hydatid Cyst</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 09h30 - 10h30 -->
+            <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 2 free communications traumatisme thoracique thoracic trauma">
+              <div class="session-card-header">
+                <div class="time-badge">09h30 - 10h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Free Communications 2: Thoracic Trauma" data-fr="Communications libres 2: Traumatisme thoracique">Free Communications 2: Thoracic Trauma</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 10h30 - 11h00 -->
+            <div class="session-card" data-day="day2" data-cat="pause" data-search="pause café coffee break">
+              <div class="session-card-header">
+                <div class="time-badge break">10h30 - 11h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Coffee Break" data-fr="Pause café">Coffee Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 11h00 - 12h30 -->
+            <div class="session-card" data-day="day2" data-cat="session" data-search="session 1 robotic surgery chirurgie robotique sfctcv stephane renaud ludovic fournel joseph seitlinger">
+              <div class="session-card-header">
+                <div class="time-badge">11h00 - 12h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Session 1: Robotic Surgery (SFCTCV)" data-fr="Session 1: Chirurgie robotique (SFCTCV)">Session 1: Robotic Surgery (SFCTCV)</div>
+                  <div class="session-subtitle-text" data-en="Chaired by Dr Stephane RENAUD" data-fr="Présidé par Dr Stephane RENAUD">Chaired by Dr Stephane RENAUD <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-chair">SFCTCV</span>
+                    <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
+                  </div>
+                </div>
+              </div>
+              <div class="presentations-container">
+                <div class="presentations-list">
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Robotic Thoracic Surgery Program" data-fr="Programme de chirurgie thoracique robotique">Robotic Thoracic Surgery Program</div>
+                      <div class="presentation-speaker">Dr Ludovic Fournel <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Profitability of a Robotic Program" data-fr="Rentabilisation d’un programme robotique">Profitability of a Robotic Program</div>
+                      <div class="presentation-speaker">Dr Joseph Seitlinger <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Robotic Thoracic Surgery and Pitfalls to Avoid" data-fr="Chirurgie thoracique robotique et pièges à éviter">Robotic Thoracic Surgery and Pitfalls to Avoid</div>
+                      <div class="presentation-speaker">Pr Stéphane Renaud <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="20 min" data-fr="20 mn">20 min</span>
+                  </div>
+                  <div class="presentation-item" style="background:#f1f5f9;">
+                    <div class="presentation-content">
+                      <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
+                    </div>
+                    <span class="duration-chip" style="background:#e2e8f0;" data-en="30 min" data-fr="30 mn">30 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 12h30 - 13h00 -->
+            <div class="session-card purple" data-day="day2" data-cat="symposium" data-search="symposium">
+              <div class="session-card-header">
+                <div class="time-badge">12h30 - 13h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text">Symposium</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-type">Symposium</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 13h00 - 14h00 -->
+            <div class="session-card" data-day="day2" data-cat="pause" data-search="déjeuner lunch break">
+              <div class="session-card-header">
+                <div class="time-badge break">13h00 - 14h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Lunch Break" data-fr="Déjeuner">Lunch Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2v6a3 3 0 0 1-3 3 3 3 0 0 1-3-3V2"></path><path d="M15 2v16"></path><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"></path><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"></path><path d="M7 2v20"></path></svg></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 14h00 - 15h30 -->
+            <div class="session-card" data-day="day2" data-cat="session" data-search="session 2 pathologie thymique thymic pathology association tunisienne de neurologie amina gargouri imen bouassida mohammed sadok boudaya afef khanfir myasthénie myasthenia thymome thymoma">
+              <div class="session-card-header">
+                <div class="time-badge">14h00 - 15h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Session 2: Thymic Pathology" data-fr="Session 2: Pathologie thymique">Session 2: Thymic Pathology</div>
+                  <div class="session-subtitle-text" data-en="Tunisian Association of Neurology" data-fr="Association Tunisienne de Neurologie">Tunisian Association of Neurology</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-chair">ATN</span>
+                    <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
+                  </div>
+                </div>
+              </div>
+              <div class="presentations-container">
+                <div class="presentations-list">
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="New guidelines for the management of myasthenia gravis" data-fr="Les nouvelles recommandations de la prise en charge de la myasthénie">New guidelines for the management of myasthenia gravis</div>
+                      <div class="presentation-speaker">Dr Amina GARGOURI <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Role of lymph node dissection in thymoma surgery" data-fr="La place du curage ganglionnaire dans la chirurgie des thymomes">Role of lymph node dissection in thymoma surgery</div>
+                      <div class="presentation-speaker">Dr Imen BOUASSIDA <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Minimally invasive thymectomy: which approach?" data-fr="Thymectomie par voies mini-invasives : quelle approche ?">Minimally invasive thymectomy: which approach?</div>
+                      <div class="presentation-speaker">Dr Mohammed Sadok BOUDAYA <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Locally advanced thymoma: neoadjuvant options in 2026?" data-fr="Thymome localement avancé : quelles options en néoadjuvant en 2026 ?">Locally advanced thymoma: neoadjuvant options in 2026?</div>
+                      <div class="presentation-speaker">Dr Afef KHANFIR <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item" style="background:#f1f5f9;">
+                    <div class="presentation-content">
+                      <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
+                    </div>
+                    <span class="duration-chip" style="background:#e2e8f0;" data-en="30 min" data-fr="30 mn">30 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 15h30 - 16h30 -->
+            <div class="session-card" data-day="day2" data-cat="session" data-search="session 3 endobronchial approach approche endobronchique marc filaire sfctcv laura filaire géraud galvaing ebus tracheal stenosis sténoses trachéales">
+              <div class="session-card-header">
+                <div class="time-badge">15h30 - 16h30</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Session 3: Endobronchial Approach" data-fr="Session 3: Approche Endobronchique">Session 3: Endobronchial Approach</div>
+                  <div class="session-subtitle-text" data-en="Chaired by Pr Marc FILAIRE (SFCTCV)" data-fr="Présidé par Pr Marc FILAIRE (SFCTCV)">Chaired by Pr Marc FILAIRE (SFCTCV) <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-chair">SFCTCV</span>
+                    <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
+                  </div>
+                </div>
+              </div>
+              <div class="presentations-container">
+                <div class="presentations-list">
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Lymph node staging: from mediastinoscopy to EBUS" data-fr="Staging ganglionnaire : de la médiastinoscopie à l’EBUS">Lymph node staging: from mediastinoscopy to EBUS</div>
+                      <div class="presentation-speaker">Dr Laura Filaire <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Management of tracheal stenosis" data-fr="Prise en charge des sténoses trachéales">Management of tracheal stenosis</div>
+                      <div class="presentation-speaker">Dr Géraud Galvaing <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Rigid bronchoscopy and endobronchial tumors" data-fr="Bronchoscopie rigide et tumeurs endobronchiques">Rigid bronchoscopy and endobronchial tumors</div>
+                      <div class="presentation-speaker">Pr Marc Filaire <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item" style="background:#f1f5f9;">
+                    <div class="presentation-content">
+                      <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
+                    </div>
+                    <span class="duration-chip" style="background:#e2e8f0;" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 16h30 - 17h00 -->
+            <div class="session-card" data-day="day2" data-cat="pause" data-search="pause café coffee break">
+              <div class="session-card-header">
+                <div class="time-badge break">16h30 - 17h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Coffee Break" data-fr="Pause café">Coffee Break <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="2" x2="6" y2="4"></line><line x1="10" y1="2" x2="10" y2="4"></line><line x1="14" y1="2" x2="14" y2="4"></line></svg></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 17h00 - 18h00 -->
+            <div class="session-card" data-day="day2" data-cat="session" data-search="session 4 apacs perioperative management gestion périopératoire abdessalem hentati walid feki rym zaimi air leak bullage réhabilitation douleur pain">
+              <div class="session-card-header">
+                <div class="time-badge">17h00 - 18h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Session 4: Perioperative Management" data-fr="Session 4: La gestion périopératoire">Session 4: Perioperative Management</div>
+                  <div class="session-subtitle-text">APACS</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-chair">APACS</span>
+                    <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
+                  </div>
+                </div>
+              </div>
+              <div class="presentations-container">
+                <div class="presentations-list">
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Prolonged postoperative air leak: prevention and treatment" data-fr="Bullage prolongé en post opératoire : prévention et traitement">Prolonged postoperative air leak: prevention and treatment</div>
+                      <div class="presentation-speaker">Dr Abdessalem HENTATI <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Preoperative rehabilitation: indications and benefits" data-fr="Réhabilitation préopératoire : indications et intérêts">Preoperative rehabilitation: indications and benefits</div>
+                      <div class="presentation-speaker">Dr Walid FEKI <svg class="flag-icon-svg" viewBox="0 0 900 600" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="900" height="600" fill="#e70013"/><circle cx="450" cy="300" r="150" fill="#fff"/><path d="M480 300a75 75 0 1 1-133-47 90 90 0 1 0 133 47z" fill="#e70013"/><polygon points="450,250 462,285 498,285 469,306 480,341 450,320 420,341 431,306 402,285 438,285" fill="#e70013"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item">
+                    <div class="presentation-content">
+                      <div class="presentation-title" data-en="Postoperative chronic pain: etiologies and management" data-fr="Douleur chronique post opératoire : étiologies et prise en charge">Postoperative chronic pain: etiologies and management</div>
+                      <div class="presentation-speaker">Dr Rym ZAIMI <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
+                    </div>
+                    <span class="duration-chip" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                  <div class="presentation-item" style="background:#f1f5f9;">
+                    <div class="presentation-content">
+                      <div class="presentation-title" style="color:var(--blue);" data-en="General Discussion" data-fr="Discussion générale">General Discussion</div>
+                    </div>
+                    <span class="duration-chip" style="background:#e2e8f0;" data-en="15 min" data-fr="15 mn">15 min</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 18h00 - 19h00 -->
+            <div class="session-card" data-day="day2" data-cat="posters" data-search="session 5 video session séance vidéo communication">
+              <div class="session-card-header">
+                <div class="time-badge">18h00 - 19h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Session 5: Video Session" data-fr="Session 5: Séance vidéo">Session 5: Video Session</div>
+                  <div class="session-tags-row">
+                    <span class="tag-badge tag-room" data-en="Main Hall" data-fr="Grande salle">Main Hall</span>
+                    <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 19h00 -->
+            <div class="session-card" data-day="day2" data-cat="pause" data-search="dîner gala dinner soirée closing evening">
+              <div class="session-card-header">
+                <div class="time-badge">19h00</div>
+                <div class="session-main-info">
+                  <div class="session-title-text" data-en="Gala Dinner" data-fr="Dîner Gala">Gala Dinner <svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
+                  <div class="session-subtitle-text" data-en="Official TTSA Congress Closing Evening" data-fr="Soirée officielle de clôture du Congrès TTSA">Official TTSA Congress Closing Evening</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Empty Search Result -->
+        <div id="no-results" class="empty-state" style="display:none;">
+          <h3 data-en="No sessions found" data-fr="Aucune session trouvée">No sessions found</h3>
+          <p data-en="Try adjusting your search query or switching active filters." data-fr="Essayez de modifier votre recherche ou de changer les filtres sélectionnés.">Try adjusting your search query or switching active filters.</p>
+        </div>
+
+      </div>
+
+      <!-- ============================================== -->
+      <!-- VIEW 3: REGISTRATION VIEW (INFO WITHOUT BUTTONS)-->
+      <!-- ============================================== -->
+      <div id="view-registration" class="portal-view" style="display:none">
+        
+        <!-- Hero Header -->
+        <header class="embedded-hero">
+          <div class="hero-badge">5th TTSA National Congress · Sfax 2026</div>
+          <h1>Registration Information</h1>
+          <p>Registration categories, membership rates, and congress entitlements for attendees.</p>
+        </header>
+
+        <div class="registration-container">
+          <div style="margin-bottom:24px;text-align:center;">
+            <h3 style="font-size:1.35rem;margin-bottom:6px;color:var(--gray-900);">Registration Categories &amp; Fees</h3>
+            <p style="color:var(--gray-600);font-size:.9rem;">All fees are in Tunisian Dinars (TND). Workshops are <strong>not included</strong> in the base registration fee.</p>
+          </div>
+
+          <!-- Pricing Grid Without Buttons -->
+          <div class="pricing-grid">
+
+            <!-- Card 1: Qualified Doctor -->
+            <div class="price-card" id="card-doctor">
+              <div class="price-card-header">
+                <h3>Qualified Doctor</h3>
+                <div class="subtitle">Specialist / Consultant Physician</div>
+              </div>
+              <div class="price-card-body">
+                <div class="sub-rate-list">
+                  <div class="sub-rate member">
+                    <div class="sub-rate-label">
+                      <span class="member-badge">★ TTSA Member<sup>**</sup></span>
+                    </div>
+                    <div class="sub-rate-price"><span class="currency-sm">TND</span> 150</div>
+                  </div>
+                  <div class="sub-rate others">
+                    <div class="sub-rate-label">Others</div>
+                    <div class="sub-rate-price"><span class="currency-sm">TND</span> 300</div>
+                  </div>
+                </div>
+                <hr style="border:none;border-top:1px solid var(--gray-100);margin:14px 0;"/>
+                <ul class="include-list">
+                  <li>Full access to all plenary &amp; thematic sessions</li>
+                  <li>Official certificate of attendance</li>
+                  <li>Access to workshops<sup>****</sup></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Card 2: Medical Resident -->
+            <div class="price-card" id="card-resident">
+              <div class="price-card-header">
+                <h3>Medical Resident</h3>
+                <div class="subtitle">In-training physician</div>
+              </div>
+              <div class="price-card-body">
+                <div class="sub-rate-list">
+                  <div class="sub-rate member">
+                    <div class="sub-rate-label">
+                      <span class="member-badge">★ TTSA Member<sup>***</sup></span>
+                    </div>
+                    <div class="sub-rate-price"><span class="currency-sm">TND</span> 100</div>
+                  </div>
+                  <div class="sub-rate others">
+                    <div class="sub-rate-label">Others</div>
+                    <div class="sub-rate-price"><span class="currency-sm">TND</span> 200</div>
+                  </div>
+                </div>
+                <hr style="border:none;border-top:1px solid var(--gray-100);margin:14px 0;"/>
+                <ul class="include-list">
+                  <li>Full access to all plenary &amp; thematic sessions</li>
+                  <li>Official certificate of attendance</li>
+                  <li>Access to workshops<sup>****</sup></li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Card 3: Paramedical Staff -->
+            <div class="price-card" id="card-paramedical">
+              <div class="price-card-header">
+                <h3>Paramedical Staff</h3>
+                <div class="subtitle">Nurse · Physiotherapist · Allied Health</div>
+              </div>
+              <div class="price-card-body">
+                <div class="sub-rate-list">
+                  <div class="sub-rate member">
+                    <div class="sub-rate-label">
+                      <span class="member-badge">With third party support</span>
+                    </div>
+                    <div class="sub-rate-price"><span class="currency-sm">TND</span> 200</div>
+                  </div>
+                  <div class="sub-rate others">
+                    <div class="sub-rate-label">Others</div>
+                    <div class="sub-rate-price"><span class="currency-sm">TND</span> 100</div>
+                  </div>
+                </div>
+                <hr style="border:none;border-top:1px solid var(--gray-100);margin:14px 0;"/>
+                <ul class="include-list">
+                  <li>Access to paramedical &amp; allied health sessions</li>
+                  <li>Certificate of attendance</li>
+                  <li>Access to workshops<sup>****</sup></li>
+                </ul>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Footnotes -->
+          <div class="footnotes-box">
+            <p>* Workshops are <strong>not included</strong> in the registration fee.</p>
+            <p>** TTSA 2026 membership fees (Thoracic Surgeon): <strong>70 dinars</strong>.</p>
+            <p>*** TTSA 2026 membership fees (Thoracic Surgery Resident): <strong>50 dinars</strong>.</p>
+            <p>**** Robotic workshop access needs a supplementary fee of <strong>150 TND</strong>.</p>
+          </div>
+
+          <!-- On-site notice -->
+          <div class="note-box" style="margin-top:20px;">
+            <span style="font-size:1.3rem;flex-shrink:0;">⚠️</span>
+            <div>
+              <strong>Payment &amp; On-site Registration</strong>
+              Payment is collected on-site at the congress registration desk upon arrival. A valid proof of identity / medical affiliation may be requested.
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>
@@ -125,6 +900,81 @@ const statusColors = {
   'Final File Uploaded': 'badge-purple'
 };
 
+/* ========================================================= */
+/* Tab Switching: Dashboard, Abstracts, Program, Registration*/
+/* ========================================================= */
+function switchPortalTab(tabName) {
+  const tabs = ['dashboard', 'abstracts', 'program', 'registration'];
+  
+  // Highlight active sidebar button
+  tabs.forEach(t => {
+    const linkEl = document.getElementById('nav-' + t);
+    if (linkEl) {
+      linkEl.classList.toggle('active', t === tabName);
+    }
+  });
+
+  const viewDashboard = document.getElementById('view-dashboard');
+  const viewProgram = document.getElementById('view-program');
+  const viewRegistration = document.getElementById('view-registration');
+  const topbarTitle = document.getElementById('topbarTitle');
+  const topbarActions = document.getElementById('topbarActions');
+
+  if (tabName === 'dashboard') {
+    viewDashboard.style.display = 'block';
+    viewProgram.style.display = 'none';
+    viewRegistration.style.display = 'none';
+    topbarTitle.textContent = 'My Dashboard';
+    topbarActions.style.display = 'flex';
+    window.location.hash = '#dashboard';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (tabName === 'abstracts') {
+    viewDashboard.style.display = 'block';
+    viewProgram.style.display = 'none';
+    viewRegistration.style.display = 'none';
+    topbarTitle.textContent = 'My Dashboard';
+    topbarActions.style.display = 'flex';
+    window.location.hash = '#abstracts';
+    
+    // Smooth scroll to the submission slots section
+    const slots = document.getElementById('slotsSection');
+    if (slots) {
+      setTimeout(() => {
+        slots.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        slots.classList.add('slot-highlight');
+        setTimeout(() => slots.classList.remove('slot-highlight'), 3000);
+      }, 50);
+    }
+  } else if (tabName === 'program') {
+    viewDashboard.style.display = 'none';
+    viewProgram.style.display = 'block';
+    viewRegistration.style.display = 'none';
+    topbarTitle.textContent = 'Scientific Program';
+    topbarActions.style.display = 'none';
+    window.location.hash = '#program';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (tabName === 'registration') {
+    viewDashboard.style.display = 'none';
+    viewProgram.style.display = 'none';
+    viewRegistration.style.display = 'block';
+    topbarTitle.textContent = 'Registration Information';
+    topbarActions.style.display = 'none';
+    window.location.hash = '#registration';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+// Handle hash navigation & browser back/forward
+window.addEventListener('hashchange', () => {
+  const hash = (window.location.hash || '#dashboard').replace('#', '');
+  if (['dashboard', 'abstracts', 'program', 'registration'].includes(hash)) {
+    switchPortalTab(hash);
+  }
+});
+
+/* ========================================================= */
+/* Load Dashboard Data                                       */
+/* ========================================================= */
 async function loadDashboard() {
   try {
     const [me, abstracts, settings] = await Promise.all([
@@ -135,7 +985,6 @@ async function loadDashboard() {
 
     // Sidebar user
     document.getElementById('sidebarName').textContent = me.first_name + ' ' + me.last_name;
-    // document.getElementById('sidebarAvatar').textContent = me.first_name[0].toUpperCase();
 
     // Deadline
     let passed = false;
@@ -171,9 +1020,9 @@ async function loadDashboard() {
     const isFull = abstracts.length >= maxSlots;
     
     // Disable New Abstract buttons if deadline passed, not started yet, or slots full
+    const topBtn = document.getElementById('topNewAbsBtn');
+    const slotsBtn = document.getElementById('slotsAddBtn');
     if (passed || notStarted || isFull) {
-      const topBtn = document.getElementById('topNewAbsBtn');
-      const navBtn = document.getElementById('navNewAbsBtn');
       let titleText = '';
       if (passed) titleText = 'Deadline has passed';
       else if (notStarted) titleText = 'Submission has not started yet';
@@ -184,20 +1033,12 @@ async function loadDashboard() {
         topBtn.style.opacity = '0.5';
         topBtn.title = titleText;
       }
-      if (navBtn) {
-        navBtn.style.pointerEvents = 'none';
-        navBtn.style.opacity = '0.5';
-        navBtn.title = titleText;
+      if (slotsBtn) {
+        slotsBtn.style.pointerEvents = 'none';
+        slotsBtn.style.opacity = '0.5';
+        slotsBtn.title = titleText;
       }
     }
-
-    // Sidebar abstract links
-    const sideLinks = document.getElementById('sidebarAbstracts');
-    sideLinks.innerHTML = abstracts.map((a,i)=>`
-      <a href="/member/edit.html?id=${a.id}">
-        <span class="nav-icon">📄</span>
-        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Abstract ${i+1}</span>
-      </a>`).join('');
 
     // Integrated slot list
     const slotList = document.getElementById('slotList');
@@ -263,7 +1104,117 @@ async function delAbstract(id) {
   }
 }
 
+/* ========================================================= */
+/* Scientific Program Logic (Search, Filter, Language)       */
+/* ========================================================= */
+let currentLang = 'en';
+let currentDay = 'all';
+let currentCategory = 'all';
+
+function setLanguage(lang) {
+  currentLang = lang;
+  localStorage.setItem('ttsa_program_lang', lang);
+
+  const btnEn = document.getElementById('lang-btn-en');
+  const btnFr = document.getElementById('lang-btn-fr');
+  if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+  if (btnFr) btnFr.classList.toggle('active', lang === 'fr');
+
+  document.querySelectorAll('[data-en][data-fr]').forEach(el => {
+    const text = el.getAttribute('data-' + lang);
+    if (text) el.textContent = text;
+  });
+
+  document.querySelectorAll('[data-en-placeholder][data-fr-placeholder]').forEach(el => {
+    const placeholder = el.getAttribute('data-' + lang + '-placeholder');
+    if (placeholder) el.placeholder = placeholder;
+  });
+}
+
+function filterDay(day) {
+  currentDay = day;
+  
+  document.querySelectorAll('.day-tab-btn').forEach(btn => btn.classList.remove('active'));
+  const activeTab = document.getElementById('tab-' + day);
+  if (activeTab) activeTab.classList.add('active');
+
+  const day1 = document.getElementById('day1-container');
+  const day2 = document.getElementById('day2-container');
+
+  if (day === 'day1') {
+    if (day1) day1.style.display = 'block';
+    if (day2) day2.style.display = 'none';
+  } else if (day === 'day2') {
+    if (day1) day1.style.display = 'none';
+    if (day2) day2.style.display = 'block';
+  } else {
+    if (day1) day1.style.display = 'block';
+    if (day2) day2.style.display = 'block';
+  }
+  
+  applyFilters();
+}
+
+function filterCategory(cat, btn) {
+  currentCategory = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  applyFilters();
+}
+
+function handleSearch() {
+  applyFilters();
+}
+
+function applyFilters() {
+  const searchEl = document.getElementById('searchInput');
+  const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
+  const cards = document.querySelectorAll('#view-program .session-card');
+  let visibleCount = 0;
+
+  cards.forEach(card => {
+    const cardDay = card.getAttribute('data-day');
+    const cardCat = card.getAttribute('data-cat');
+    const searchData = (card.getAttribute('data-search') || '').toLowerCase();
+
+    const matchesDay = (currentDay === 'all' || currentDay === cardDay);
+    const matchesCat = (currentCategory === 'all' || currentCategory === cardCat);
+    const matchesQuery = (!query || searchData.includes(query));
+
+    if (matchesDay && matchesCat && matchesQuery) {
+      card.style.display = 'block';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+
+  const day1Cards = document.querySelectorAll('#day1-container .session-card[style="display: block;"]');
+  const day2Cards = document.querySelectorAll('#day2-container .session-card[style="display: block;"]');
+
+  const d1 = document.getElementById('day1-container');
+  const d2 = document.getElementById('day2-container');
+  if (d1) d1.style.display = (currentDay !== 'day2' && day1Cards.length > 0) ? 'block' : 'none';
+  if (d2) d2.style.display = (currentDay !== 'day1' && day2Cards.length > 0) ? 'block' : 'none';
+
+  const noResults = document.getElementById('no-results');
+  if (noResults) {
+    noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
+  }
+}
+
+// Initial setup
 loadDashboard();
+
+// Restore preferred language
+const savedLang = localStorage.getItem('ttsa_program_lang') || 'en';
+setLanguage(savedLang);
+
+// Initial hash route check
+const initialHash = (window.location.hash || '#dashboard').replace('#', '');
+if (['dashboard', 'abstracts', 'program', 'registration'].includes(initialHash)) {
+  switchPortalTab(initialHash);
+}
 </script>
 </body>
 </html>
