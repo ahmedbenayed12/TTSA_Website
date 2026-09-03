@@ -158,6 +158,7 @@ function initSchema() {
   // Default settings
   const defaultSettings = [
     ['congress_name', 'TTSA Annual Congress 2026'],
+    ['congress_date', '2026-11-06T08:30:00'],
     ['submission_deadline', '2026-08-31T23:59:59'],
     ['submission_start',    '2026-07-01T00:00:00'],
     ['upload_deadline', '2026-10-15T23:59:59'],

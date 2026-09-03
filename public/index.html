@@ -257,7 +257,7 @@
       <h1>The 5th National Thoracic Surgery Congress</h1>
       <p>Borj Dhiafa Hotel, Sfax · November 6-7, 2026</p>
       <div class="hero-actions">
-        <a href="/abstract-submission.html" class="btn btn-lg" style="background:var(--red);color:#fff">Submit Abstract</a>
+        <a href="/registration-info.html" class="btn btn-lg" style="background:var(--red);color:#fff">Register</a>
         <a href="/events.html" class="btn btn-lg btn-outline-white">View Events</a>
       </div>
     </div>
@@ -265,13 +265,13 @@
   </div>
 </section>
 
-<!-- DEADLINE BANNER -->
+<!-- CONGRESS COUNTDOWN BANNER -->
 <section class="section">
   <div class="container">
     <div class="deadline-banner">
       <div>
-        <h3>Abstract Submission Open</h3>
-        <p>Submit your abstract before <span id="dynamicDeadline">the deadline</span></p>
+        <h3 id="countdownBannerTitle">Congress Starts In</h3>
+        <p id="countdownBannerSubtitle">5th National Thoracic Surgery Congress · <span id="congressDateDisplay">November 6, 2026</span> · Borj Dhiafa Hotel, Sfax</p>
       </div>
       <div class="countdown" id="countdown">
         <div class="countdown-unit"><div class="num" id="cd-days">--</div><div class="lbl">Days</div></div>
@@ -455,26 +455,14 @@ async function loadPublicData() {
       fetch('/api/events').then(r=>r.json())
     ]);
 
-    // Deadline display
-    const now = new Date();
-    const startDate = settings.submission_start ? new Date(settings.submission_start) : null;
-    const deadlineDate = settings.submission_deadline ? new Date(settings.submission_deadline) : null;
-
-    if (startDate && now < startDate) {
-      const bannerTitleEl = document.querySelector('.deadline-banner h3');
-      if (bannerTitleEl) bannerTitleEl.textContent = 'Abstract Submission Opening Soon';
-      const dynamicDeadlineEl = document.getElementById('dynamicDeadline');
-      if (dynamicDeadlineEl) {
-        dynamicDeadlineEl.parentElement.innerHTML = `Submission starts on <span id="dynamicDeadline">${startDate.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</span>`;
-      }
-    } else if (deadlineDate) {
-      const dynamicDeadlineEl = document.getElementById('dynamicDeadline');
-      if (dynamicDeadlineEl) dynamicDeadlineEl.textContent = deadlineDate.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'});
+    // Congress countdown
+    const congressDate = settings.congress_date ? new Date(settings.congress_date) : new Date('2026-11-06T08:30:00');
+    const congressDateDisplay = document.getElementById('congressDateDisplay');
+    if (congressDateDisplay) {
+      congressDateDisplay.textContent = congressDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    if (deadlineDate) {
-      startCountdown(startDate, deadlineDate);
-    }
+    startCongressCountdown(congressDate);
 
     function formatDateRange(start, end) {
       if (!start) return 'TBD';
@@ -523,41 +511,36 @@ async function loadPublicData() {
   } catch(e) { console.error(e); }
 }
 
-function startCountdown(startDate, deadlineDate) {
+function startCongressCountdown(congressDate) {
   const container = document.getElementById('countdown');
   if (!container) return;
 
   function tick() {
     const now = new Date();
-    let target = deadlineDate;
-    let label = 'deadline';
-    
-    if (startDate && now < startDate) {
-      target = startDate;
-      label = 'start';
+    const diff = congressDate - now;
+
+    if (diff <= 0) {
+      container.innerHTML = '<span style="color:#fff;font-weight:700;font-size:1.1rem;">🎉 The Congress has begun!</span>';
+      return;
     }
 
-    const diff = target - now;
-    if (diff <= 0) {
-      if (label === 'start') {
-        location.reload();
-        return;
-      } else {
-        container.innerHTML = '<span style="color:#fff;font-weight:700">Deadline passed</span>';
-        return;
-      }
-    }
-    
-    const d = Math.floor(diff/86400000);
-    const h = Math.floor((diff%86400000)/3600000);
-    const m = Math.floor((diff%3600000)/60000);
-    const s = Math.floor((diff%60000)/1000);
-    document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
-    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-    document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
-    document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+
+    const dEl = document.getElementById('cd-days');
+    const hEl = document.getElementById('cd-hours');
+    const mEl = document.getElementById('cd-mins');
+    const sEl = document.getElementById('cd-secs');
+
+    if (dEl) dEl.textContent = String(d).padStart(2, '0');
+    if (hEl) hEl.textContent = String(h).padStart(2, '0');
+    if (mEl) mEl.textContent = String(m).padStart(2, '0');
+    if (sEl) sEl.textContent = String(s).padStart(2, '0');
   }
-  tick(); setInterval(tick, 1000);
+  tick();
+  setInterval(tick, 1000);
 }
 
 function startHeroBannerRotation() {

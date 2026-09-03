@@ -27,7 +27,7 @@ router.get('/guidelines', publicLimiter, (req, res) => {
 // GET /api/settings (public deadline/congress info — blind_review excluded intentionally)
 router.get('/settings', publicLimiter, (req, res) => {
   const rows = db.prepare(
-    "SELECT key, value FROM settings WHERE key IN ('congress_name','submission_deadline','submission_start','upload_deadline','max_abstracts_per_user','max_words_per_abstract','about_text','criteria1_label','criteria2_label','criteria3_label','criteria4_label')"
+    "SELECT key, value FROM settings WHERE key IN ('congress_name','congress_date','submission_deadline','submission_start','upload_deadline','max_abstracts_per_user','max_words_per_abstract','about_text','criteria1_label','criteria2_label','criteria3_label','criteria4_label')"
   ).all();
   const settings = {};
   rows.forEach(r => { settings[r.key] = r.value; });

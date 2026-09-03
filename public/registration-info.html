@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Registration – 5th TTSA National Congress</title>
-  <meta name="description" content="View registration categories, fees and benefits for the 5th TTSA National Thoracic Surgery Congress, Sfax, November 6-7 2026."/>
-  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg"/>
-  <link rel="stylesheet" href="/css/global.css"/>
+  <meta name="description"
+    content="View registration categories, fees and benefits for the 5th TTSA National Thoracic Surgery Congress, Sfax, November 6-7 2026." />
+  <link rel="icon" type="image/svg+xml" href="/img/favicon.svg" />
+  <link rel="stylesheet" href="/css/global.css" />
   <style>
-    body { background: #f0f4f9; }
+    body {
+      background: #f0f4f9;
+    }
 
     :root {
       --primary-navy: #072a4a;
@@ -33,7 +37,7 @@
       left: -20%;
       width: 140%;
       height: 200%;
-      background: radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%);
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
       pointer-events: none;
     }
 
@@ -70,24 +74,72 @@
     }
 
     /* Dates bar */
-    .dates-bar { background: var(--white); border-bottom: 1px solid var(--gray-100); padding: 18px 0; }
-    .dates-inner { display: flex; gap: 0; justify-content: center; flex-wrap: wrap; }
+    .dates-bar {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-100);
+      padding: 18px 0;
+    }
+
+    .dates-inner {
+      display: flex;
+      gap: 0;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
     .date-pill {
-      display: flex; align-items: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
       padding: 10px 28px;
       border-right: 1px solid var(--gray-200);
     }
-    .date-pill:last-child { border-right: none; }
-    .date-pill-icon { font-size: 1.3rem; }
-    .date-pill-text .lbl { font-size: .72rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
-    .date-pill-text .val { font-size: .95rem; font-weight: 700; color: var(--gray-800); }
+
+    .date-pill:last-child {
+      border-right: none;
+    }
+
+    .date-pill-icon {
+      font-size: 1.3rem;
+    }
+
+    .date-pill-text .lbl {
+      font-size: .72rem;
+      color: var(--gray-500);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .date-pill-text .val {
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
 
     /* Section */
-    .section { padding: 60px 0; }
-    .section-alt { background: var(--white); }
-    .section-title { text-align: center; margin-bottom: 48px; }
-    .section-title h2 { margin-bottom: 10px; }
-    .section-title p  { max-width: 580px; margin: 0 auto; font-size: .97rem; }
+    .section {
+      padding: 60px 0;
+    }
+
+    .section-alt {
+      background: var(--white);
+    }
+
+    .section-title {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .section-title h2 {
+      margin-bottom: 10px;
+    }
+
+    .section-title p {
+      max-width: 580px;
+      margin: 0 auto;
+      font-size: .97rem;
+    }
 
     /* Pricing cards */
     .pricing-grid {
@@ -95,361 +147,590 @@
       grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
       gap: 24px;
     }
+
     .price-card {
       background: var(--white);
       border-radius: var(--radius-lg);
       overflow: hidden;
       box-shadow: var(--shadow);
       border: 2px solid transparent;
-      transition: all .3s cubic-bezier(.4,0,.2,1);
-      display: flex; flex-direction: column;
+      transition: all .3s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      flex-direction: column;
       position: relative;
     }
-    .price-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--blue); }
-    .price-card-header { padding: 24px 24px 16px; border-bottom: 1px solid var(--gray-100); }
-    .price-card-icon {
-      width: 48px; height: 48px; border-radius: var(--radius);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem; margin-bottom: 14px;
+
+    .price-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+      border-color: var(--blue);
     }
-    .price-card-icon.blue  { background: var(--blue-light); }
-    .price-card-icon.red   { background: var(--red-light); }
-    .price-card-icon.gold  { background: #fef9c3; }
-    .price-card-header h3  { font-size: 1.1rem; color: var(--gray-900); margin-bottom: 4px; }
-    .price-card-header .subtitle { font-size: .8rem; color: var(--gray-500); font-weight: 500; }
-    .price-card-body { padding: 20px 24px; flex: 1; }
+
+    .price-card-header {
+      padding: 24px 24px 16px;
+      border-bottom: 1px solid var(--gray-100);
+    }
+
+    .price-card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      margin-bottom: 14px;
+    }
+
+    .price-card-icon.blue {
+      background: var(--blue-light);
+    }
+
+    .price-card-icon.red {
+      background: var(--red-light);
+    }
+
+    .price-card-icon.gold {
+      background: #fef9c3;
+    }
+
+    .price-card-header h3 {
+      font-size: 1.1rem;
+      color: var(--gray-900);
+      margin-bottom: 4px;
+    }
+
+    .price-card-header .subtitle {
+      font-size: .8rem;
+      color: var(--gray-500);
+      font-weight: 500;
+    }
+
+    .price-card-body {
+      padding: 20px 24px;
+      flex: 1;
+    }
 
     /* Nationality tabs */
     .nat-tabs {
-      display: flex; border-radius: var(--radius);
-      overflow: hidden; border: 1px solid var(--gray-200); margin-bottom: 16px;
+      display: flex;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--gray-200);
+      margin-bottom: 16px;
     }
+
     .nat-tab {
-      flex: 1; padding: 8px 4px; text-align: center;
-      font-size: .78rem; font-weight: 600; cursor: pointer;
-      background: var(--gray-50); color: var(--gray-500);
-      border: none; transition: var(--transition);
+      flex: 1;
+      padding: 8px 4px;
+      text-align: center;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--gray-50);
+      color: var(--gray-500);
+      border: none;
+      transition: var(--transition);
     }
-    .nat-tab.active { background: var(--blue); color: #fff; }
+
+    .nat-tab.active {
+      background: var(--blue);
+      color: #fff;
+    }
 
     /* Price display */
-    .price-display { text-align: center; padding: 16px 0 8px; }
-    .price-display .amount { font-size: 2.4rem; font-weight: 800; color: var(--blue-dark); line-height: 1; }
-    .price-display .currency { font-size: 1rem; font-weight: 700; color: var(--gray-500); vertical-align: super; margin-right: 2px; }
-    .price-display .period { font-size: .78rem; color: var(--gray-400); display: block; margin-top: 4px; }
-    .price-display .foreign-note { font-size: .72rem; color: var(--gray-400); font-style: italic; margin-top: 2px; display: none; }
-    .price-display.foreign-view .foreign-note { display: block; }
-
-    .divider { border: none; border-top: 1px solid var(--gray-100); margin: 14px 0; }
-
-    .include-list { list-style: none; padding: 0; }
-    .include-list li {
-      display: flex; align-items: flex-start; gap: 8px;
-      font-size: .85rem; color: var(--gray-700); margin-bottom: 8px;
+    .price-display {
+      text-align: center;
+      padding: 16px 0 8px;
     }
-    .include-list li::before { content: '✓'; color: #16a34a; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
 
-    .price-card-footer { padding: 18px 24px; border-top: 1px solid var(--gray-100); }
+    .price-display .amount {
+      font-size: 2.4rem;
+      font-weight: 800;
+      color: var(--blue-dark);
+      line-height: 1;
+    }
+
+    .price-display .currency {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      vertical-align: super;
+      margin-right: 2px;
+    }
+
+    .price-display .period {
+      font-size: .78rem;
+      color: var(--gray-400);
+      display: block;
+      margin-top: 4px;
+    }
+
+    .price-display .foreign-note {
+      font-size: .72rem;
+      color: var(--gray-400);
+      font-style: italic;
+      margin-top: 2px;
+      display: none;
+    }
+
+    .price-display.foreign-view .foreign-note {
+      display: block;
+    }
+
+    .divider {
+      border: none;
+      border-top: 1px solid var(--gray-100);
+      margin: 14px 0;
+    }
+
+    .include-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .include-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: .85rem;
+      color: var(--gray-700);
+      margin-bottom: 8px;
+    }
+
+    .include-list li::before {
+      content: '✓';
+      color: #16a34a;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .price-card-footer {
+      padding: 18px 24px;
+      border-top: 1px solid var(--gray-100);
+    }
 
 
 
     /* CTA */
     .cta-reg {
       background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%);
-      padding: 72px 0; text-align: center;
+      padding: 72px 0;
+      text-align: center;
     }
-    .cta-reg h2 { color: #fff; margin-bottom: 12px; }
-    .cta-reg > div > p { color: rgba(255,255,255,.8); font-size: 1.05rem; margin-bottom: 36px; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+    .cta-reg h2 {
+      color: #fff;
+      margin-bottom: 12px;
+    }
+
+    .cta-reg>div>p {
+      color: rgba(255, 255, 255, .8);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
     .btn-reg-action {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: #fff; color: var(--blue);
-      font-size: 1.1rem; font-weight: 800;
-      padding: 16px 42px; border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #fff;
+      color: var(--blue);
+      font-size: 1.1rem;
+      font-weight: 800;
+      padding: 16px 42px;
+      border-radius: var(--radius);
       text-decoration: none;
-      box-shadow: 0 6px 24px rgba(0,0,0,.2);
-      transition: all .25s; border: 2px solid transparent;
+      box-shadow: 0 6px 24px rgba(0, 0, 0, .2);
+      transition: all .25s;
+      border: 2px solid transparent;
     }
+
     .btn-reg-action:hover {
-      background: var(--blue-dark); color: #fff;
-      border-color: rgba(255,255,255,.4);
+      background: var(--blue-dark);
+      color: #fff;
+      border-color: rgba(255, 255, 255, .4);
       transform: translateY(-3px);
-      box-shadow: 0 12px 32px rgba(0,0,0,.3);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, .3);
     }
-    .btn-reg-action svg { width: 22px; height: 22px; }
+
+    .btn-reg-action svg {
+      width: 22px;
+      height: 22px;
+    }
 
     /* Note */
     .note-box {
-      background: var(--warning-bg); border: 1px solid #fde68a;
-      border-left: 4px solid #f59e0b; border-radius: var(--radius);
-      padding: 16px 20px; margin-top: 32px;
-      font-size: .88rem; color: var(--warning);
-      display: flex; gap: 12px; align-items: flex-start;
+      background: var(--warning-bg);
+      border: 1px solid #fde68a;
+      border-left: 4px solid #f59e0b;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      margin-top: 32px;
+      font-size: .88rem;
+      color: var(--warning);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
     }
-    .note-box strong { display: block; margin-bottom: 2px; }
+
+    .note-box strong {
+      display: block;
+      margin-bottom: 2px;
+    }
 
 
     /* Sub-rate rows inside pricing cards */
-    .sub-rate-list { display: flex; flex-direction: column; gap: 0; border: 1px solid var(--gray-200); border-radius: var(--radius); overflow: hidden; margin-bottom: 4px; }
-    .sub-rate {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 16px; gap: 12px;
+    .sub-rate-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 4px;
     }
-    .sub-rate.member { background: var(--blue-light); border-bottom: 1px solid var(--gray-200); }
-    .sub-rate.others { background: var(--gray-50); }
-    .sub-rate-label { font-size: .85rem; color: var(--gray-700); font-weight: 500; }
-    .sub-rate-price { font-size: 1.35rem; font-weight: 800; color: var(--blue-dark); white-space: nowrap; }
-    .currency-sm { font-size: .75rem; font-weight: 700; color: var(--gray-500); vertical-align: super; margin-right: 2px; }
+
+    .sub-rate {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      gap: 12px;
+    }
+
+    .sub-rate.member {
+      background: var(--blue-light);
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .sub-rate.others {
+      background: var(--gray-50);
+    }
+
+    .sub-rate-label {
+      font-size: .85rem;
+      color: var(--gray-700);
+      font-weight: 500;
+    }
+
+    .sub-rate-price {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--blue-dark);
+      white-space: nowrap;
+    }
+
+    .currency-sm {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--gray-500);
+      vertical-align: super;
+      margin-right: 2px;
+    }
+
     .member-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      background: var(--blue); color: #fff;
-      font-size: .72rem; font-weight: 700;
-      padding: 3px 10px; border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--blue);
+      color: #fff;
+      font-size: .72rem;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
       white-space: nowrap;
     }
 
     /* Footnotes */
     .footnotes-box {
-      margin-top: 24px; padding: 16px 20px;
-      background: var(--gray-50); border-left: 3px solid var(--gray-300);
-      border-radius: var(--radius); font-size: .83rem; color: var(--gray-600);
+      margin-top: 24px;
+      padding: 16px 20px;
+      background: var(--gray-50);
+      border-left: 3px solid var(--gray-300);
+      border-radius: var(--radius);
+      font-size: .83rem;
+      color: var(--gray-600);
     }
-    .footnotes-box p { margin-bottom: 6px; color: var(--gray-600); }
-    .footnotes-box p:last-child { margin-bottom: 0; }
+
+    .footnotes-box p {
+      margin-bottom: 6px;
+      color: var(--gray-600);
+    }
+
+    .footnotes-box p:last-child {
+      margin-bottom: 0;
+    }
 
     @media (max-width: 600px) {
-      .hero-banner { padding: 50px 0 70px 0; }
-      .date-pill { border-right: none; border-bottom: 1px solid var(--gray-200); width: 100%; }
-      .date-pill:last-child { border-bottom: none; }
-    }
+      .hero-banner {
+        padding: 50px 0 70px 0;
+      }
 
+      .date-pill {
+        border-right: none;
+        border-bottom: 1px solid var(--gray-200);
+        width: 100%;
+      }
+
+      .date-pill:last-child {
+        border-bottom: none;
+      }
+    }
   </style>
 </head>
+
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="navbar-inner">
-    <a href="/" class="navbar-brand">
-      <img src="/img/logo.svg" alt="TTSA Logo" onerror="this.style.display='none'"/>
-    </a>
-    <button class="navbar-hamburger" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-    <div class="navbar-links" id="navLinks">
-      <a href="/">Home</a>
-      <a href="/events.html">Events</a>
-      <a href="/program.html">Program</a>
-      <a href="/about.html">About</a>
-      <a href="/abstract-submission.html">Abstract Submission</a>
-      <a href="/registration-info.html" class="btn-nav-red active">Register</a>
-      <a href="/login.html" class="btn-nav"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Login</a>
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="navbar-inner">
+      <a href="/" class="navbar-brand">
+        <img src="/img/logo.svg" alt="TTSA Logo" onerror="this.style.display='none'" />
+      </a>
+      <button class="navbar-hamburger" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="navbar-links" id="navLinks">
+        <a href="/">Home</a>
+        <a href="/events.html">Events</a>
+        <a href="/program.html">Program</a>
+        <a href="/about.html">About</a>
+        <a href="/abstract-submission.html">Abstract Submission</a>
+        <a href="/registration-info.html" class="btn-nav-red active">Register</a>
+        <a href="/login.html" class="btn-nav"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg> Login</a>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-<!-- HERO -->
-<header class="hero-banner">
-  <div class="container">
-    <div class="hero-badge">5th TTSA National Congress · Sfax 2026</div>
-    <h1>Registration Information</h1>
-    <p>Choose the category that suits your profile and secure your place at the premier thoracic surgery event in Tunisia.</p>
-  </div>
-</header>
-
-
-
-<!-- PRICING CARDS -->
-<section class="section">
-  <div class="container">
-    <div class="section-title">
-      <h2>Registration Categories &amp; Fees</h2>
-      <p>All fees are in Tunisian Dinars (TND). Workshops are <strong>not included</strong> in the registration fee.</p>
+  <!-- HERO -->
+  <header class="hero-banner">
+    <div class="container">
+      <div class="hero-badge">5th TTSA National Congress · Sfax 2026</div>
+      <h1>Registration Information</h1>
+      <p>Choose the category that suits your profile and secure your place at the premier thoracic surgery event in
+        Tunisia.</p>
     </div>
+  </header>
 
-    <div class="pricing-grid">
 
-      <!-- Card 1: Qualified Doctor -->
-      <div class="price-card" id="card-doctor">
-        <div class="price-card-header">
-          <h3>Qualified Doctor</h3>
-          <div class="subtitle">Specialist / Consultant Physician</div>
-        </div>
-        <div class="price-card-body">
-          <div class="sub-rate-list">
-            <div class="sub-rate member">
-              <div class="sub-rate-label">
-                <span class="member-badge">★ TTSA Member<sup>**</sup></span>
-              </div>
-              <div class="sub-rate-price"><span class="currency-sm">TND</span> 150</div>
-            </div>
-            <div class="sub-rate others">
-              <div class="sub-rate-label">Others</div>
-              <div class="sub-rate-price"><span class="currency-sm">TND</span> 300</div>
-            </div>
-          </div>
-          <hr class="divider"/>
-          <ul class="include-list">
-            <li>Full access to all plenary &amp; thematic sessions</li>
-            <li>Official certificate of attendance</li>
-            <li>Access to workshops<sup>****</sup></li>
-          </ul>
-        </div>
-        <div class="price-card-footer">
-          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-doctor">Register Now →</a>
-        </div>
+
+  <!-- PRICING CARDS -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h2>Registration Categories &amp; Fees</h2>
+        <p>All fees are in Tunisian Dinars (TND). Workshops are <strong>not included</strong> in the registration fee.
+        </p>
       </div>
 
-      <!-- Card 2: Medical Resident -->
-      <div class="price-card" id="card-resident">
-        <div class="price-card-header">
-          <h3>Medical Resident</h3>
-          <div class="subtitle">In-training physician</div>
-        </div>
-        <div class="price-card-body">
-          <div class="sub-rate-list">
-            <div class="sub-rate member">
-              <div class="sub-rate-label">
-                <span class="member-badge">★ TTSA Member<sup>***</sup></span>
-              </div>
-              <div class="sub-rate-price"><span class="currency-sm">TND</span> 100</div>
-            </div>
-            <div class="sub-rate others">
-              <div class="sub-rate-label">Others</div>
-              <div class="sub-rate-price"><span class="currency-sm">TND</span> 200</div>
-            </div>
+      <div class="pricing-grid">
+
+        <!-- Card 1: Qualified Doctor -->
+        <div class="price-card" id="card-doctor">
+          <div class="price-card-header">
+            <h3>Qualified Doctor</h3>
+            <div class="subtitle">Specialist / Consultant Physician</div>
           </div>
-          <hr class="divider"/>
-          <ul class="include-list">
-            <li>Full access to all plenary &amp; thematic sessions</li>
-            <li>Official certificate of attendance</li>
-            <li>Access to workshops<sup>****</sup></li>
-          </ul>
+          <div class="price-card-body">
+            <div class="sub-rate-list">
+              <div class="sub-rate member">
+                <div class="sub-rate-label">
+                  <span class="member-badge">★ TTSA Member<sup>**</sup></span>
+                </div>
+                <div class="sub-rate-price"><span class="currency-sm">TND</span> 150</div>
+              </div>
+              <div class="sub-rate others">
+                <div class="sub-rate-label">Others</div>
+                <div class="sub-rate-price"><span class="currency-sm">TND</span> 300</div>
+              </div>
+            </div>
+            <hr class="divider" />
+            <ul class="include-list">
+              <li>Full access to all plenary &amp; thematic sessions</li>
+              <li>Official certificate of attendance</li>
+              <li>Access to workshops<sup>****</sup></li>
+            </ul>
+          </div>
+          <div class="price-card-footer">
+            <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;"
+              id="reg-btn-doctor">Register Now →</a>
+          </div>
         </div>
-        <div class="price-card-footer">
-          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-resident">Register Now →</a>
+
+        <!-- Card 2: Medical Resident -->
+        <div class="price-card" id="card-resident">
+          <div class="price-card-header">
+            <h3>Medical Resident</h3>
+            <div class="subtitle">In-training physician</div>
+          </div>
+          <div class="price-card-body">
+            <div class="sub-rate-list">
+              <div class="sub-rate member">
+                <div class="sub-rate-label">
+                  <span class="member-badge">★ TTSA Member<sup>***</sup></span>
+                </div>
+                <div class="sub-rate-price"><span class="currency-sm">TND</span> 100</div>
+              </div>
+              <div class="sub-rate others">
+                <div class="sub-rate-label">Others</div>
+                <div class="sub-rate-price"><span class="currency-sm">TND</span> 200</div>
+              </div>
+            </div>
+            <hr class="divider" />
+            <ul class="include-list">
+              <li>Full access to all plenary &amp; thematic sessions</li>
+              <li>Official certificate of attendance</li>
+              <li>Access to workshops<sup>****</sup></li>
+            </ul>
+          </div>
+          <div class="price-card-footer">
+            <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;"
+              id="reg-btn-resident">Register Now →</a>
+          </div>
         </div>
+
+        <!-- Card 3: Paramedical Staff -->
+        <div class="price-card" id="card-paramedical">
+          <div class="price-card-header">
+            <h3>Paramedical Staff</h3>
+            <div class="subtitle">Nurse · Physiotherapist · Allied Health</div>
+          </div>
+          <div class="price-card-body">
+            <div class="sub-rate-list">
+              <div class="sub-rate member">
+                <div class="sub-rate-label">
+                  <span class="member-badge">With third party support</span>
+                </div>
+                <div class="sub-rate-price"><span class="currency-sm">TND</span> 200</div>
+              </div>
+              <div class="sub-rate others">
+                <div class="sub-rate-label">Others</div>
+                <div class="sub-rate-price"><span class="currency-sm">TND</span> 100</div>
+              </div>
+            </div>
+            <hr class="divider" />
+            <ul class="include-list">
+              <li>Access to paramedical &amp; allied health sessions</li>
+              <li>Certificate of attendance</li>
+              <li>Access to workshops<sup>****</sup></li>
+            </ul>
+          </div>
+          <div class="price-card-footer">
+            <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;"
+              id="reg-btn-paramedical">Register Now →</a>
+          </div>
+        </div>
+
       </div>
 
-      <!-- Card 3: Paramedical Staff -->
-      <div class="price-card" id="card-paramedical">
-        <div class="price-card-header">
-          <h3>Paramedical Staff</h3>
-          <div class="subtitle">Nurse · Physiotherapist · Allied Health</div>
-        </div>
-        <div class="price-card-body">
-          <div class="sub-rate-list">
-            <div class="sub-rate member">
-              <div class="sub-rate-label">
-                <span class="member-badge">With third party support</span>
-              </div>
-              <div class="sub-rate-price"><span class="currency-sm">TND</span> 200</div>
-            </div>
-            <div class="sub-rate others">
-              <div class="sub-rate-label">Others</div>
-              <div class="sub-rate-price"><span class="currency-sm">TND</span> 100</div>
-            </div>
-          </div>
-          <hr class="divider"/>
-          <ul class="include-list">
-            <li>Access to paramedical &amp; allied health sessions</li>
-            <li>Certificate of attendance</li>
-            <li>Access to workshops<sup>****</sup></li>
-          </ul>
-        </div>
-        <div class="price-card-footer">
-          <a href="/register.html" class="btn btn-primary" style="width:100%;justify-content:center;display:flex;" id="reg-btn-paramedical">Register Now →</a>
-        </div>
+      <!-- Footnotes -->
+      <div class="footnotes-box">
+        <p>* Robotic workshops are <strong>not included</strong> in the registration fee.</p>
+        <p>** TTSA 2026 membership fees (Thoracic Surgeon): <strong>70 dinars</strong>.</p>
+        <p>*** TTSA 2026 membership fees (Thoracic Surgery Resident): <strong>50 dinars</strong>.</p>
+        <p>**** Robotic workshop access needs a supplementary fee of <strong>150 TND</strong>.</p>
       </div>
 
+      <div class="note-box">
+        <span style="font-size:1.3rem;flex-shrink:0;">⚠️</span>
+        <div>
+          <strong>Payment &amp; On-site Registration</strong>
+          Payment is collected on-site at the registration desk upon arrival. A valid proof of identity may be required.
+        </div>
+      </div>
     </div>
+  </section>
 
-    <!-- Footnotes -->
-    <div class="footnotes-box">
-      <p>* Workshops are <strong>not included</strong> in the registration fee.</p>
-      <p>** TTSA 2026 membership fees (Thoracic Surgeon): <strong>70 dinars</strong>.</p>
-      <p>*** TTSA 2026 membership fees (Thoracic Surgery Resident): <strong>50 dinars</strong>.</p>
-      <p>**** Robotic workshop access needs a supplementary fee of <strong>150 TND</strong>.</p>
+
+  <!-- CTA -->
+  <section class="cta-reg">
+    <div class="container">
+      <h2>Ready to Secure Your Place?</h2>
+      <p>Create your TTSA account now to complete your congress registration and gain full access to the participant
+        portal.</p>
+      <a href="/register.html" class="btn-reg-action" id="main-register-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+          stroke-linecap="round" stroke-linejoin="round">
+          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <line x1="19" y1="8" x2="19" y2="14" />
+          <line x1="22" y1="11" x2="16" y2="11" />
+        </svg>
+        Register Now
+      </a>
+      <p style="margin-top:20px; font-size:.85rem; color:rgba(255,255,255,.55);">Already have an account? <a
+          href="/login.html" style="color:rgba(255,255,255,.8); text-decoration:underline; font-weight:600;">Sign in
+          here →</a></p>
     </div>
+  </section>
 
-    <div class="note-box">
-      <span style="font-size:1.3rem;flex-shrink:0;">⚠️</span>
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'" />
+        <p>The Tunisian Thoracic Surgery Association brings together medical professionals to advance the field of
+          thoracic surgery in Tunisia and the region.</p>
+      </div>
       <div>
-        <strong>Payment &amp; On-site Registration</strong>
-        Payment is collected on-site at the registration desk upon arrival. A valid proof of identity may be required.
+        <h4>Quick Links</h4>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/events.html">Events</a></li>
+          <li><a href="/registration-info.html">Registration</a></li>
+          <li><a href="/login.html">Participant Portal</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:contact@ttsa.tn">contact@ttsa.tn</a></li>
+          <li><a href="#">Tunis, Tunisia</a></li>
+        </ul>
       </div>
     </div>
-  </div>
-</section>
-
-
-<!-- CTA -->
-<section class="cta-reg">
-  <div class="container">
-    <h2>Ready to Secure Your Place?</h2>
-    <p>Create your TTSA account now to complete your congress registration and gain full access to the participant portal.</p>
-    <a href="/register.html" class="btn-reg-action" id="main-register-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-      Register Now
-    </a>
-    <p style="margin-top:20px; font-size:.85rem; color:rgba(255,255,255,.55);">Already have an account? <a href="/login.html" style="color:rgba(255,255,255,.8); text-decoration:underline; font-weight:600;">Sign in here →</a></p>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      <img src="/img/logo.svg" alt="TTSA" onerror="this.style.display='none'"/>
-      <p>The Tunisian Thoracic Surgery Association brings together medical professionals to advance the field of thoracic surgery in Tunisia and the region.</p>
+    <div class="footer-bottom container">
+      <p>&copy; 2026 Tunisian Thoracic Surgery Association. All rights reserved.</p>
     </div>
-    <div>
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/events.html">Events</a></li>
-        <li><a href="/registration-info.html">Registration</a></li>
-        <li><a href="/login.html">Participant Portal</a></li>
-      </ul>
-    </div>
-    <div>
-      <h4>Contact</h4>
-      <ul>
-        <li><a href="mailto:contact@ttsa.tn">contact@ttsa.tn</a></li>
-        <li><a href="#">Tunis, Tunisia</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom container">
-    <p>&copy; 2026 Tunisian Thoracic Surgery Association. All rights reserved.</p>
-  </div>
-</footer>
+  </footer>
 
-<script>
-function switchNat(cardId, nat, el) {
-  const tabs = el.closest('.nat-tabs').querySelectorAll('.nat-tab');
-  tabs.forEach(t => t.classList.remove('active'));
-  el.classList.add('active');
+  <script>
+    function switchNat(cardId, nat, el) {
+      const tabs = el.closest('.nat-tabs').querySelectorAll('.nat-tab');
+      tabs.forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
 
-  const priceDisplay = document.getElementById('price-' + cardId);
-  const tnSpan = priceDisplay.querySelector('.price-tag-tn');
-  const foSpan = priceDisplay.querySelector('.price-tag-fo');
-  const currency = priceDisplay.querySelector('.currency');
+      const priceDisplay = document.getElementById('price-' + cardId);
+      const tnSpan = priceDisplay.querySelector('.price-tag-tn');
+      const foSpan = priceDisplay.querySelector('.price-tag-fo');
+      const currency = priceDisplay.querySelector('.currency');
 
-  if (nat === 'fo') {
-    tnSpan.style.display = 'none';
-    foSpan.style.display = 'inline';
-    currency.style.display = 'none';
-    priceDisplay.classList.add('foreign-view');
-  } else {
-    foSpan.style.display = 'none';
-    tnSpan.style.display = 'inline';
-    currency.style.display = 'inline';
-    priceDisplay.classList.remove('foreign-view');
-  }
-}
-</script>
-<script src="/js/navbar.js"></script>
+      if (nat === 'fo') {
+        tnSpan.style.display = 'none';
+        foSpan.style.display = 'inline';
+        currency.style.display = 'none';
+        priceDisplay.classList.add('foreign-view');
+      } else {
+        foSpan.style.display = 'none';
+        tnSpan.style.display = 'inline';
+        currency.style.display = 'inline';
+        priceDisplay.classList.remove('foreign-view');
+      }
+    }
+  </script>
+  <script src="/js/navbar.js"></script>
 </body>
+
 </html>
