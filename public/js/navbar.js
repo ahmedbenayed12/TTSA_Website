@@ -62,3 +62,51 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// ─── TTSA Page Loader Handler (afraid-horse-51 animation) ────────────────────
+(function initPageLoader() {
+  function dismissLoader() {
+    const loader = document.getElementById('pageLoader');
+    if (loader && !loader.classList.contains('fade-out')) {
+      loader.classList.add('fade-out');
+      setTimeout(() => {
+        if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
+      }, 450);
+    }
+  }
+
+  // Dismiss on window load with slight delay for silky visual presentation
+  if (document.readyState === 'complete') {
+    setTimeout(dismissLoader, 350);
+  } else {
+    window.addEventListener('load', () => {
+      setTimeout(dismissLoader, 350);
+    });
+    // Safety fallback: dismiss after 3s max
+    setTimeout(dismissLoader, 3000);
+  }
+
+  // Intercept internal page navigations for seamless transition loader
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a');
+    if (!link || !link.href) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('mailto:') || href.startsWith('tel:') || link.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey) return;
+
+    try {
+      const url = new URL(link.href, window.location.origin);
+      if (url.origin === window.location.origin && url.pathname !== window.location.pathname) {
+        let loader = document.getElementById('pageLoader');
+        if (!loader) {
+          loader = document.createElement('div');
+          loader.id = 'pageLoader';
+          loader.className = 'page-loader-overlay fade-out';
+          loader.innerHTML = '<div class="page-loader-spinner"></div>';
+          document.body.appendChild(loader);
+          requestAnimationFrame(() => loader.classList.remove('fade-out'));
+        }
+      }
+    } catch (_) {}
+  });
+})();
+

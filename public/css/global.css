@@ -588,3 +588,104 @@ tbody tr:last-child td { border-bottom: none; }
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 .loading-center { display: flex; justify-content: center; padding: 60px; }
+
+/* ─── PAGE PRELOADER (Uiverse.io afraid-horse-51 by satyamchaudharydev) ─── */
+.page-loader-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s;
+  pointer-events: all;
+}
+
+.page-loader-overlay.fade-out {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.page-loader-spinner,
+.page-loader-overlay .spinner {
+  --size: 30px;
+  --first-block-clr: var(--blue, #0C589A);
+  --second-block-clr: var(--red, #B82538);
+  --clr: #111;
+  width: 100px;
+  height: 100px;
+  position: relative;
+  border: none !important;
+  border-radius: 0 !important;
+  animation: none !important;
+}
+
+.page-loader-spinner::after,
+.page-loader-spinner::before,
+.page-loader-overlay .spinner::after,
+.page-loader-overlay .spinner::before {
+  box-sizing: border-box;
+  position: absolute;
+  content: "";
+  width: var(--size);
+  height: var(--size);
+  top: 50%;
+  animation: ttsa-up 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+  left: 50%;
+  background: var(--first-block-clr);
+  border-radius: 4px;
+}
+
+.page-loader-spinner::after,
+.page-loader-overlay .spinner::after {
+  background: var(--second-block-clr);
+  top: calc(50% - var(--size));
+  left: calc(50% - var(--size));
+  animation: ttsa-down 2.4s cubic-bezier(0, 0, 0.24, 1.21) infinite;
+}
+
+@keyframes ttsa-down {
+  0%, 100% {
+    transform: none;
+  }
+
+  25% {
+    transform: translateX(100%);
+  }
+
+  50% {
+    transform: translateX(100%) translateY(100%);
+  }
+
+  75% {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes ttsa-up {
+  0%, 100% {
+    transform: none;
+  }
+
+  25% {
+    transform: translateX(-100%);
+  }
+
+  50% {
+    transform: translateX(-100%) translateY(-100%);
+  }
+
+  75% {
+    transform: translateY(-100%);
+  }
+}
+
