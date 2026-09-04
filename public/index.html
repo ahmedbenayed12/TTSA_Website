@@ -83,13 +83,21 @@
       display: block;
       transition: transform .2s ease;
     }
+    .partner-logo-stn {
+      height: 76px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      transition: transform .2s ease;
+    }
     .partner-logo-ttsa:hover,
-    .partner-logo-sfctcv:hover {
+    .partner-logo-sfctcv:hover,
+    .partner-logo-stn:hover {
       transform: translateY(-2px);
     }
     @media (max-width: 600px) {
       .countdown-partners {
-        gap: 28px;
+        gap: 24px;
         margin-top: 24px;
       }
       .partner-logo-ttsa {
@@ -97,6 +105,9 @@
       }
       .partner-logo-sfctcv {
         height: 64px;
+      }
+      .partner-logo-stn {
+        height: 58px;
       }
     }
     .events-list { display: flex; flex-direction: column; gap: 16px; }
@@ -396,6 +407,7 @@
     <div class="countdown-partners">
       <img src="/img/logo.svg" alt="TTSA - Tunisian Thoracic Surgery Association" class="partner-logo-ttsa" onerror="this.style.display='none'"/>
       <img src="/img/sfctcv-logo.png" alt="SFCTCV - Société Française de Chirurgie Thoracique et Cardio-Vasculaire" class="partner-logo-sfctcv" onerror="this.style.display='none'"/>
+      <img src="/img/stn-logo.png" alt="STN - Société Tunisienne de Neurologie" class="partner-logo-stn" onerror="this.style.display='none'"/>
     </div>
   </div>
 </section>
