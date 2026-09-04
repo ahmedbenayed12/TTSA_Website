@@ -30,10 +30,30 @@
     .feature-card h3 { margin-bottom: 8px; font-size: 1.05rem; }
     .feature-card p  { font-size: .87rem; }
     .deadline-banner {
-      background: linear-gradient(135deg, var(--red) 0%, #9a1e2f 100%);
+      background: var(--red);
+      background: linear-gradient(
+        135deg,
+        #B82538 25%,
+        #9a1e2f 25%,
+        #9a1e2f 50%,
+        #B82538 50%,
+        #B82538 75%,
+        #9a1e2f 75%,
+        #9a1e2f
+      );
+      background-size: 40px 40px;
+      animation: bannerStripeMove 4s linear infinite;
       color: var(--white); border-radius: var(--radius-lg); padding: 32px 24px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center; gap: 18px;
+    }
+    @keyframes bannerStripeMove {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 40px 40px;
+      }
     }
     .deadline-banner h3 {
       color: var(--white);
