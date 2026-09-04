@@ -30,30 +30,25 @@
     .feature-card h3 { margin-bottom: 8px; font-size: 1.05rem; }
     .feature-card p  { font-size: .87rem; }
     .deadline-banner {
-      background: var(--red);
-      background: linear-gradient(
-        135deg,
-        #B82538 25%,
-        #9a1e2f 25%,
-        #9a1e2f 50%,
-        #B82538 50%,
-        #B82538 75%,
-        #9a1e2f 75%,
-        #9a1e2f
-      );
-      background-size: 40px 40px;
-      animation: bannerStripeMove 4s linear infinite;
+      background: linear-gradient(135deg, var(--red) 0%, #9a1e2f 100%);
       color: var(--white); border-radius: var(--radius-lg); padding: 32px 24px;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
       text-align: center; gap: 18px;
+      position: relative;
+      overflow: hidden;
     }
-    @keyframes bannerStripeMove {
-      0% {
-        background-position: 0 0;
-      }
-      100% {
-        background-position: 40px 40px;
-      }
+    .deadline-banner > * {
+      position: relative;
+      z-index: 1;
+    }
+    .deadline-banner canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.22;
+      pointer-events: none;
+      z-index: 0;
     }
     .deadline-banner h3 {
       color: var(--white);
@@ -350,6 +345,7 @@
 <section class="section" id="congressCountdownSection">
   <div class="container">
     <div class="deadline-banner">
+      <canvas id="countdownCanvas"></canvas>
       <h3 id="countdownBannerTitle">Congress Starts In</h3>
       <div class="countdown" id="countdown">
         <div class="countdown-unit"><div class="num" id="cd-days">--</div><div class="lbl">Days</div></div>
@@ -636,6 +632,62 @@ function startHeroBannerRotation() {
     layers[activeIndex].classList.add('active');
   }, 5000);
 }
+
+// Countdown banner thin animated lines (matching abstract submission page banner)
+(function() {
+  const canvas = document.getElementById('countdownCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  function resize() {
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const SPACING = 48;
+  const ANGLE = 35;
+  const SPEED = 0.28;
+  let offset = 0;
+  const rad = ANGLE * Math.PI / 180;
+
+  function draw() {
+    const W = canvas.offsetWidth;
+    const H = canvas.offsetHeight;
+    if (W === 0 || H === 0) {
+      requestAnimationFrame(draw);
+      return;
+    }
+    ctx.clearRect(0, 0, W, H);
+
+    ctx.strokeStyle = 'rgba(255,255,255,1)';
+    ctx.lineWidth = 1;
+
+    const diag = Math.sqrt(W * W + H * H);
+    const count = Math.ceil(diag / SPACING) + 2;
+
+    offset = (offset + SPEED) % SPACING;
+
+    ctx.save();
+    ctx.translate(W / 2, H / 2);
+    ctx.rotate(rad);
+
+    const start = -(count / 2) * SPACING + offset;
+    for (let i = 0; i < count; i++) {
+      const x = start + i * SPACING;
+      ctx.beginPath();
+      ctx.moveTo(x, -diag);
+      ctx.lineTo(x, diag);
+      ctx.stroke();
+    }
+    ctx.restore();
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
+})();
 
 startHeroBannerRotation();
 loadPublicData();
