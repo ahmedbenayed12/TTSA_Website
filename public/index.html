@@ -61,6 +61,44 @@
     .countdown-unit { text-align: center; min-width: 60px; }
     .countdown-unit .num { font-size: 2.4rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
     .countdown-unit .lbl { font-size: .68rem; text-transform: uppercase; opacity: .8; letter-spacing: 0.06em; margin-top: 4px; }
+    .countdown-partners {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+    .partner-logo-ttsa {
+      height: 52px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      transition: transform .2s ease;
+    }
+    .partner-logo-sfctcv {
+      height: 84px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+      transition: transform .2s ease;
+    }
+    .partner-logo-ttsa:hover,
+    .partner-logo-sfctcv:hover {
+      transform: translateY(-2px);
+    }
+    @media (max-width: 600px) {
+      .countdown-partners {
+        gap: 28px;
+        margin-top: 24px;
+      }
+      .partner-logo-ttsa {
+        height: 40px;
+      }
+      .partner-logo-sfctcv {
+        height: 64px;
+      }
+    }
     .events-list { display: flex; flex-direction: column; gap: 16px; }
     .event-item {
       background: var(--white); border-radius: var(--radius); padding: 20px 24px;
@@ -344,7 +382,7 @@
 <!-- CONGRESS COUNTDOWN BANNER -->
 <section class="section" id="congressCountdownSection">
   <div class="container">
-    <div class="deadline-banner">
+    <div class="deadline-banner" id="congressCountdownBanner">
       <canvas id="countdownCanvas"></canvas>
       <h3 id="countdownBannerTitle">Congress Starts In</h3>
       <div class="countdown" id="countdown">
@@ -352,6 +390,12 @@
         <div class="countdown-unit"><div class="num" id="cd-hours">--</div><div class="lbl">Hours</div></div>
         <div class="countdown-unit"><div class="num" id="cd-mins">--</div><div class="lbl">Mins</div></div>
       </div>
+    </div>
+
+    <!-- ORGANIZING SOCIETIES LOGOS -->
+    <div class="countdown-partners">
+      <img src="/img/logo.svg" alt="TTSA - Tunisian Thoracic Surgery Association" class="partner-logo-ttsa" onerror="this.style.display='none'"/>
+      <img src="/img/sfctcv-logo.png" alt="SFCTCV - Société Française de Chirurgie Thoracique et Cardio-Vasculaire" class="partner-logo-sfctcv" onerror="this.style.display='none'"/>
     </div>
   </div>
 </section>
@@ -531,8 +575,8 @@ async function loadPublicData() {
     // Congress countdown
     const congressDate = settings.congress_date ? new Date(settings.congress_date) : new Date('2026-11-06T08:30:00');
     if (congressDate - new Date() <= 0) {
-      const sec = document.getElementById('congressCountdownSection');
-      if (sec) sec.style.display = 'none';
+      const banner = document.getElementById('congressCountdownBanner') || document.getElementById('congressCountdownSection');
+      if (banner) banner.style.display = 'none';
     } else {
       startCongressCountdown(congressDate);
     }
@@ -586,7 +630,7 @@ async function loadPublicData() {
 
 function startCongressCountdown(congressDate) {
   const container = document.getElementById('countdown');
-  const section = document.getElementById('congressCountdownSection');
+  const banner = document.getElementById('congressCountdownBanner') || document.getElementById('congressCountdownSection');
   if (!container) return;
 
   let timer = null;
@@ -595,7 +639,7 @@ function startCongressCountdown(congressDate) {
     const diff = congressDate - now;
 
     if (diff <= 0) {
-      if (section) section.style.display = 'none';
+      if (banner) banner.style.display = 'none';
       if (timer) clearInterval(timer);
       return;
     }
