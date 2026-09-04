@@ -31,16 +31,21 @@
     .feature-card p  { font-size: .87rem; }
     .deadline-banner {
       background: linear-gradient(135deg, var(--red) 0%, #9a1e2f 100%);
-      color: var(--white); border-radius: var(--radius-lg); padding: 28px 36px;
-      display: flex; align-items: center; justify-content: space-between; gap: 24px;
-      flex-wrap: wrap;
+      color: var(--white); border-radius: var(--radius-lg); padding: 32px 24px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; gap: 18px;
     }
-    .deadline-banner h3 { color: var(--white); margin-bottom: 4px; }
-    .deadline-banner p  { color: rgba(255,255,255,.8); font-size: .9rem; }
-    .countdown { display: flex; gap: 16px; }
-    .countdown-unit { text-align: center; }
-    .countdown-unit .num { font-size: 2.2rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
-    .countdown-unit .lbl { font-size: .65rem; text-transform: uppercase; opacity: .7; }
+    .deadline-banner h3 {
+      color: var(--white);
+      margin-bottom: 0;
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .countdown { display: flex; gap: 24px; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .countdown-unit { text-align: center; min-width: 60px; }
+    .countdown-unit .num { font-size: 2.4rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+    .countdown-unit .lbl { font-size: .68rem; text-transform: uppercase; opacity: .8; letter-spacing: 0.06em; margin-top: 4px; }
     .events-list { display: flex; flex-direction: column; gap: 16px; }
     .event-item {
       background: var(--white); border-radius: var(--radius); padding: 20px 24px;
@@ -322,13 +327,10 @@
 </section>
 
 <!-- CONGRESS COUNTDOWN BANNER -->
-<section class="section">
+<section class="section" id="congressCountdownSection">
   <div class="container">
     <div class="deadline-banner">
-      <div>
-        <h3 id="countdownBannerTitle">Congress Starts In</h3>
-        <p id="countdownBannerSubtitle">5th National Thoracic Surgery Congress · <span id="congressDateDisplay">November 6, 2026</span> · Borj Dhiafa Hotel, Sfax</p>
-      </div>
+      <h3 id="countdownBannerTitle">Congress Starts In</h3>
       <div class="countdown" id="countdown">
         <div class="countdown-unit"><div class="num" id="cd-days">--</div><div class="lbl">Days</div></div>
         <div class="countdown-unit"><div class="num" id="cd-hours">--</div><div class="lbl">Hours</div></div>
@@ -513,12 +515,12 @@ async function loadPublicData() {
 
     // Congress countdown
     const congressDate = settings.congress_date ? new Date(settings.congress_date) : new Date('2026-11-06T08:30:00');
-    const congressDateDisplay = document.getElementById('congressDateDisplay');
-    if (congressDateDisplay) {
-      congressDateDisplay.textContent = congressDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    if (congressDate - new Date() <= 0) {
+      const sec = document.getElementById('congressCountdownSection');
+      if (sec) sec.style.display = 'none';
+    } else {
+      startCongressCountdown(congressDate);
     }
-
-    startCongressCountdown(congressDate);
 
     function formatDateRange(start, end) {
       if (!start) return 'TBD';
@@ -569,14 +571,17 @@ async function loadPublicData() {
 
 function startCongressCountdown(congressDate) {
   const container = document.getElementById('countdown');
+  const section = document.getElementById('congressCountdownSection');
   if (!container) return;
 
+  let timer = null;
   function tick() {
     const now = new Date();
     const diff = congressDate - now;
 
     if (diff <= 0) {
-      container.innerHTML = '<span style="color:#fff;font-weight:700;font-size:1.1rem;">🎉 The Congress has begun!</span>';
+      if (section) section.style.display = 'none';
+      if (timer) clearInterval(timer);
       return;
     }
 
@@ -596,7 +601,7 @@ function startCongressCountdown(congressDate) {
     if (sEl) sEl.textContent = String(s).padStart(2, '0');
   }
   tick();
-  setInterval(tick, 1000);
+  timer = setInterval(tick, 1000);
 }
 
 function startHeroBannerRotation() {
