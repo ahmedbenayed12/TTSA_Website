@@ -335,7 +335,6 @@
         <div class="countdown-unit"><div class="num" id="cd-days">--</div><div class="lbl">Days</div></div>
         <div class="countdown-unit"><div class="num" id="cd-hours">--</div><div class="lbl">Hours</div></div>
         <div class="countdown-unit"><div class="num" id="cd-mins">--</div><div class="lbl">Mins</div></div>
-        <div class="countdown-unit"><div class="num" id="cd-secs">--</div><div class="lbl">Secs</div></div>
       </div>
     </div>
   </div>
@@ -588,17 +587,14 @@ function startCongressCountdown(congressDate) {
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
-    const s = Math.floor((diff % 60000) / 1000);
 
     const dEl = document.getElementById('cd-days');
     const hEl = document.getElementById('cd-hours');
     const mEl = document.getElementById('cd-mins');
-    const sEl = document.getElementById('cd-secs');
 
     if (dEl) dEl.textContent = String(d).padStart(2, '0');
     if (hEl) hEl.textContent = String(h).padStart(2, '0');
     if (mEl) mEl.textContent = String(m).padStart(2, '0');
-    if (sEl) sEl.textContent = String(s).padStart(2, '0');
   }
   tick();
   timer = setInterval(tick, 1000);
