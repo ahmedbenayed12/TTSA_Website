@@ -207,17 +207,76 @@
         <button class="btn btn-ghost btn-sm" onclick="clearSelection()">✕ Clear</button>
       </div>
 
-      <!-- Sort Controls -->
-      <div style="display:flex;justify-content:flex-end;margin-bottom:12px;align-items:center;gap:12px;">
-        <span style="font-size:.85rem;font-weight:600;color:var(--gray-500);">Sort by:</span>
-        <select id="sortSelect" class="form-control" style="width:200px;padding:4px 8px;font-size:.85rem;" onchange="applySort()">
-          <option value="id_desc">Newest First</option>
-          <option value="id_asc">Oldest First</option>
-          <option value="score_desc">Score (Highest first)</option>
-          <option value="score_asc">Score (Lowest first)</option>
-          <option value="title_asc">Title (A-Z)</option>
-          <option value="status_asc">Status</option>
-        </select>
+      <!-- Filter & Sort Toolbar -->
+      <div class="card" style="margin-bottom:16px; padding:12px 18px; background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius);">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between;">
+          
+          <!-- Filters Group -->
+          <div style="display:flex; flex-wrap:wrap; gap:10px; align-items:center; flex:1; min-width:300px;">
+            <!-- Search -->
+            <div style="position:relative; min-width:180px; flex:1 1 180px; max-width:260px;">
+              <input type="text" id="filterSearch" class="form-control" placeholder="Search title, author, #..." style="padding:6px 10px 6px 30px; font-size:.83rem; height:34px;" oninput="applyFilters()"/>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; left:9px; top:10px; color:var(--gray-400); pointer-events:none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+
+            <!-- Type Filter -->
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="font-size:.8rem; font-weight:600; color:var(--gray-500); white-space:nowrap;">Type:</span>
+              <select id="typeFilter" class="form-control" style="width:130px; padding:4px 8px; font-size:.82rem; height:34px;" onchange="onTypeChange()">
+                <option value="all">All Types</option>
+                <option value="Oral">🎤 Oral</option>
+                <option value="Poster">🖼 Poster</option>
+                <option value="Video">🎬 Video</option>
+              </select>
+            </div>
+
+            <!-- Sub-category / Topic Filter -->
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="font-size:.8rem; font-weight:600; color:var(--gray-500); white-space:nowrap;">Sub-category:</span>
+              <select id="topicFilter" class="form-control" style="min-width:170px; max-width:240px; padding:4px 8px; font-size:.82rem; height:34px;" onchange="applyFilters()">
+                <option value="all">All Sub-categories</option>
+              </select>
+            </div>
+
+            <!-- Status Filter -->
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="font-size:.8rem; font-weight:600; color:var(--gray-500); white-space:nowrap;">Status:</span>
+              <select id="statusFilter" class="form-control" style="width:150px; padding:4px 8px; font-size:.82rem; height:34px;" onchange="applyFilters()">
+                <option value="all">All Statuses</option>
+                <option value="Submitted">Submitted</option>
+                <option value="Waiting for Review">Waiting for Review</option>
+                <option value="Accepted">Accepted</option>
+                <option value="Refused">Refused</option>
+                <option value="Waiting for File Upload">Waiting for File Upload</option>
+                <option value="Final File Uploaded">Final File Uploaded</option>
+              </select>
+            </div>
+
+            <!-- Clear button -->
+            <button class="btn btn-ghost btn-sm" id="btnResetFilters" onclick="resetFilters()" style="height:34px; padding:0 10px; font-size:.8rem; display:none;">✕ Clear</button>
+          </div>
+
+          <!-- Sort Controls & Count -->
+          <div style="display:flex; align-items:center; gap:10px; margin-left:auto;">
+            <div style="display:flex; align-items:center; gap:5px;">
+              <span style="font-size:.8rem; font-weight:600; color:var(--gray-500); white-space:nowrap;">Sort by:</span>
+              <select id="sortSelect" class="form-control" style="width:205px; padding:4px 8px; font-size:.82rem; height:34px;" onchange="applyFilters()">
+                <option value="id_desc">Newest First</option>
+                <option value="id_asc">Oldest First</option>
+                <option value="type_oral_first">🎤 Oral First</option>
+                <option value="type_poster_first">🖼 Poster First</option>
+                <option value="type_video_first">🎬 Video First</option>
+                <option value="topic_asc">Sub-category / Topic (A-Z)</option>
+                <option value="score_desc">Score (Highest first)</option>
+                <option value="score_asc">Score (Lowest first)</option>
+                <option value="title_asc">Title (A-Z)</option>
+                <option value="status_asc">Status</option>
+              </select>
+            </div>
+            <span class="badge badge-gray" id="abstractCountBadge" style="font-size:.78rem; padding:5px 9px; white-space:nowrap;">—</span>
+          </div>
+
+        </div>
       </div>
 
       <!-- Abstracts Table -->
@@ -298,6 +357,7 @@
 <script>
 if (!requireAuth(['admin'])) throw '';
 
+let allAbstracts = [];
 let abstracts = [];
 let reviewers = [];
 let criteriaLabels = { criteria1_label:'Criteria 1', criteria2_label:'Criteria 2', criteria3_label:'Criteria 3', criteria4_label:'Criteria 4' };
@@ -325,7 +385,7 @@ async function init() {
   ]);
   document.getElementById('sidebarName').textContent  = me.first_name+' '+me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
-  abstracts = abs;
+  allAbstracts = abs;
   reviewers = revs;
 
   // Store criteria labels from settings
@@ -334,7 +394,8 @@ async function init() {
   });
 
   setBlindUI(adminSettings.blind_review === 'true');
-  applySort();
+  populateTopicFilter('all');
+  applyFilters();
 
   document.getElementById('reviewerSelect').innerHTML =
     '<option value="">-- Select Reviewer --</option>' +
@@ -367,28 +428,209 @@ async function toggleBlind() {
   } catch(e) { showToast('Failed to toggle blind review','error'); }
 }
 
-// ── Sorting ─────────────────────────────────────────────────────────
-function applySort() {
-  const s = document.getElementById('sortSelect').value;
-  abstracts.sort((a,b) => {
-    switch(s) {
-      case 'id_desc':    return b.id - a.id;
-      case 'id_asc':     return a.id - b.id;
-      case 'title_asc':  return a.title.localeCompare(b.title);
-      case 'status_asc': return a.status.localeCompare(b.status);
-      case 'score_desc': return (b.total_score||-1)-(a.total_score||-1);
-      case 'score_asc':  return (a.total_score||-1)-(b.total_score||-1);
-      default: return b.id - a.id;
+// ── Sub-category Population ──────────────────────────────────────────
+function populateTopicFilter(selectedType = 'all') {
+  const select = document.getElementById('topicFilter');
+  if (!select) return;
+  const currentVal = select.value;
+  select.innerHTML = '<option value="all">All Sub-categories</option>';
+
+  const standardTopics = {
+    'Oral': ['Chest Trauma', 'Hydatic Cyst'],
+    'Poster': ['Thoracic Oncology', 'Other'],
+    'Video': ['Video']
+  };
+
+  const topicsByType = { Oral: new Set(), Poster: new Set(), Video: new Set(), Other: new Set() };
+  allAbstracts.forEach(a => {
+    const pref = a.preference || 'Other';
+    const top = a.topic;
+    if (top) {
+      if (topicsByType[pref]) topicsByType[pref].add(top);
+      else topicsByType.Other.add(top);
     }
   });
+
+  Object.keys(standardTopics).forEach(p => {
+    standardTopics[p].forEach(t => {
+      if (topicsByType[p]) topicsByType[p].add(t);
+    });
+  });
+
+  if (selectedType !== 'all') {
+    const list = Array.from(topicsByType[selectedType] || []);
+    list.sort().forEach(top => {
+      const opt = document.createElement('option');
+      opt.value = top;
+      opt.textContent = top;
+      select.appendChild(opt);
+    });
+  } else {
+    ['Oral', 'Poster', 'Video', 'Other'].forEach(p => {
+      const list = Array.from(topicsByType[p] || []);
+      if (list.length > 0) {
+        const grp = document.createElement('optgroup');
+        grp.label = `${p==='Oral'?'🎤 Oral':p==='Poster'?'🖼 Poster':p==='Video'?'🎬 Video':'Other'} Sub-categories`;
+        list.sort().forEach(top => {
+          const opt = document.createElement('option');
+          opt.value = top;
+          opt.textContent = top;
+          grp.appendChild(opt);
+        });
+        select.appendChild(grp);
+      }
+    });
+  }
+
+  if ([...select.options].some(o => o.value === currentVal)) {
+    select.value = currentVal;
+  } else {
+    select.value = 'all';
+  }
+}
+
+function onTypeChange() {
+  const selectedType = document.getElementById('typeFilter').value;
+  populateTopicFilter(selectedType);
+  applyFilters();
+}
+
+function resetFilters() {
+  document.getElementById('filterSearch').value = '';
+  document.getElementById('typeFilter').value = 'all';
+  document.getElementById('statusFilter').value = 'all';
+  populateTopicFilter('all');
+  document.getElementById('topicFilter').value = 'all';
+  document.getElementById('sortSelect').value = 'id_desc';
+  applyFilters();
+}
+
+// ── Filtering & Sorting ─────────────────────────────────────────────
+function applyFilters() {
+  const search = (document.getElementById('filterSearch').value || '').trim().toLowerCase();
+  const type   = document.getElementById('typeFilter').value;
+  const topic  = document.getElementById('topicFilter').value;
+  const status = document.getElementById('statusFilter').value;
+  const sort   = document.getElementById('sortSelect').value;
+
+  const isFiltered = search !== '' || type !== 'all' || topic !== 'all' || status !== 'all';
+  const resetBtn = document.getElementById('btnResetFilters');
+  if (resetBtn) resetBtn.style.display = isFiltered ? 'inline-flex' : 'none';
+
+  // 1. Filter
+  abstracts = allAbstracts.filter(a => {
+    // Search
+    if (search) {
+      const matchText = [
+        a.title,
+        a.submitter_name,
+        a.submitter_email,
+        a.topic,
+        a.preference,
+        a.submission_number ? `#${a.submission_number}` : '',
+        `id:${a.id}`,
+        a.reviewer_name
+      ].filter(Boolean).join(' ').toLowerCase();
+      if (!matchText.includes(search)) return false;
+    }
+
+    // Type filter
+    if (type !== 'all' && (a.preference || '').toLowerCase() !== type.toLowerCase()) {
+      return false;
+    }
+
+    // Sub-category (topic) filter
+    if (topic !== 'all') {
+      const aTopic = (a.topic || '').toLowerCase();
+      const targetTopic = topic.toLowerCase();
+      if (targetTopic.includes('hydat') && aTopic.includes('hydat')) {
+        // match
+      } else if (targetTopic.includes('oncology') && aTopic.includes('oncology')) {
+        // match
+      } else if (aTopic !== targetTopic) {
+        return false;
+      }
+    }
+
+    // Status filter
+    if (status !== 'all' && a.status !== status) {
+      return false;
+    }
+
+    return true;
+  });
+
+  // 2. Sort
+  abstracts.sort((a, b) => {
+    switch (sort) {
+      case 'id_desc':
+        return b.id - a.id;
+      case 'id_asc':
+        return a.id - b.id;
+      case 'title_asc':
+        return (a.title || '').localeCompare(b.title || '');
+      case 'status_asc':
+        return (a.status || '').localeCompare(b.status || '');
+      case 'score_desc':
+        return (b.total_score != null ? b.total_score : -1) - (a.total_score != null ? a.total_score : -1);
+      case 'score_asc':
+        return (a.total_score != null ? a.total_score : 999) - (b.total_score != null ? b.total_score : 999);
+      case 'type_oral_first': {
+        const order = { 'Oral': 1, 'Poster': 2, 'Video': 3 };
+        const oA = order[a.preference] || 99;
+        const oB = order[b.preference] || 99;
+        if (oA !== oB) return oA - oB;
+        return (a.topic || '').localeCompare(b.topic || '') || (b.id - a.id);
+      }
+      case 'type_poster_first': {
+        const order = { 'Poster': 1, 'Oral': 2, 'Video': 3 };
+        const oA = order[a.preference] || 99;
+        const oB = order[b.preference] || 99;
+        if (oA !== oB) return oA - oB;
+        return (a.topic || '').localeCompare(b.topic || '') || (b.id - a.id);
+      }
+      case 'type_video_first': {
+        const order = { 'Video': 1, 'Oral': 2, 'Poster': 3 };
+        const oA = order[a.preference] || 99;
+        const oB = order[b.preference] || 99;
+        if (oA !== oB) return oA - oB;
+        return (a.topic || '').localeCompare(b.topic || '') || (b.id - a.id);
+      }
+      case 'topic_asc': {
+        const tA = (a.topic || '').toLowerCase();
+        const tB = (b.topic || '').toLowerCase();
+        if (tA !== tB) return tA.localeCompare(tB);
+        return (a.preference || '').localeCompare(b.preference || '') || (b.id - a.id);
+      }
+      default:
+        return b.id - a.id;
+    }
+  });
+
+  // Update badge count
+  const badge = document.getElementById('abstractCountBadge');
+  if (badge) {
+    if (isFiltered) {
+      badge.textContent = `Showing ${abstracts.length} of ${allAbstracts.length}`;
+      badge.className = 'badge badge-blue';
+    } else {
+      badge.textContent = `Total: ${allAbstracts.length}`;
+      badge.className = 'badge badge-gray';
+    }
+  }
+
   renderTable();
+}
+
+function applySort() {
+  applyFilters();
 }
 
 // ── Table Rendering ─────────────────────────────────────────────────
 function renderTable() {
   const tbody = document.querySelector('#abstractsTable tbody');
   if (!abstracts.length) {
-    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--gray-500)">No abstracts found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:40px;color:var(--gray-500)">No abstracts match the selected criteria</td></tr>';
     return;
   }
   tbody.innerHTML = abstracts.map(a => {
@@ -398,6 +640,14 @@ function renderTable() {
         ? '<span style="color:var(--red);font-weight:700">❌ Refused</span>'
         : '—';
     const isSelectable = ['Submitted','Waiting for Review','Waiting for File Upload'].includes(a.status);
+    const prefBadge = a.preference === 'Oral'
+      ? '<span class="badge badge-blue" style="font-size:.68rem;padding:1px 6px;">🎤 Oral</span>'
+      : a.preference === 'Poster'
+        ? '<span class="badge badge-red" style="font-size:.68rem;padding:1px 6px;">🖼 Poster</span>'
+        : a.preference === 'Video'
+          ? '<span class="badge badge-purple" style="font-size:.68rem;padding:1px 6px;">🎬 Video</span>'
+          : `<span class="badge badge-gray" style="font-size:.68rem;padding:1px 6px;">${esc(a.preference||'—')}</span>`;
+
     return `
       <tr data-id="${a.id}" onclick="handleRowClick(event,${a.id})" style="cursor:pointer">
         <td onclick="event.stopPropagation()">
@@ -411,8 +661,12 @@ function renderTable() {
             : `<span class="badge badge-gray">ID:${a.id}</span>`}
         </td>
         <td>
-          <div style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500" title="${esc(a.title)}">${esc(a.title)}</div>
-          <div style="font-size:.72rem;color:var(--gray-400)">${a.word_count} words · ${esc(a.topic||'—')}</div>
+          <div style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600" title="${esc(a.title)}">${esc(a.title)}</div>
+          <div style="font-size:.72rem;color:var(--gray-500);display:flex;align-items:center;gap:6px;margin-top:2px;flex-wrap:wrap;">
+            ${prefBadge}
+            <span style="font-weight:600;color:var(--gray-700)">${esc(a.topic||'—')}</span>
+            <span style="color:var(--gray-400)">· ${a.word_count} words</span>
+          </div>
         </td>
         <td>
           <div style="font-weight:500">${esc(a.submitter_name)}</div>
@@ -422,7 +676,11 @@ function renderTable() {
         <td><span class="status-badge ${statusColors[a.status]||'badge-gray'}">${a.status}</span></td>
         <td>${a.reviewer_name ? esc(a.reviewer_name) : '<span style="color:var(--gray-400)">Unassigned</span>'}</td>
         <td>${a.total_score!=null ? `<span class="score-box">${a.total_score}/20</span>` : '—'}</td>
-        <td>${a.presentation_type ? `<span style="font-weight:600;color:var(--gray-700)">${esc(a.presentation_type)}</span>` : '—'}</td>
+        <td>
+          ${a.presentation_type
+            ? `<span style="font-weight:700;color:var(--gray-800);">${esc(a.presentation_type)}</span>`
+            : `<span style="color:var(--gray-400);font-size:.82rem;">—</span>`}
+        </td>
         <td>${verdictHtml}</td>
       </tr>`;
   }).join('');
@@ -506,7 +764,7 @@ async function bulkRemind() {
 // ── Detail Panel ──────────────────────────────────────────────────────
 async function openPanel(id) {
   currentPanelId = id;
-  const a = abstracts.find(x=>x.id===id);
+  const a = (allAbstracts.length ? allAbstracts : abstracts).find(x=>x.id===id);
   if (!a) return;
 
   // Header
