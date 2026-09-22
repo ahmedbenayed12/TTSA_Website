@@ -47,36 +47,141 @@
     .ov-pct span { font-weight: 700; color: var(--gray-600); }
     .ov-sub {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       margin-top: 6px;
       border-top: 1px solid var(--gray-100);
       padding-top: 10px;
+      flex-wrap: wrap;
     }
     .ov-sub-item {
-      flex: 1;
+      flex: 1 1 calc(33.333% - 6px);
+      min-width: 60px;
       background: var(--gray-50);
       border-radius: 6px;
-      padding: 6px 10px;
+      padding: 6px 8px;
       display: flex;
       flex-direction: column;
       gap: 2px;
     }
     .ov-sub-label {
-      font-size: .68rem;
+      font-size: .65rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: .04em;
-      color: var(--gray-400);
+      letter-spacing: .03em;
+      color: var(--gray-500);
     }
     .ov-sub-value {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 800;
     }
     .ov-sub-pct {
-      font-size: .7rem;
+      font-size: .68rem;
       color: var(--gray-400);
       font-weight: 600;
     }
+
+    /* Enhanced Total Abstracts details */
+    .ov-tag-badge {
+      font-size: .68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      padding: 3px 8px;
+      border-radius: 12px;
+      background: var(--gray-100);
+      color: var(--gray-600);
+    }
+    .ov-detail-section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--gray-100);
+    }
+    .ov-detail-title {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      color: var(--gray-500);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .ov-cat-group {
+      background: var(--gray-50);
+      border-radius: 6px;
+      padding: 8px 10px;
+      margin-bottom: 6px;
+      border: 1px solid var(--gray-200);
+    }
+    .ov-cat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    .ov-cat-badge {
+      font-size: .7rem;
+      font-weight: 700;
+      border-radius: 4px;
+      padding: 2px 6px;
+    }
+    .badge-oral   { background: #eff6ff; color: #1d4ed8; }
+    .badge-poster { background: #fef2f2; color: #b91c1c; }
+    .badge-video  { background: #f5f3ff; color: #6d28d9; }
+    .ov-cat-total {
+      font-size: .7rem;
+      font-weight: 700;
+      color: var(--gray-600);
+    }
+    .ov-topic-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: .78rem;
+      padding: 2px 0;
+      color: var(--gray-600);
+    }
+    .ov-topic-name {
+      font-weight: 500;
+    }
+    .ov-topic-val {
+      font-weight: 700;
+      color: var(--gray-800);
+      background: rgba(0,0,0,.05);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+    .ov-ptypes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .ov-ptype-pill {
+      background: var(--gray-50);
+      border: 1px solid var(--gray-200);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: .73rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .ov-ptype-pill .pt-label {
+      color: var(--gray-500);
+      font-size: .65rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .02em;
+    }
+    .ov-ptype-pill strong {
+      font-size: .95rem;
+      font-weight: 800;
+      color: var(--gray-800);
+    }
+
     /* colour tokens */
     .ov-blue   { border-color: #0C589A; }
     .ov-blue   .ov-value { color: #0C589A; }
@@ -146,16 +251,116 @@
 
       <!-- Platform Totals -->
       <p class="section-title">Platform totals</p>
-      <div class="overview-grid" style="grid-template-columns:repeat(3,1fr); margin-bottom:28px">
+      <div class="overview-grid" style="grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); align-items:start; margin-bottom:28px">
         <div class="ov-card ov-blue">
           <div class="ov-label">Total Members</div>
           <div class="ov-value" id="sMembers">—</div>
           <div class="ov-pct">Verified registered users</div>
         </div>
-        <div class="ov-card ov-gray">
-          <div class="ov-label">Total Abstracts</div>
-          <div class="ov-value" id="sAbstracts">—</div>
-          <div class="ov-pct">Submitted (non-draft)</div>
+        <div class="ov-card ov-gray" id="cardTotalAbstracts">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+            <div>
+              <div class="ov-label">Total Abstracts</div>
+              <div class="ov-value" id="sAbstracts">—</div>
+              <div class="ov-pct" style="margin-bottom:6px">Submitted (non-draft)</div>
+            </div>
+            <span class="ov-tag-badge">Submissions</span>
+          </div>
+
+          <!-- Type Breakdown (Oral, Poster, Video) -->
+          <div class="ov-sub">
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎤 Oral</div>
+              <div class="ov-sub-value" id="sTotalOral">—</div>
+              <div class="ov-sub-pct" id="pTotalOral">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🖼 Poster</div>
+              <div class="ov-sub-value" id="sTotalPoster">—</div>
+              <div class="ov-sub-pct" id="pTotalPoster">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎬 Video</div>
+              <div class="ov-sub-value" id="sTotalVideo">—</div>
+              <div class="ov-sub-pct" id="pTotalVideo">—</div>
+            </div>
+          </div>
+
+          <!-- Detailed Breakdown by Category & Topic -->
+          <div class="ov-detail-section">
+            <div class="ov-detail-title">
+              <span>Categories &amp; Topics</span>
+            </div>
+            
+            <div class="ov-cat-group">
+              <div class="ov-cat-header">
+                <span class="ov-cat-badge badge-oral">🎤 Oral Categories</span>
+                <span class="ov-cat-total" id="sOralTopicTotal">0</span>
+              </div>
+              <div class="ov-topic-row">
+                <span class="ov-topic-name">Chest Trauma</span>
+                <span class="ov-topic-val" id="sTopicChestTrauma">0</span>
+              </div>
+              <div class="ov-topic-row">
+                <span class="ov-topic-name">Hydatid Cyst</span>
+                <span class="ov-topic-val" id="sTopicHydatidCyst">0</span>
+              </div>
+            </div>
+
+            <div class="ov-cat-group">
+              <div class="ov-cat-header">
+                <span class="ov-cat-badge badge-poster">🖼 Poster Categories</span>
+                <span class="ov-cat-total" id="sPosterTopicTotal">0</span>
+              </div>
+              <div class="ov-topic-row">
+                <span class="ov-topic-name">Thoracic Oncology</span>
+                <span class="ov-topic-val" id="sTopicThoracicOncology">0</span>
+              </div>
+              <div class="ov-topic-row">
+                <span class="ov-topic-name">Other Thoracic Surgery</span>
+                <span class="ov-topic-val" id="sTopicPosterOther">0</span>
+              </div>
+            </div>
+
+            <div class="ov-cat-group" style="margin-bottom:0">
+              <div class="ov-cat-header">
+                <span class="ov-cat-badge badge-video">🎬 Video Categories</span>
+                <span class="ov-cat-total" id="sVideoTopicTotal">0</span>
+              </div>
+              <div class="ov-topic-row">
+                <span class="ov-topic-name">Thoracic Technique / Video</span>
+                <span class="ov-topic-val" id="sTopicVideo">0</span>
+              </div>
+            </div>
+
+            <div id="ovCustomTopics" style="display:none; margin-top:6px;"></div>
+          </div>
+
+          <!-- Accepted Presentation Types -->
+          <div class="ov-detail-section" style="padding-top:10px; border-top:1px dashed var(--gray-200);">
+            <div class="ov-detail-title">
+              <span>Accepted Presentation Types</span>
+            </div>
+            <div class="ov-ptypes-grid">
+              <div class="ov-ptype-pill">
+                <span class="pt-label">Oral Comm.</span>
+                <strong id="sPT_Oral">0</strong>
+              </div>
+              <div class="ov-ptype-pill">
+                <span class="pt-label">Commented Poster</span>
+                <strong id="sPT_Commented">0</strong>
+              </div>
+              <div class="ov-ptype-pill">
+                <span class="pt-label">Non-Commented</span>
+                <strong id="sPT_NonCommented">0</strong>
+              </div>
+              <div class="ov-ptype-pill">
+                <span class="pt-label">Video</span>
+                <strong id="sPT_Video">0</strong>
+              </div>
+            </div>
+          </div>
+
         </div>
         <div class="ov-card ov-teal">
           <div class="ov-label">Total Reviewers</div>
@@ -184,6 +389,11 @@
               <div class="ov-sub-value" id="sWRP">—</div>
               <div class="ov-sub-pct" id="pWRP">—</div>
             </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎬 Video</div>
+              <div class="ov-sub-value" id="sWRV">—</div>
+              <div class="ov-sub-pct" id="pWRV">—</div>
+            </div>
           </div>
         </div>
 
@@ -202,6 +412,11 @@
               <div class="ov-sub-label">🖼 Poster</div>
               <div class="ov-sub-value" id="sAP">—</div>
               <div class="ov-sub-pct" id="pAP">—</div>
+            </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎬 Video</div>
+              <div class="ov-sub-value" id="sAV">—</div>
+              <div class="ov-sub-pct" id="pAV">—</div>
             </div>
           </div>
         </div>
@@ -229,6 +444,11 @@
               <div class="ov-sub-value" id="sWUP">—</div>
               <div class="ov-sub-pct" id="pWUP">—</div>
             </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎬 Video</div>
+              <div class="ov-sub-value" id="sWUV">—</div>
+              <div class="ov-sub-pct" id="pWUV">—</div>
+            </div>
           </div>
         </div>
 
@@ -248,6 +468,11 @@
               <div class="ov-sub-value" id="sFUP">—</div>
               <div class="ov-sub-pct" id="pFUP">—</div>
             </div>
+            <div class="ov-sub-item">
+              <div class="ov-sub-label">🎬 Video</div>
+              <div class="ov-sub-value" id="sFUV">—</div>
+              <div class="ov-sub-pct" id="pFUV">—</div>
+            </div>
           </div>
         </div>
 
@@ -261,13 +486,15 @@
 if (!requireAuth(['admin'])) throw '';
 
 function pct(part, total) {
-  if (!total || total === 0) return '—';
+  if (!total || total === 0) return '0.0%';
   return (part / total * 100).toFixed(1) + '%';
 }
 
 function setSub(idVal, idPct, val, total) {
-  document.getElementById(idVal).textContent = val;
-  document.getElementById(idPct).textContent  = pct(val, total);
+  const elVal = document.getElementById(idVal);
+  const elPct = document.getElementById(idPct);
+  if (elVal) elVal.textContent = (val !== undefined && val !== null) ? val : 0;
+  if (elPct) elPct.textContent = pct(val, total);
 }
 
 async function init() {
@@ -278,41 +505,101 @@ async function init() {
   document.getElementById('sidebarName').textContent  = me.first_name + ' ' + me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];
 
-  const T = s.total_abstracts;
-  const A = s.accepted;
+  const T = s.total_abstracts || 0;
+  const A = s.accepted || 0;
 
   // Platform totals
-  document.getElementById('sMembers').textContent   = s.total_members;
+  document.getElementById('sMembers').textContent   = s.total_members || 0;
   document.getElementById('sAbstracts').textContent = T;
-  document.getElementById('sReviewers').textContent = s.total_reviewers;
+  document.getElementById('sReviewers').textContent = s.total_reviewers || 0;
 
-  // Waiting for Review
-  document.getElementById('sWaitingReview').textContent = s.waiting_for_review;
+  // Total Abstracts Sub-types (Oral, Poster, Video)
+  setSub('sTotalOral',   'pTotalOral',   s.total_oral   || 0, T);
+  setSub('sTotalPoster', 'pTotalPoster', s.total_poster || 0, T);
+  setSub('sTotalVideo',  'pTotalVideo',  s.total_video  || 0, T);
+
+  // Topics & Categories
+  const byTopic = s.by_topic || {};
+  const oralTopics = byTopic.Oral || {};
+  const posterTopics = byTopic.Poster || {};
+  const videoTopics = byTopic.Video || {};
+
+  // Oral topics count
+  const chestTrauma = oralTopics['Chest Trauma'] || 0;
+  const hydatidCyst = oralTopics['Hydatic Cyst'] || oralTopics['Chest Hydatid Cyst'] || 0;
+  document.getElementById('sTopicChestTrauma').textContent = chestTrauma;
+  document.getElementById('sTopicHydatidCyst').textContent = hydatidCyst;
+  document.getElementById('sOralTopicTotal').textContent = `${s.total_oral || 0} total`;
+
+  // Poster topics count
+  const thoracicOnc = posterTopics['Thoracic Oncology'] || 0;
+  const otherPoster = posterTopics['Other'] || posterTopics['Other Thoracic Surgery'] || 0;
+  document.getElementById('sTopicThoracicOncology').textContent = thoracicOnc;
+  document.getElementById('sTopicPosterOther').textContent = otherPoster;
+  document.getElementById('sPosterTopicTotal').textContent = `${s.total_poster || 0} total`;
+
+  // Video topics count
+  const videoCount = s.total_video || videoTopics['Video'] || 0;
+  document.getElementById('sTopicVideo').textContent = videoCount;
+  document.getElementById('sVideoTopicTotal').textContent = `${videoCount} total`;
+
+  // Any custom topics that might exist in database
+  const customContainer = document.getElementById('ovCustomTopics');
+  if (customContainer) {
+    customContainer.innerHTML = '';
+    let hasCustom = false;
+    Object.keys(byTopic).forEach(pref => {
+      Object.keys(byTopic[pref]).forEach(top => {
+        if (!['Chest Trauma', 'Hydatic Cyst', 'Chest Hydatid Cyst', 'Thoracic Oncology', 'Other', 'Video'].includes(top)) {
+          hasCustom = true;
+          const row = document.createElement('div');
+          row.className = 'ov-topic-row';
+          row.innerHTML = `<span class="ov-topic-name">${top} (${pref})</span><span class="ov-topic-val">${byTopic[pref][top]}</span>`;
+          customContainer.appendChild(row);
+        }
+      });
+    });
+    customContainer.style.display = hasCustom ? 'block' : 'none';
+  }
+
+  // Accepted presentation types
+  const pt = s.presentation_types || {};
+  document.getElementById('sPT_Oral').textContent = pt.oral_communication || 0;
+  document.getElementById('sPT_Commented').textContent = pt.commented_poster || 0;
+  document.getElementById('sPT_NonCommented').textContent = pt.non_commented_poster || 0;
+  document.getElementById('sPT_Video').textContent = pt.video || 0;
+
+  // Lifecycle: Waiting for Review
+  document.getElementById('sWaitingReview').textContent = s.waiting_for_review || 0;
   document.getElementById('pWaitingReview').innerHTML   = `<span>${pct(s.waiting_for_review, T)}</span> of abstracts`;
-  setSub('sWRO','pWRO', s.waiting_for_review_oral,   s.waiting_for_review);
-  setSub('sWRP','pWRP', s.waiting_for_review_poster, s.waiting_for_review);
+  setSub('sWRO', 'pWRO', s.waiting_for_review_oral   || 0, s.waiting_for_review);
+  setSub('sWRP', 'pWRP', s.waiting_for_review_poster || 0, s.waiting_for_review);
+  setSub('sWRV', 'pWRV', s.waiting_for_review_video  || 0, s.waiting_for_review);
 
-  // Accepted
+  // Lifecycle: Accepted
   document.getElementById('sAccepted').textContent = A;
   document.getElementById('pAccepted').innerHTML   = `<span>${pct(A, T)}</span> of abstracts`;
-  setSub('sAO','pAO', s.accepted_oral,   A);
-  setSub('sAP','pAP', s.accepted_poster, A);
+  setSub('sAO', 'pAO', s.accepted_oral   || 0, A);
+  setSub('sAP', 'pAP', s.accepted_poster || 0, A);
+  setSub('sAV', 'pAV', s.accepted_video  || 0, A);
 
-  // Refused
-  document.getElementById('sRefused').textContent = s.refused;
+  // Lifecycle: Refused
+  document.getElementById('sRefused').textContent = s.refused || 0;
   document.getElementById('pRefused').innerHTML   = `<span>${pct(s.refused, T)}</span> of abstracts`;
 
-  // Waiting for File Upload
-  document.getElementById('sWaitingUpload').textContent = s.waiting_for_upload;
+  // Lifecycle: Waiting for File Upload
+  document.getElementById('sWaitingUpload').textContent = s.waiting_for_upload || 0;
   document.getElementById('pWaitingUpload').innerHTML   = `<span>${pct(s.waiting_for_upload, A)}</span> of accepted — awaiting file`;
-  setSub('sWUO','pWUO', s.waiting_for_upload_oral,   s.waiting_for_upload);
-  setSub('sWUP','pWUP', s.waiting_for_upload_poster, s.waiting_for_upload);
+  setSub('sWUO', 'pWUO', s.waiting_for_upload_oral   || 0, s.waiting_for_upload);
+  setSub('sWUP', 'pWUP', s.waiting_for_upload_poster || 0, s.waiting_for_upload);
+  setSub('sWUV', 'pWUV', s.waiting_for_upload_video  || 0, s.waiting_for_upload);
 
-  // Final File Uploaded
-  document.getElementById('sFinalUploaded').textContent = s.final_file_uploaded;
+  // Lifecycle: Final File Uploaded
+  document.getElementById('sFinalUploaded').textContent = s.final_file_uploaded || 0;
   document.getElementById('pFinalUploaded').innerHTML   = `<span>${pct(s.final_file_uploaded, A)}</span> of accepted — file received`;
-  setSub('sFUO','pFUO', s.final_file_uploaded_oral,   s.final_file_uploaded);
-  setSub('sFUP','pFUP', s.final_file_uploaded_poster, s.final_file_uploaded);
+  setSub('sFUO', 'pFUO', s.final_file_uploaded_oral   || 0, s.final_file_uploaded);
+  setSub('sFUP', 'pFUP', s.final_file_uploaded_poster || 0, s.final_file_uploaded);
+  setSub('sFUV', 'pFUV', s.final_file_uploaded_video  || 0, s.final_file_uploaded);
 }
 
 init();

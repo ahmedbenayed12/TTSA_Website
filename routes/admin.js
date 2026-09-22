@@ -393,42 +393,120 @@ router.get('/export/files', requireAdmin, (req, res) => {
 
 // GET /api/admin/stats
 router.get('/stats', requireAdmin, (req, res) => {
-  // Helper to get count by status + presentation_type
-  const countByStatusAndType = (status, type) =>
-    db.prepare(`SELECT COUNT(*) as c FROM abstracts a
-      LEFT JOIN reviews r ON r.abstract_id = a.id
-      WHERE a.status = ? AND r.presentation_type = ?`).get(status, type).c;
+  // Helper for lifecycle stages matching presentation_type or preference fallback
+  const countLifecycleByType = (statuses, typeGroup) => {
+    const statusPlaceholders = statuses.map(() => '?').join(',');
+    if (typeGroup === 'Oral') {
+      return db.prepare(`
+        SELECT COUNT(*) as c FROM abstracts a
+        LEFT JOIN reviews r ON r.abstract_id = a.id
+        WHERE a.status IN (${statusPlaceholders})
+          AND (r.presentation_type = 'Oral Communication' OR r.presentation_type = 'Oral' OR (r.presentation_type IS NULL AND a.preference = 'Oral'))
+      `).get(...statuses).c;
+    } else if (typeGroup === 'Poster') {
+      return db.prepare(`
+        SELECT COUNT(*) as c FROM abstracts a
+        LEFT JOIN reviews r ON r.abstract_id = a.id
+        WHERE a.status IN (${statusPlaceholders})
+          AND (r.presentation_type IN ('Commented E-Poster','Non-Commented E-Poster','Poster') OR (r.presentation_type IS NULL AND a.preference = 'Poster'))
+      `).get(...statuses).c;
+    } else if (typeGroup === 'Video') {
+      return db.prepare(`
+        SELECT COUNT(*) as c FROM abstracts a
+        LEFT JOIN reviews r ON r.abstract_id = a.id
+        WHERE a.status IN (${statusPlaceholders})
+          AND (r.presentation_type = 'Video' OR (r.presentation_type IS NULL AND a.preference = 'Video'))
+      `).get(...statuses).c;
+    }
+    return 0;
+  };
 
-  const countByStatusesAndType = (statuses, type) =>
-    db.prepare(`SELECT COUNT(*) as c FROM abstracts a
-      LEFT JOIN reviews r ON r.abstract_id = a.id
-      WHERE a.status IN (${statuses.map(() => '?').join(',')}) AND r.presentation_type = ?`).get(...statuses, type).c;
+  // Category / topic aggregation
+  const topicRows = db.prepare(`
+    SELECT preference, COALESCE(topic, 'General') as topic, COUNT(*) as count
+    FROM abstracts
+    WHERE status != 'Draft'
+    GROUP BY preference, topic
+  `).all();
+
+  const byTopic = { Oral: {}, Poster: {}, Video: {} };
+  topicRows.forEach(row => {
+    const pref = row.preference || 'Other';
+    if (!byTopic[pref]) byTopic[pref] = {};
+    byTopic[pref][row.topic] = row.count;
+  });
+
+  // Presentation type breakdown for evaluated/accepted abstracts
+  const ptypeCounts = {
+    oral_communication: db.prepare(`
+      SELECT COUNT(*) as c FROM abstracts a
+      JOIN reviews r ON r.abstract_id = a.id
+      WHERE a.status != 'Draft' AND r.presentation_type = 'Oral Communication'
+    `).get().c,
+    commented_poster: db.prepare(`
+      SELECT COUNT(*) as c FROM abstracts a
+      JOIN reviews r ON r.abstract_id = a.id
+      WHERE a.status != 'Draft' AND r.presentation_type = 'Commented E-Poster'
+    `).get().c,
+    non_commented_poster: db.prepare(`
+      SELECT COUNT(*) as c FROM abstracts a
+      JOIN reviews r ON r.abstract_id = a.id
+      WHERE a.status != 'Draft' AND r.presentation_type = 'Non-Commented E-Poster'
+    `).get().c,
+    video: db.prepare(`
+      SELECT COUNT(*) as c FROM abstracts a
+      JOIN reviews r ON r.abstract_id = a.id
+      WHERE a.status != 'Draft' AND r.presentation_type = 'Video'
+    `).get().c,
+  };
+
+  const acceptedStatuses = ['Waiting for File Upload', 'Final File Uploaded', 'Accepted'];
 
   const stats = {
-    total_members:       db.prepare("SELECT COUNT(*) as c FROM users WHERE is_verified = 1").get().c,
-    total_abstracts:     db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status != 'Draft'").get().c,
-    total_reviewers:     db.prepare("SELECT COUNT(*) as c FROM reviewers").get().c,
+    total_members:   db.prepare("SELECT COUNT(*) as c FROM users WHERE is_verified = 1").get().c,
+    total_abstracts: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status != 'Draft'").get().c,
+    total_reviewers: db.prepare("SELECT COUNT(*) as c FROM reviewers").get().c,
 
+    // Primary Submission Type breakdown
+    total_oral:      db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status != 'Draft' AND preference = 'Oral'").get().c,
+    total_poster:    db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status != 'Draft' AND preference = 'Poster'").get().c,
+    total_video:     db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status != 'Draft' AND preference = 'Video'").get().c,
+
+    // Category / Topic details
+    by_topic:        byTopic,
+
+    // Presentation Types
+    presentation_types: ptypeCounts,
+
+    // Lifecycle: Waiting for Review
     waiting_for_review:        db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review'").get().c,
-    waiting_for_review_oral:   countByStatusAndType('Waiting for Review', 'Oral'),
-    waiting_for_review_poster: countByStatusAndType('Waiting for Review', 'Poster'),
+    waiting_for_review_oral:   db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review' AND preference = 'Oral'").get().c,
+    waiting_for_review_poster: db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review' AND preference = 'Poster'").get().c,
+    waiting_for_review_video:  db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for Review' AND preference = 'Video'").get().c,
 
-    accepted:            db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status IN ('Waiting for File Upload','Final File Uploaded')").get().c,
-    accepted_oral:       countByStatusesAndType(['Waiting for File Upload','Final File Uploaded'], 'Oral'),
-    accepted_poster:     countByStatusesAndType(['Waiting for File Upload','Final File Uploaded'], 'Poster'),
+    // Lifecycle: Accepted
+    accepted:            db.prepare(`SELECT COUNT(*) as c FROM abstracts WHERE status IN (${acceptedStatuses.map(() => '?').join(',')})`).get(...acceptedStatuses).c,
+    accepted_oral:       countLifecycleByType(acceptedStatuses, 'Oral'),
+    accepted_poster:     countLifecycleByType(acceptedStatuses, 'Poster'),
+    accepted_video:      countLifecycleByType(acceptedStatuses, 'Video'),
 
+    // Lifecycle: Refused
     refused:             db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Refused'").get().c,
 
+    // Lifecycle: Waiting for File Upload
     waiting_for_upload:        db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Waiting for File Upload'").get().c,
-    waiting_for_upload_oral:   countByStatusAndType('Waiting for File Upload', 'Oral'),
-    waiting_for_upload_poster: countByStatusAndType('Waiting for File Upload', 'Poster'),
+    waiting_for_upload_oral:   countLifecycleByType(['Waiting for File Upload'], 'Oral'),
+    waiting_for_upload_poster: countLifecycleByType(['Waiting for File Upload'], 'Poster'),
+    waiting_for_upload_video:  countLifecycleByType(['Waiting for File Upload'], 'Video'),
 
+    // Lifecycle: Final File Uploaded
     final_file_uploaded:        db.prepare("SELECT COUNT(*) as c FROM abstracts WHERE status = 'Final File Uploaded'").get().c,
-    final_file_uploaded_oral:   countByStatusAndType('Final File Uploaded', 'Oral'),
-    final_file_uploaded_poster: countByStatusAndType('Final File Uploaded', 'Poster'),
+    final_file_uploaded_oral:   countLifecycleByType(['Final File Uploaded'], 'Oral'),
+    final_file_uploaded_poster: countLifecycleByType(['Final File Uploaded'], 'Poster'),
+    final_file_uploaded_video:  countLifecycleByType(['Final File Uploaded'], 'Video'),
   };
-  res.json(stats);
 
+  res.json(stats);
 });
 
 // PUT /api/admin/profile — update super admin profile
