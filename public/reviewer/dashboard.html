@@ -95,6 +95,7 @@
                 <option value="all">All Reviews</option>
                 <option value="pending">⏳ Pending</option>
                 <option value="completed">✅ Completed</option>
+                <option value="locked">🔒 Locked</option>
               </select>
             </div>
 
@@ -298,8 +299,9 @@ function applyFilters() {
     }
 
     // Status filter
-    if (status === 'pending' && a.review_id != null) return false;
+    if (status === 'pending'   && a.review_id != null) return false;
     if (status === 'completed' && a.review_id == null) return false;
+    if (status === 'locked'    && !a.review_locked)    return false;
 
     return true;
   });
@@ -376,7 +378,8 @@ function renderAssignments() {
   }
 
   list.innerHTML = displayedAssignments.map(a => {
-    const isDone = a.review_id != null;
+    const isDone   = a.review_id != null;
+    const isLocked = !!a.review_locked;
     let authorStr = '';
     if (!a.blind && a.authors && a.authors.length) {
       authorStr = `<div style="font-size:.8rem;color:var(--gray-500);margin-bottom:8px">Authors: ${esc(a.authors.map(au=>au.last_name).join(', '))}</div>`;
@@ -394,6 +397,17 @@ function renderAssignments() {
       else verdictBadge = '<span class="badge badge-red" style="margin-top:8px">Refused</span>';
     }
 
+    // Lock notice and action button
+    const lockBanner = isLocked
+      ? `<div style="display:flex;align-items:center;gap:6px;background:#e0f2f1;color:#00695c;border-radius:6px;padding:6px 10px;font-size:.78rem;font-weight:700;margin-bottom:10px">
+           🔒 Review locked by administrator — no further submissions accepted
+         </div>`
+      : '';
+
+    const actionBtn = isLocked
+      ? `<div style="margin-top:16px;width:100%;text-align:center;background:#f1f5f9;border:1px solid #cbd5e1;border-radius:6px;padding:7px 0;font-size:.78rem;font-weight:700;color:#64748b">🔒 Locked</div>`
+      : `<a href="/reviewer/review.html?id=${a.id}" class="btn ${isDone?'btn-ghost':'btn-primary'} btn-sm" style="margin-top:16px;width:100%;justify-content:center">${isDone?'Edit Review':'Grade'}</a>`;
+
     const prefBadge = a.preference === 'Oral'
       ? '<span class="badge badge-blue" style="font-size:.7rem;padding:2px 7px;">🎤 Oral</span>'
       : a.preference === 'Poster'
@@ -402,14 +416,17 @@ function renderAssignments() {
           ? '<span class="badge badge-purple" style="font-size:.7rem;padding:2px 7px;">🎬 Video</span>'
           : `<span class="badge badge-gray" style="font-size:.7rem;padding:2px 7px;">${esc(a.preference||'—')}</span>`;
 
+    const cardBorder = isLocked ? 'var(--gray-200)' : (isDone ? 'var(--gray-200)' : 'var(--blue-light)');
+
     return `
-      <div class="card assigned-card" style="border:1px solid ${isDone?'var(--gray-200)':'var(--blue-light)'}">
+      <div class="card assigned-card" style="border:1px solid ${cardBorder}${isLocked?' opacity:.85;':''}">
         <div class="card-body" style="display:flex;gap:20px;align-items:flex-start">
           <div style="flex:1;min-width:0">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
               ${a.submission_number ? `<span class="badge" style="background:#fff7ed;color:#c2410c;border:1px solid #f97316;">Abstract #${a.submission_number}</span>` : `<span class="badge badge-gray">ID: ${a.id}</span>`}
               <h4 style="margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(a.title)}</h4>
             </div>
+            ${lockBanner}
             ${authorStr}
             <p style="font-size:.85rem;color:var(--gray-600);margin-bottom:12px;line-height:1.5;">${esc(a.main_text.substring(0,140))}...</p>
             <div style="display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--gray-500);flex-wrap:wrap;">
@@ -422,7 +439,7 @@ function renderAssignments() {
           <div style="display:flex;flex-direction:column;align-items:center;min-width:100px;border-left:1px solid var(--gray-100);padding-left:20px">
             ${scoreHtml}
             ${verdictBadge}
-            <a href="/reviewer/review.html?id=${a.id}" class="btn ${isDone?'btn-ghost':'btn-primary'} btn-sm" style="margin-top:16px;width:100%;justify-content:center">${isDone?'Edit Review':'Grade'}</a>
+            ${actionBtn}
           </div>
         </div>
       </div>

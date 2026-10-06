@@ -10,7 +10,7 @@ router.get('/assigned', requireReviewer, (req, res) => {
 
   const assignments = db.prepare(`
     SELECT a.id, a.submission_number, a.title, a.topic, a.main_text, a.preference, a.word_count,
-           a.status, a.created_at,
+           a.status, a.review_locked, a.created_at,
            r.id as review_id, r.verdict, r.total_score, r.criteria1, r.criteria2, r.criteria3, r.criteria4, r.presentation_type, r.comments
     FROM reviewer_assignments ra
     JOIN abstracts a ON ra.abstract_id = a.id
