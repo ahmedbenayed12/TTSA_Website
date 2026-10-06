@@ -710,7 +710,7 @@ function renderTable() {
       : a.verdict === 'Refused'
         ? '<span style="color:var(--red);font-weight:700">❌ Refused</span>'
         : '—';
-    const isSelectable = ['Submitted','Waiting for Review','Waiting for File Upload'].includes(a.status);
+    const isSelectable = a.status !== 'Draft';
     const prefBadge = a.preference === 'Oral'
       ? '<span class="badge badge-blue" style="font-size:.68rem;padding:1px 6px;">🎤 Oral</span>'
       : a.preference === 'Poster'
