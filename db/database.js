@@ -308,6 +308,48 @@ function initSchema() {
     db.exec('ALTER TABLE abstracts ADD COLUMN review_locked INTEGER NOT NULL DEFAULT 0');
     console.log('✅ Migration: review_locked column added to abstracts');
   }
+
+  // Migration: rebuild abstracts table if 'Reviewed' status is missing from CHECK constraint
+  const abstractsTableInfoReviewed = db.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name='abstracts'").get();
+  if (abstractsTableInfoReviewed && !abstractsTableInfoReviewed.sql.includes("'Reviewed'")) {
+    console.log('🔄 Migrating abstracts table to include Reviewed status and review_locked column...');
+    db.exec(`
+      PRAGMA foreign_keys=off;
+      BEGIN TRANSACTION;
+      CREATE TABLE IF NOT EXISTS abstracts_reviewed_new (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        submission_number INTEGER,
+        title TEXT NOT NULL,
+        topic TEXT,
+        main_text TEXT NOT NULL,
+        word_count INTEGER NOT NULL DEFAULT 0,
+        preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either','Video')),
+        status TEXT NOT NULL DEFAULT 'Draft'
+          CHECK(status IN ('Draft','Submitted','Waiting for Review','Reviewed','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
+        is_locked INTEGER NOT NULL DEFAULT 0,
+        review_locked INTEGER NOT NULL DEFAULT 0,
+        file_path TEXT,
+        file_name TEXT,
+        file_uploaded_at INTEGER,
+        created_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        updated_at INTEGER NOT NULL DEFAULT (unixepoch()),
+        FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+      INSERT INTO abstracts_reviewed_new
+        (id, user_id, submission_number, title, topic, main_text, word_count, preference,
+         status, is_locked, review_locked, file_path, file_name, file_uploaded_at, created_at, updated_at)
+      SELECT
+        id, user_id, submission_number, title, topic, main_text, word_count, preference,
+        status, is_locked, COALESCE(review_locked, 0), file_path, file_name, file_uploaded_at, created_at, updated_at
+      FROM abstracts;
+      DROP TABLE abstracts;
+      ALTER TABLE abstracts_reviewed_new RENAME TO abstracts;
+      COMMIT;
+      PRAGMA foreign_keys=on;
+    `);
+    console.log('✅ Migration: abstracts table rebuilt with Reviewed status support');
+  }
 }
 
 initSchema();
