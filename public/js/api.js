@@ -1,8 +1,8 @@
 const BASE = '/api';
 
 function getToken() { return localStorage.getItem('ttsa_token'); }
-function getRole()  { return localStorage.getItem('ttsa_role'); }
-function getName()  { return localStorage.getItem('ttsa_name'); }
+function getRole() { return localStorage.getItem('ttsa_role'); }
+function getName() { return localStorage.getItem('ttsa_name'); }
 
 function setAuth(token, role, name) {
   localStorage.setItem('ttsa_token', token);
@@ -59,16 +59,16 @@ function showToast(msg, type = 'success') {
   // Allow clicking to dismiss
   t.style.cursor = 'pointer';
   t.onclick = () => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); };
-  
+
   document.body.appendChild(t);
   setTimeout(() => t.classList.add('show'), 10);
-  
+
   // Success messages disappear after 3.5 seconds
   if (type === 'success') {
-    setTimeout(() => { 
+    setTimeout(() => {
       if (document.body.contains(t)) {
-        t.classList.remove('show'); 
-        setTimeout(() => t.remove(), 400); 
+        t.classList.remove('show');
+        setTimeout(() => t.remove(), 400);
       }
     }, 3500);
   }
@@ -77,9 +77,20 @@ function showToast(msg, type = 'success') {
 
 function formatDate(iso) {
   if (!iso) return '—';
-  return new Date(iso).toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' });
+  return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
 function countWords(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
+
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+

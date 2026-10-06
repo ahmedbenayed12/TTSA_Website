@@ -984,6 +984,17 @@ const statusColors = {
   'Final File Uploaded': 'badge-purple'
 };
 
+function esc(s) {
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+
 /* ========================================================= */
 /* Mobile Sidebar Drawer Toggle                              */
 /* ========================================================= */
