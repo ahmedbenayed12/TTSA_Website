@@ -68,6 +68,12 @@ router.post('/', requireReviewer, (req, res) => {
     ).get(abstract_id, req.user.id);
     if (!assignment) return res.status(403).json({ error: 'Not assigned to this abstract' });
 
+    // Block if review has been locked by admin
+    const abstractRow = db.prepare('SELECT review_locked FROM abstracts WHERE id = ?').get(abstract_id);
+    if (abstractRow && abstractRow.review_locked) {
+      return res.status(403).json({ error: 'The review phase for this abstract has been ended by the administrator. No further submissions are accepted.' });
+    }
+
     // Validate scores
     for (const score of [criteria1, criteria2, criteria3, criteria4]) {
       if (score < 0 || score > 5) return res.status(400).json({ error: 'Each criterion must be between 0 and 5' });

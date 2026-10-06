@@ -66,8 +66,9 @@ function initSchema() {
       word_count INTEGER NOT NULL DEFAULT 0,
       preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either','Video')),
       status TEXT NOT NULL DEFAULT 'Draft'
-        CHECK(status IN ('Draft','Submitted','Waiting for Review','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
+        CHECK(status IN ('Draft','Submitted','Waiting for Review','Reviewed','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
       is_locked INTEGER NOT NULL DEFAULT 0,
+      review_locked INTEGER NOT NULL DEFAULT 0,
       file_path TEXT,
       file_name TEXT,
       file_uploaded_at INTEGER,
@@ -203,8 +204,9 @@ function initSchema() {
         word_count INTEGER NOT NULL DEFAULT 0,
         preference TEXT NOT NULL DEFAULT 'Either' CHECK(preference IN ('Oral','Poster','Either','Video')),
         status TEXT NOT NULL DEFAULT 'Draft'
-          CHECK(status IN ('Draft','Submitted','Waiting for Review','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
+          CHECK(status IN ('Draft','Submitted','Waiting for Review','Reviewed','Accepted','Refused','Waiting for File Upload','Final File Uploaded')),
         is_locked INTEGER NOT NULL DEFAULT 0,
+        review_locked INTEGER NOT NULL DEFAULT 0,
         file_path TEXT,
         file_name TEXT,
         file_uploaded_at INTEGER,
@@ -213,8 +215,8 @@ function initSchema() {
         submission_number INTEGER,
         FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
       );
-      INSERT INTO abstracts_new (id, user_id, submission_number, title, topic, main_text, word_count, preference, status, is_locked, file_path, file_name, file_uploaded_at, created_at, updated_at)
-      SELECT id, user_id, submission_number, title, topic, main_text, word_count, preference, status, is_locked, file_path, file_name, file_uploaded_at, created_at, updated_at FROM abstracts;
+      INSERT INTO abstracts_new (id, user_id, submission_number, title, topic, main_text, word_count, preference, status, is_locked, review_locked, file_path, file_name, file_uploaded_at, created_at, updated_at)
+      SELECT id, user_id, submission_number, title, topic, main_text, word_count, preference, status, is_locked, COALESCE(review_locked, 0), file_path, file_name, file_uploaded_at, created_at, updated_at FROM abstracts;
       DROP TABLE abstracts;
       ALTER TABLE abstracts_new RENAME TO abstracts;
       COMMIT;
@@ -298,6 +300,13 @@ function initSchema() {
   if (!eventCols.includes('event_link')) {
     db.exec('ALTER TABLE events ADD COLUMN event_link TEXT');
     console.log('✅ Migration: event_link column added to events');
+  }
+
+  // Migration: add review_locked to abstracts table if not present
+  const abstractColsLatest = db.prepare("PRAGMA table_info(abstracts)").all().map(c => c.name);
+  if (!abstractColsLatest.includes('review_locked')) {
+    db.exec('ALTER TABLE abstracts ADD COLUMN review_locked INTEGER NOT NULL DEFAULT 0');
+    console.log('✅ Migration: review_locked column added to abstracts');
   }
 }
 

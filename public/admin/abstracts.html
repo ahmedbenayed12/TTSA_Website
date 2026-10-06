@@ -245,6 +245,7 @@
                 <option value="all">All Statuses</option>
                 <option value="Submitted">Submitted</option>
                 <option value="Waiting for Review">Waiting for Review</option>
+                <option value="Reviewed">Reviewed</option>
                 <option value="Accepted">Accepted</option>
                 <option value="Refused">Refused</option>
                 <option value="Waiting for File Upload">Waiting for File Upload</option>
@@ -325,6 +326,7 @@
 
     <div class="dp-footer">
       <button class="btn btn-ghost btn-sm" onclick="closePanel()">Close</button>
+      <button class="btn btn-outline btn-sm" id="dpEndReviewBtn" onclick="endReview()" style="border-color:#b91c1c;color:#b91c1c;display:none" title="End Review – lock this abstract for new reviews">🔒 End Review</button>
       <button class="btn btn-primary btn-sm" id="dpAssignBtn" onclick="openAssignFromPanel()">👤 Assign Reviewer</button>
     </div>
   </div>
@@ -364,9 +366,10 @@ let criteriaLabels = { criteria1_label:'Criteria 1', criteria2_label:'Criteria 2
 let pendingAbstractIds = [];
 let currentPanelId = null;
 
-const FINALIZED = ['Waiting for File Upload','Final File Uploaded','Refused','Accepted'];
+const FINALIZED = ['Waiting for File Upload','Final File Uploaded','Refused','Accepted','Reviewed'];
 const statusColors = {
   Draft:'badge-gray', Submitted:'badge-blue', 'Waiting for Review':'badge-yellow',
+  Reviewed:'badge-teal',
   Accepted:'badge-green', Refused:'badge-red',
   'Waiting for File Upload':'badge-orange', 'Final File Uploaded':'badge-purple'
 };
@@ -776,6 +779,13 @@ async function openPanel(id) {
   const canAssign = !FINALIZED.includes(a.status) && a.status !== 'Draft';
   document.getElementById('dpAssignBtn').style.display = canAssign ? '' : 'none';
 
+  // Show/hide End Review button: visible only when there is a review and not yet locked
+  const canEndReview = a.status === 'Waiting for Review' && a.total_score != null;
+  const endReviewBtn = document.getElementById('dpEndReviewBtn');
+  endReviewBtn.style.display = canEndReview ? '' : 'none';
+  endReviewBtn.disabled = false;
+  endReviewBtn.textContent = '🔒 End Review';
+
   document.getElementById('detailOverlay').classList.add('open');
   document.getElementById('dpBody').innerHTML = '<div style="padding:40px;text-align:center;color:var(--gray-400)">Loading details…</div>';
 
@@ -847,7 +857,9 @@ function renderPanel(a, detail) {
 
   // ── 4. Review / Score ─────────────────────────────
   html += `<div class="dp-section">
-    <div class="dp-section-title">Review &amp; Score</div>`;
+    <div class="dp-section-title">Review &amp; Score
+      ${detail.review_locked ? ' <span style="background:#fee2e2;color:#991b1b;font-size:.68rem;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:6px">🔒 REVIEW LOCKED</span>' : ''}
+    </div>`;
 
   if (!review) {
     html += `<p style="color:var(--gray-400);font-size:.85rem;margin:0">No review submitted yet.
@@ -909,12 +921,35 @@ function closePanelClick(e) { if (e.target===document.getElementById('detailOver
 
 function openAssignFromPanel() {
   if (!currentPanelId) return;
-  const a = abstracts.find(x=>x.id===currentPanelId);
+  const a = (allAbstracts.length ? allAbstracts : abstracts).find(x=>x.id===currentPanelId);
   pendingAbstractIds = [currentPanelId];
   document.getElementById('assignTitle').textContent = 'Assign Reviewer';
   document.getElementById('assignSummary').textContent = `Abstract: ${a?a.title:`ID ${currentPanelId}`}`;
   document.getElementById('reviewerSelect').value='';
   document.getElementById('assignModal').classList.add('open');
+}
+
+// ── End Review ────────────────────────────────────────────────────────────────
+async function endReview() {
+  if (!currentPanelId) return;
+  const a = (allAbstracts.length ? allAbstracts : abstracts).find(x=>x.id===currentPanelId);
+  const label = a ? `#${a.submission_number||a.id} — ${a.title}` : `ID ${currentPanelId}`;
+  if (!confirm(`End Review for:\n\n${label}\n\nThis will:\n• Lock the abstract — no new reviews can be submitted\n• Set the status to "Reviewed"\n\nThis action cannot be undone. Continue?`)) return;
+
+  const btn = document.getElementById('dpEndReviewBtn');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+
+  try {
+    const r = await apiFetch(`/admin/abstracts/${currentPanelId}/end-review`, { method: 'PATCH' });
+    showToast(r.message || 'Review ended successfully');
+    closePanel();
+    await init();
+  } catch(e) {
+    showToast(e.message || 'Failed to end review', 'error');
+    btn.disabled = false;
+    btn.textContent = '🔒 End Review';
+  }
 }
 
 // ── Assign Modal ───────────────────────────────────────────────────

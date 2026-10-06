@@ -329,6 +329,7 @@ select.form-control { cursor: pointer; }
 .badge-gray    { background: var(--gray-100);   color: var(--gray-600); }
 .badge-orange  { background: #fff3e0;            color: #e65100; }
 .badge-purple  { background: #f3e5f5;            color: #7b1fa2; }
+.badge-teal    { background: #e0f2f1;            color: #00695c; }
 /* ─── TABLES ──────────────────────────────────────────────────────────────── */
 .table-wrap { overflow-x: auto; }
 table { width: 100%; border-collapse: collapse; font-size: .875rem; }

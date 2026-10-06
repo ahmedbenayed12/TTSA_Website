@@ -87,6 +87,28 @@ router.get('/abstracts/:id', requireAdmin, (req, res) => {
   res.json(abstract);
 });
 
+// PATCH /api/admin/abstracts/:id/end-review — lock reviews & mark as Reviewed
+router.patch('/abstracts/:id/end-review', requireAdmin, (req, res) => {
+  const abstract = db.prepare('SELECT id, status, review_locked FROM abstracts WHERE id = ?').get(req.params.id);
+  if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
+
+  if (abstract.review_locked) {
+    return res.status(409).json({ error: 'Review is already ended for this abstract' });
+  }
+
+  // Must have a review submitted
+  const review = db.prepare('SELECT id FROM reviews WHERE abstract_id = ?').get(req.params.id);
+  if (!review) {
+    return res.status(400).json({ error: 'No review submitted yet. Cannot end review.' });
+  }
+
+  db.prepare(
+    "UPDATE abstracts SET review_locked=1, status='Reviewed', updated_at=unixepoch() WHERE id=?"
+  ).run(req.params.id);
+
+  res.json({ message: 'Review ended. Abstract is now marked as Reviewed and locked for new reviews.' });
+});
+
 
 // ─── REVIEWER MANAGEMENT ─────────────────────────────────────────────────────
 
