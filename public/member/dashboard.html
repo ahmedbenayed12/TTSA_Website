@@ -1309,10 +1309,10 @@ function getSlideInstructions(presentationType, preference) {
     return {
       type: 'Video',
       badgeClass: 'badge-red',
-      time: 'Video presentation',
-      slides: 'instruction available soon',
+      time: '5 mn max',
+      slides: 'video maximum length 5mn',
       icon: '🎥',
-      text: 'instruction available soon'
+      text: 'video maximum length 5mn'
     };
   }
   return null;
@@ -1617,6 +1617,7 @@ async function loadDashboard() {
       const slotNum = i + 1;
       if (abs) {
         const inst = getSlideInstructions(abs.presentation_type, abs.preference);
+        const isVideo = inst && inst.type === 'Video';
         slotList.innerHTML += `
           <div class="card" style="border-left:4px solid var(--blue);">
             <div class="card-body" style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
@@ -1635,27 +1636,51 @@ async function loadDashboard() {
                 <div style="font-size:.78rem;color:var(--gray-500);margin-top:3px;">${abs.word_count} words &middot; ${abs.preference} presentation &middot; ${abs.author_count} author(s)</div>
                 ${['Waiting for File Upload', 'Final File Uploaded'].includes(abs.status) && inst ? `
                   <div style="background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #0C589A;border-radius:6px;padding:6px 10px;margin-top:6px;font-size:.78rem;display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
-                    <span style="font-weight:700;color:#1e293b;">${inst.icon} Slide Instructions (${inst.type}):</span>
+                    <span style="font-weight:700;color:#1e293b;">${inst.icon} ${isVideo ? 'Video Instructions' : 'Slide Instructions'} (${inst.type}):</span>
                     <span style="color:#0C589A;font-weight:600;">${inst.text}</span>
                   </div>` : ''}
-                ${abs.status === 'Waiting for File Upload' ? `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Please upload presentation file. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}</div>` : ''}
+                ${abs.status === 'Waiting for File Upload' ? (
+                  isVideo
+                    ? `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Video presentation. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.</div>`
+                    : `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Please upload presentation file. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}</div>`
+                ) : ''}
                 ${abs.status === 'Final File Uploaded' ? `
                   <div style="font-size:.8rem;color:#15803d;font-weight:600;margin-top:4px;">
-                    ✅ Presentation file uploaded successfully${abs.file_name ? `: <strong>${esc(abs.file_name)}</strong>` : ''}.
+                    ✅ ${isVideo ? 'Video link submitted successfully' : 'Presentation file uploaded successfully'}${abs.file_name ? `: ${abs.file_path && (abs.file_path.startsWith('http://') || abs.file_path.startsWith('https://')) ? `<a href="${esc(abs.file_path)}" target="_blank" rel="noopener" style="text-decoration:underline;color:#0C589A;font-weight:700;">${esc(abs.file_name)}</a>` : `<strong>${esc(abs.file_name)}</strong>`}` : ''}.
                   </div>
                   <div style="font-size:.78rem;color:var(--gray-500);margin-top:2px;">
-                    Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}
+                    Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${!isVideo && settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}
                   </div>` : ''}
               </div>
               <!-- Actions -->
               <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;flex-wrap:wrap;">
-                ${abs.status === 'Waiting for File Upload' && settings.ppt_template_file ? `<a href="/api/template/download" class="btn btn-outline btn-sm" style="color:#0C589A;border-color:#0C589A;background:#fff;" title="Download PowerPoint presentation template">📥 PPT Template</a>` : ''}
-                ${abs.status === 'Waiting for File Upload' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-primary btn-sm" style="background:#e65100;border-color:#e65100;">📤 Upload File</a>` : ''}
-                ${abs.status === 'Final File Uploaded' ? `
-                  <a href="/api/abstracts/${abs.id}/file?token=${encodeURIComponent(token)}" class="btn btn-outline btn-sm" style="color:#15803d;border-color:#16a34a;background:#f0fdf4;font-weight:700;display:inline-flex;align-items:center;gap:4px;" title="Download your uploaded presentation file" download>
-                    📥 Download File
-                  </a>
-                  <a href="/member/upload.html?id=${abs.id}" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;">📤 Re-upload File</a>` : ''}
+                ${abs.status === 'Waiting for File Upload' && settings.ppt_template_file && !isVideo ? `<a href="/api/template/download" class="btn btn-outline btn-sm" style="color:#0C589A;border-color:#0C589A;background:#fff;" title="Download PowerPoint presentation template">📥 PPT Template</a>` : ''}
+                ${abs.status === 'Waiting for File Upload' ? (
+                  isVideo
+                    ? `<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:6px;max-width:440px;">
+                        <div style="font-size:.8rem;font-weight:700;color:#9a3412;line-height:1.4;">
+                          upload your link on <a href="https://wetransfer.com/" target="_blank" rel="noopener" style="text-decoration:underline;color:#0C589A;font-weight:800;">https://wetransfer.com/</a> and past the link here
+                        </div>
+                        <div style="display:flex;gap:6px;align-items:center;">
+                          <input type="url" id="videoLink_${abs.id}" placeholder="Paste WeTransfer link here..." style="flex:1;min-width:180px;padding:6px 10px;border:1px solid #cbd5e1;border-radius:6px;font-size:.82rem;background:#fff;" />
+                          <button type="button" onclick="submitVideoLink(${abs.id})" class="btn btn-primary btn-sm" style="background:#e65100;border-color:#e65100;font-weight:700;white-space:nowrap;">Submit</button>
+                        </div>
+                      </div>`
+                    : `<a href="/member/upload.html?id=${abs.id}" class="btn btn-primary btn-sm" style="background:#e65100;border-color:#e65100;">📤 Upload File</a>`
+                ) : ''}
+                ${abs.status === 'Final File Uploaded' ? (
+                  isVideo
+                    ? `<a href="${esc(abs.file_path)}" target="_blank" rel="noopener" class="btn btn-outline btn-sm" style="color:#15803d;border-color:#16a34a;background:#f0fdf4;font-weight:700;display:inline-flex;align-items:center;gap:4px;" title="Open submitted WeTransfer video link">
+                        🔗 Open Video Link
+                      </a>
+                      <button type="button" onclick="openUpdateVideoPrompt(${abs.id}, '${esc(abs.file_path || '')}')" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;font-weight:600;">
+                        ✏️ Update Link
+                      </button>`
+                    : `<a href="/api/abstracts/${abs.id}/file?token=${encodeURIComponent(token)}" class="btn btn-outline btn-sm" style="color:#15803d;border-color:#16a34a;background:#f0fdf4;font-weight:700;display:inline-flex;align-items:center;gap:4px;" title="Download your uploaded presentation file" download>
+                        📥 Download File
+                      </a>
+                      <a href="/member/upload.html?id=${abs.id}" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;">📤 Re-upload File</a>`
+                ) : ''}
                 ${!abs.is_locked && !passed && !['Waiting for File Upload', 'Final File Uploaded'].includes(abs.status)
                   ? `<a href="/member/edit.html?id=${abs.id}" class="btn btn-outline btn-sm">Edit</a>
                      <button class="btn btn-danger btn-sm" onclick="delAbstract(${abs.id})">Delete</button>`
@@ -1680,6 +1705,55 @@ async function loadDashboard() {
     }
 
   } catch(e) { console.error(e); showToast('Failed to load dashboard','error'); }
+}
+
+async function submitVideoLink(absId) {
+  const input = document.getElementById('videoLink_' + absId);
+  const link = input ? input.value.trim() : '';
+  if (!link) {
+    showToast('Please enter your WeTransfer link', 'error');
+    if (input) input.focus();
+    return;
+  }
+  if (!/^https?:\/\//i.test(link)) {
+    showToast('Please enter a valid link starting with http:// or https://', 'error');
+    if (input) input.focus();
+    return;
+  }
+  try {
+    await apiFetch(`/abstracts/${absId}/upload`, {
+      method: 'POST',
+      body: JSON.stringify({ link })
+    });
+    showToast('Video link submitted successfully!');
+    loadDashboard();
+  } catch (err) {
+    showToast(err.message || 'Failed to submit link', 'error');
+  }
+}
+
+async function openUpdateVideoPrompt(absId, currentLink) {
+  const newLink = prompt('upload your link on https://wetransfer.com/ and past the link here:', currentLink || '');
+  if (newLink === null) return;
+  const trimmed = newLink.trim();
+  if (!trimmed) {
+    showToast('Please enter a link', 'error');
+    return;
+  }
+  if (!/^https?:\/\//i.test(trimmed)) {
+    showToast('Please enter a valid link starting with http:// or https://', 'error');
+    return;
+  }
+  try {
+    await apiFetch(`/abstracts/${absId}/upload`, {
+      method: 'POST',
+      body: JSON.stringify({ link: trimmed })
+    });
+    showToast('Video link updated successfully!');
+    loadDashboard();
+  } catch (err) {
+    showToast(err.message || 'Failed to update link', 'error');
+  }
 }
 
 async function delAbstract(id) {

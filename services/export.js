@@ -131,7 +131,7 @@ async function generateAbstractsExcel() {
       ptype: review ? review.presentation_type : '—',
       comments: review ? (review.comments || '—') : '—',
       file_name: abs.file_name || '—',
-      file_uploaded: abs.file_path ? 'Yes' : 'No',
+      file_uploaded: abs.file_path ? (abs.file_path.startsWith('http') ? 'Yes (Video Link)' : 'Yes') : 'No',
       file_uploaded_at: abs.file_uploaded_at ? new Date(abs.file_uploaded_at * 1000).toLocaleString('en-GB') : '—',
       created_at: abs.created_at ? new Date(abs.created_at * 1000).toLocaleString('en-GB') : '—',
       updated_at: abs.updated_at ? new Date(abs.updated_at * 1000).toLocaleString('en-GB') : '—',

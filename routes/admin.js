@@ -576,6 +576,11 @@ router.get('/export/files', requireAdmin, (req, res) => {
       const ext = path.extname(abs.file_name);
       const safeTitle = abs.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
       archive.file(abs.file_path, { name: `abstract_${abs.id}_${safeTitle}${ext}` });
+    } else if (abs.file_path && (abs.file_path.startsWith('http://') || abs.file_path.startsWith('https://'))) {
+      const safeTitle = abs.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
+      archive.append(`Video Presentation Link for Abstract #${abs.id} (${abs.title}):\r\n${abs.file_path}\r\n`, {
+        name: `abstract_${abs.id}_${safeTitle}_link.txt`
+      });
     }
   }
 

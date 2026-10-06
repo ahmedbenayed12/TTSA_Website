@@ -127,10 +127,10 @@ function getSlideInstructions(presentationType, preference) {
     return {
       type: 'Video',
       badgeClass: 'badge-red',
-      time: 'Video presentation',
-      slides: 'instruction available soon',
+      time: '5 mn max',
+      slides: 'video maximum length 5mn',
       icon: '🎥',
-      text: 'instruction available soon'
+      text: 'video maximum length 5mn'
     };
   }
   return null;

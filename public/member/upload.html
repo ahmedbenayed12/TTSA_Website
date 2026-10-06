@@ -171,6 +171,18 @@
 
             <button type="submit" class="btn btn-primary btn-lg" id="uploadBtn" style="width: 100%; display: none;">Upload File</button>
           </form>
+
+          <div id="videoUploadBox" style="display:none;background:#fff7ed;border:2px dashed #f97316;border-radius:12px;padding:32px 24px;text-align:center;">
+            <div style="font-size:2.4rem;margin-bottom:8px;">🎥</div>
+            <h3 style="margin-bottom:8px;color:#9a3412;font-size:1.2rem;">Video Presentation (max 5mn)</h3>
+            <p style="font-size:1rem;color:#7c2d12;margin-bottom:20px;line-height:1.5;">
+              upload your link on <a href="https://wetransfer.com/" target="_blank" rel="noopener" style="font-weight:800;text-decoration:underline;color:#0C589A;">https://wetransfer.com/</a> and past the link here
+            </p>
+            <form id="videoLinkForm" onsubmit="submitVideoLinkFromUpload(event)" style="max-width:540px;margin:0 auto;display:flex;flex-direction:column;gap:12px;">
+              <input type="url" id="uploadVideoLinkInput" placeholder="https://we.tl/... or WeTransfer download link" required style="width:100%;padding:12px 16px;border:1.5px solid #cbd5e1;border-radius:8px;font-size:.95rem;outline:none;background:#fff;" />
+              <button type="submit" class="btn btn-primary btn-lg" id="uploadVideoLinkBtn" style="background:#e65100;border-color:#e65100;font-weight:700;">Submit Video Link</button>
+            </form>
+          </div>
         </div>
       </div>
 
@@ -251,10 +263,10 @@ function getSlideInstructions(presentationType, preference) {
     return {
       type: 'Video',
       badgeClass: 'badge-red',
-      time: 'Video presentation',
-      slides: 'instruction available soon',
+      time: '5 mn max',
+      slides: 'video maximum length 5mn',
       icon: '🎥',
-      text: 'instruction available soon'
+      text: 'video maximum length 5mn'
     };
   }
   return null;
@@ -347,10 +359,31 @@ async function init() {
 
   if (abstract.file_path) {
     document.getElementById('currentFileBox').style.display = 'flex';
-    document.getElementById('currentFileName').textContent = abstract.file_name || 'Presentation uploaded';
+    const isUrl = abstract.file_path.startsWith('http://') || abstract.file_path.startsWith('https://');
+    document.getElementById('currentFileName').innerHTML = isUrl
+      ? `Video Link: <a href="${esc(abstract.file_path)}" target="_blank" rel="noopener" style="color:#0C589A;font-weight:700;text-decoration:underline;">${esc(abstract.file_name || abstract.file_path)}</a>`
+      : esc(abstract.file_name || 'Presentation uploaded');
     const dlLink = document.getElementById('currentFileDownloadLink');
     if (dlLink) {
-      dlLink.href = `/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}`;
+      if (isUrl) {
+        dlLink.href = abstract.file_path;
+        dlLink.target = '_blank';
+        dlLink.removeAttribute('download');
+        dlLink.innerHTML = '🔗 Open Video Link';
+      } else {
+        dlLink.href = `/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}`;
+      }
+    }
+  }
+
+  const isVideo = inst && inst.type === 'Video';
+  if (isVideo) {
+    document.getElementById('uploadForm').style.display = 'none';
+    const vBox = document.getElementById('videoUploadBox');
+    if (vBox) vBox.style.display = 'block';
+    if (abstract.file_path && (abstract.file_path.startsWith('http://') || abstract.file_path.startsWith('https://'))) {
+      const vInput = document.getElementById('uploadVideoLinkInput');
+      if (vInput) vInput.value = abstract.file_path;
     }
   }
 
@@ -367,16 +400,18 @@ async function init() {
     if (passed) {
       document.getElementById('deadlineBox').className = 'alert alert-warning';
       document.getElementById('uploadForm').style.display = 'none';
+      const vBox = document.getElementById('videoUploadBox');
+      if (vBox) vBox.style.display = 'none';
     }
   } else {
     document.getElementById('deadlineText').innerHTML = `
       <div style="display:flex;flex-direction:column;gap:4px;">
-        <div>📤 Please upload your final presentation file before the congress.</div>
+        <div>${isVideo ? '🎥 Video presentation: please upload your video to WeTransfer and paste the link below.' : '📤 Please upload your final presentation file before the congress.'}</div>
         <div style="font-size:.85rem;">${programSentence}</div>
       </div>`;
   }
 
-  if (settings.ppt_template_file) {
+  if (settings.ppt_template_file && !isVideo) {
     const banner = document.getElementById('templateBanner');
     if (banner) {
       banner.style.display = 'flex';
@@ -448,6 +483,35 @@ function showErr(msg) {
   const e = document.getElementById('errBox');
   e.textContent = msg; 
   e.style.display = 'flex';
+}
+
+async function submitVideoLinkFromUpload(e) {
+  if (e) e.preventDefault();
+  const input = document.getElementById('uploadVideoLinkInput');
+  const link = input ? input.value.trim() : '';
+  if (!link) {
+    showErr('Please enter your WeTransfer link.');
+    return;
+  }
+  if (!/^https?:\/\//i.test(link)) {
+    showErr('Please enter a valid link starting with http:// or https://');
+    return;
+  }
+  const btn = document.getElementById('uploadVideoLinkBtn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting...';
+  try {
+    await apiFetch(`/abstracts/${absId}/upload`, {
+      method: 'POST',
+      body: JSON.stringify({ link })
+    });
+    showToast('Video link submitted successfully!');
+    setTimeout(() => location.reload(), 1500);
+  } catch (err) {
+    showErr(err.message || 'Failed to submit link');
+    btn.disabled = false;
+    btn.textContent = 'Submit Video Link';
+  }
 }
 
 document.getElementById('uploadForm').addEventListener('submit', async (e) => {

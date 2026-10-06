@@ -256,31 +256,60 @@ router.post('/:id/confirm', requireMember, async (req, res) => {
   }
 });
 
-// POST /api/abstracts/:id/upload — post-acceptance file upload (and re-upload)
-router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
+// POST /api/abstracts/:id/upload — post-acceptance file upload or link submission (and re-upload)
+router.post('/:id/upload', requireMember, (req, res, next) => {
+  const contentType = req.headers['content-type'] || '';
+  if (contentType.includes('multipart/form-data')) {
+    upload.single('file')(req, res, (err) => {
+      if (err) return res.status(400).json({ error: err.message });
+      next();
+    });
+  } else {
+    next();
+  }
+}, (req, res) => {
   try {
-    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+    const link = (req.body && (req.body.link || req.body.video_url || req.body.wetransfer_url))
+      ? String(req.body.link || req.body.video_url || req.body.wetransfer_url).trim()
+      : null;
+
+    if (!req.file && !link) {
+      return res.status(400).json({ error: 'No file or link provided' });
+    }
 
     // Check upload deadline
     if (isDeadlinePassed('upload_deadline')) {
-      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-      return res.status(403).json({ error: 'File upload deadline has passed' });
+      if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      return res.status(403).json({ error: 'Upload deadline has passed' });
     }
 
     const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
     if (!abstract) {
-      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
       return res.status(404).json({ error: 'Abstract not found' });
     }
 
     if (!['Waiting for File Upload', 'Final File Uploaded'].includes(abstract.status)) {
-      if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-      return res.status(403).json({ error: 'You can only upload files for accepted abstracts.' });
+      if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+      return res.status(403).json({ error: 'You can only upload files or submit links for accepted abstracts.' });
     }
 
-    // Delete old file if re-uploading
+    // Delete old physical file if re-uploading and was a local file
     if (abstract.file_path && fs.existsSync(abstract.file_path)) {
       try { fs.unlinkSync(abstract.file_path); } catch (e) { console.error('Failed to delete old file', e); }
+    }
+
+    if (link) {
+      if (!/^https?:\/\//i.test(link)) {
+        return res.status(400).json({ error: 'Invalid URL. Please enter a valid URL starting with http:// or https://' });
+      }
+      db.prepare(`
+        UPDATE abstracts
+        SET file_path = ?, file_name = ?, file_uploaded_at = unixepoch(), status = 'Final File Uploaded', updated_at = unixepoch()
+        WHERE id = ?
+      `).run(link, link, abstract.id);
+
+      return res.json({ message: 'Video link submitted successfully', filename: link });
     }
 
     // Sanitize filename before storing (strip path chars, limit length)
@@ -298,7 +327,7 @@ router.post('/:id/upload', requireMember, upload.single('file'), (req, res) => {
   } catch (err) {
     console.error(err);
     if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
-    res.status(500).json({ error: 'Failed to process file upload' });
+    res.status(500).json({ error: 'Failed to process upload' });
   }
 });
 
@@ -342,7 +371,13 @@ router.get('/:id/file', requireMember, (req, res) => {
     const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ?').get(req.params.id);
     if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
     if (abstract.user_id !== req.user.id) return res.status(403).json({ error: 'Access denied' });
-    if (!abstract.file_path || !fs.existsSync(abstract.file_path)) {
+    if (!abstract.file_path) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+    if (abstract.file_path.startsWith('http://') || abstract.file_path.startsWith('https://')) {
+      return res.redirect(abstract.file_path);
+    }
+    if (!fs.existsSync(abstract.file_path)) {
       return res.status(404).json({ error: 'File not found' });
     }
     const downloadName = abstract.file_name || (`presentation_${abstract.id}${path.extname(abstract.file_path)}`);

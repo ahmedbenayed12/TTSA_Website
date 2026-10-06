@@ -313,6 +313,8 @@ async function init() {
   if (['Waiting for File Upload', 'Final File Uploaded'].includes(abstract.status)) {
     const info = document.getElementById('infoBox');
     const inst = typeof getSlideInstructions === 'function' ? getSlideInstructions(abstract.presentation_type, abstract.preference) : null;
+    const isVideo = inst && inst.type === 'Video';
+    const isUrl = abstract.file_path && (abstract.file_path.startsWith('http://') || abstract.file_path.startsWith('https://'));
     let uploadHtml = `<div style="display:flex;flex-direction:column;gap:6px;width:100%;">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div>
@@ -320,12 +322,12 @@ async function init() {
           ${inst ? `<span class="badge ${inst.badgeClass}" style="margin-left:8px;">${inst.icon} ${inst.type}</span>` : ''}
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-          <a href="/member/upload.html?id=${absId}" class="btn btn-success btn-sm">📤 ${abstract.status === 'Final File Uploaded' ? 'Re-upload' : 'Upload'} Presentation</a>
-          ${abstract.file_path ? `<a href="/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}" class="btn btn-outline btn-sm" download>💾 Download Uploaded File</a>` : ''}
+          <a href="/member/upload.html?id=${absId}" class="btn btn-success btn-sm">${isVideo ? '🔗 Submit / Update Video Link' : `📤 ${abstract.status === 'Final File Uploaded' ? 'Re-upload' : 'Upload'} Presentation`}</a>
+          ${abstract.file_path ? `<a href="${isUrl ? esc(abstract.file_path) : `/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}`}" class="btn btn-outline btn-sm" ${isUrl ? 'target="_blank" rel="noopener"' : 'download'}>${isUrl ? '🔗 Open Video Link' : '💾 Download Uploaded File'}</a>` : ''}
         </div>
       </div>
       ${inst ? `<div style="font-size:.82rem;color:#166534;background:rgba(255,255,255,0.6);padding:6px 10px;border-radius:6px;margin-top:2px;">
-        <strong>${inst.icon} Slide Guidelines:</strong> ${inst.text}
+        <strong>${inst.icon} ${isVideo ? 'Video Guidelines:' : 'Slide Guidelines:'}</strong> ${inst.text}
       </div>` : ''}
     </div>`;
     info.innerHTML = uploadHtml;
