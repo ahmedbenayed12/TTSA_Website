@@ -1121,7 +1121,12 @@ async function loadDashboard() {
     const profSeniority = document.getElementById('profSeniority');
     if (profSeniority) profSeniority.textContent = me.seniority || '—';
 
-    // Deadline
+    // Check if user has received email to upload file (abstracts with 'Waiting for File Upload' or 'Final File Uploaded')
+    const acceptedAbstracts = abstracts.filter(a => ['Waiting for File Upload', 'Final File Uploaded'].includes(a.status));
+    const pendingUploadAbstracts = abstracts.filter(a => a.status === 'Waiting for File Upload');
+    const hasUploadEmail = acceptedAbstracts.length > 0;
+
+    // Submission Deadline
     let passed = false;
     let notStarted = false;
     const now = new Date();
@@ -1134,7 +1139,87 @@ async function loadDashboard() {
     if (settings.submission_deadline) {
       const d = new Date(settings.submission_deadline);
       passed = now > d;
-      
+    }
+
+    // Program verification sentence
+    const programNoticeHtml = `<div style="font-size:.85rem;margin-top:2px;">Please check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="font-weight:700;text-decoration:underline;color:inherit;">Scientific Program</a> page to verify the date and hour of your presentation.</div>`;
+
+    if (hasUploadEmail) {
+      // User has received the acceptance email to upload presentation file
+      let uploadDeadlineDate = null;
+      let uploadPassed = false;
+      let uploadDeadlineFormatted = '';
+
+      if (settings.upload_deadline) {
+        uploadDeadlineDate = new Date(settings.upload_deadline);
+        if (!isNaN(uploadDeadlineDate.getTime())) {
+          uploadPassed = now > uploadDeadlineDate;
+          uploadDeadlineFormatted = uploadDeadlineDate.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        }
+      }
+
+      if (pendingUploadAbstracts.length > 0) {
+        // Still has file(s) waiting for upload
+        if (uploadDeadlineDate) {
+          if (uploadPassed) {
+            document.getElementById('deadlineText').innerHTML = `
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div>⚠️ Presentation file upload deadline has <strong>passed</strong> (${uploadDeadlineFormatted}).</div>
+                ${programNoticeHtml}
+              </div>`;
+            document.getElementById('deadlineAlert').className = 'alert alert-warning';
+            document.getElementById('deadlineBadge').textContent = 'Upload Deadline Passed';
+            document.getElementById('deadlineBadge').className = 'badge badge-red';
+          } else {
+            document.getElementById('deadlineText').innerHTML = `
+              <div style="display:flex;flex-direction:column;gap:4px;">
+                <div>⏰ Presentation file upload deadline: <strong>${uploadDeadlineFormatted}</strong></div>
+                ${programNoticeHtml}
+              </div>`;
+            document.getElementById('deadlineAlert').className = 'alert alert-info';
+            document.getElementById('deadlineBadge').textContent = 'File Upload Open';
+            document.getElementById('deadlineBadge').className = 'badge badge-orange';
+          }
+        } else {
+          document.getElementById('deadlineText').innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div>📤 Your abstract has been accepted! Please upload your final presentation file.</div>
+              ${programNoticeHtml}
+            </div>`;
+          document.getElementById('deadlineAlert').className = 'alert alert-info';
+          document.getElementById('deadlineBadge').textContent = 'File Upload Open';
+          document.getElementById('deadlineBadge').className = 'badge badge-orange';
+        }
+      } else {
+        // All accepted abstract presentation files are uploaded
+        document.getElementById('deadlineText').innerHTML = `
+          <div style="display:flex;flex-direction:column;gap:4px;">
+            <div>✅ Presentation file uploaded successfully.${uploadDeadlineFormatted ? ` (Upload deadline: <strong>${uploadDeadlineFormatted}</strong>)` : ''}</div>
+            ${programNoticeHtml}
+          </div>`;
+        document.getElementById('deadlineAlert').className = 'alert alert-success';
+        document.getElementById('deadlineBadge').textContent = 'File Uploaded';
+        document.getElementById('deadlineBadge').className = 'badge badge-green';
+      }
+
+      // Update workflow timeline to reflect accepted / upload phase
+      const tlSubmit = document.getElementById('tl-submit');
+      const tlReview = document.getElementById('tl-review');
+      const tlResult = document.getElementById('tl-result');
+      const tlUpload = document.getElementById('tl-upload');
+      if (tlSubmit) tlSubmit.className = 'timeline-item done';
+      if (tlReview) tlReview.className = 'timeline-item done';
+      if (tlResult) tlResult.className = 'timeline-item done';
+      if (tlUpload) tlUpload.className = pendingUploadAbstracts.length > 0 ? 'timeline-item active' : 'timeline-item done';
+
+    } else if (settings.submission_deadline) {
+      const d = new Date(settings.submission_deadline);
       if (notStarted) {
         const start = new Date(settings.submission_start);
         document.getElementById('deadlineText').innerHTML = `⏳ Submission has not started yet. Opens on: <strong>${start.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</strong>`;
@@ -1145,7 +1230,7 @@ async function loadDashboard() {
         document.getElementById('deadlineText').innerHTML = passed
           ? '⚠️ Submission deadline has <strong>passed</strong>.'
           : `Submission deadline: <strong>${d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
-        if (passed) document.getElementById('deadlineAlert').className='alert alert-warning';
+        if (passed) document.getElementById('deadlineAlert').className = 'alert alert-warning';
         document.getElementById('deadlineBadge').textContent = passed ? 'Deadline Passed' : 'Submissions Open';
         document.getElementById('deadlineBadge').className = passed ? 'badge badge-red' : 'badge badge-green';
       }
@@ -1197,6 +1282,8 @@ async function loadDashboard() {
                 </div>
                 <div style="font-weight:600;font-size:.97rem;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px;">${abs.title}</div>
                 <div style="font-size:.78rem;color:var(--gray-500);margin-top:3px;">${abs.word_count} words &middot; ${abs.preference} presentation &middot; ${abs.author_count} author(s)</div>
+                ${abs.status === 'Waiting for File Upload' ? `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Please upload presentation file. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.</div>` : ''}
+                ${abs.status === 'Final File Uploaded' ? `<div style="font-size:.78rem;color:#15803d;font-weight:600;margin-top:4px;">✅ File uploaded. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.</div>` : ''}
               </div>
               <!-- Actions -->
               <div style="display:flex;gap:8px;flex-shrink:0;">

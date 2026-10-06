@@ -260,15 +260,25 @@ async function init() {
   }
 
   const deadline = settings.upload_deadline ? new Date(settings.upload_deadline) : null;
+  const programSentence = `Please check the <a href="/member/dashboard.html#program" style="font-weight:700;text-decoration:underline;color:inherit;">Scientific Program</a> page to verify the date and hour of your presentation.`;
   if (deadline) {
     const passed = new Date() > deadline;
-    document.getElementById('deadlineText').textContent = passed 
-      ? '⚠️ Upload deadline has passed.' 
-      : `Upload deadline: ${deadline.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}`;
+    const deadlineFormatted = deadline.toLocaleDateString('en-GB', { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
+    document.getElementById('deadlineText').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div>${passed ? '⚠️ Upload deadline has <strong>passed</strong>.' : `⏰ Presentation file upload deadline: <strong>${deadlineFormatted}</strong>`}</div>
+        <div style="font-size:.85rem;">${programSentence}</div>
+      </div>`;
     if (passed) {
       document.getElementById('deadlineBox').className = 'alert alert-warning';
       document.getElementById('uploadForm').style.display = 'none';
     }
+  } else {
+    document.getElementById('deadlineText').innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:4px;">
+        <div>📤 Please upload your final presentation file before the congress.</div>
+        <div style="font-size:.85rem;">${programSentence}</div>
+      </div>`;
   }
 }
 
