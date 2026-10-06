@@ -202,30 +202,110 @@ router.patch('/blind-review', requireAdmin, (req, res) => {
 
 // ─── FINALIZE & EMAIL BLAST ───────────────────────────────────────────────────
 
-// POST /api/admin/finalize — validate verdicts and send email blast
-router.post('/finalize', requireAdmin, async (req, res) => {
+// GET /api/admin/preview-emails — generate email previews without sending
+router.get('/preview-emails', requireAdmin, (req, res) => {
+  try {
+    const rawIds = req.query.abstract_ids;
+    if (!rawIds) return res.status(400).json({ error: 'abstract_ids query param required' });
+    const abstract_ids = String(rawIds).split(',').map(Number).filter(Boolean);
+    if (!abstract_ids.length) return res.status(400).json({ error: 'No valid abstract IDs provided' });
+
+    const placeholders = abstract_ids.map(() => '?').join(',');
+    const rows = db.prepare(`
+      SELECT a.id, a.title, r.verdict, r.presentation_type,
+             u.email, u.first_name, u.last_name, a.submission_number, a.status
+      FROM abstracts a
+      JOIN reviews r ON r.abstract_id = a.id
+      JOIN users u ON u.id = a.user_id
+      WHERE a.status IN ('Reviewed', 'Waiting for Review')
+        AND r.verdict IN ('Admitted', 'Refused')
+        AND a.id IN (${placeholders})
+      GROUP BY a.id
+    `).all(...abstract_ids);
+
+    const previews = rows.map(abs => {
+      const isAccepted = abs.verdict === 'Admitted';
+      const color  = isAccepted ? '#166534' : '#B82538';
+      const bg     = isAccepted ? '#dcfce7' : '#fee2e2';
+      const label  = isAccepted ? '✅ ACCEPTED' : '❌ REFUSED';
+      const subject = `TTSA – Abstract Review Result: ${isAccepted ? 'Accepted' : 'Refused'}`;
+      const pType = abs.presentation_type || 'Oral Communication';
+      const html = `
+        <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden">
+          <div style="background:#0C589A;padding:24px;text-align:center">
+            <h1 style="color:#fff;margin:0;font-size:22px">TTSA</h1>
+            <p style="color:#cfe2ff;margin:4px 0 0">Tunisian Thoracic Surgery Association</p>
+          </div>
+          <div style="padding:32px">
+            <p>Dear <strong>${abs.first_name} ${abs.last_name}</strong>,</p>
+            <p>The scientific committee has reviewed your abstract submission:</p>
+            <div style="background:#f0f7ff;border-left:4px solid #0C589A;padding:16px;border-radius:4px;margin:16px 0">
+              <strong>Abstract:</strong> ${abs.title}
+            </div>
+            <div style="text-align:center;margin:24px 0">
+              <span style="display:inline-block;background:${bg};color:${color};font-size:20px;font-weight:700;padding:12px 32px;border-radius:8px;border:2px solid ${color}">${label}</span>
+            </div>
+            ${isAccepted
+              ? `<p>Presentation type: <strong>${pType}</strong></p>
+                 <p>Please log in to your participant portal to upload your final presentation file before the upload deadline.</p>`
+              : `<p>Thank you for your submission. We encourage you to participate in future congresses.</p>`}
+            <p style="color:#aaa;font-size:12px;text-align:center;margin-top:32px">Tunisian Thoracic Surgery Association &copy; 2026</p>
+          </div>
+        </div>`;
+
+      const plainText = `Dear ${abs.first_name} ${abs.last_name},\n\nThe scientific committee has reviewed your abstract submission:\nAbstract: "${abs.title}"\n\nResult: ${isAccepted ? 'ACCEPTED' : 'REFUSED'}\n${isAccepted ? `Presentation type: ${pType}\nPlease log in to your participant portal to upload your final presentation file before the upload deadline.` : 'Thank you for your submission. We encourage you to participate in future congresses.'}\n\nTunisian Thoracic Surgery Association © 2026`;
+
+      return {
+        abstract_id: abs.id,
+        submission_number: abs.submission_number,
+        title: abs.title,
+        to_email: abs.email,
+        to_name: `${abs.first_name} ${abs.last_name}`,
+        verdict: abs.verdict,
+        presentation_type: abs.presentation_type || null,
+        subject,
+        html_preview: html.trim(),
+        text_preview: plainText.trim(),
+      };
+    });
+
+    res.json({ count: previews.length, previews });
+  } catch (err) {
+    console.error('preview-emails error:', err);
+    res.status(500).json({ error: 'Failed to generate email previews: ' + err.message });
+  }
+});
+
+// POST /api/admin/send-acceptance-emails & /finalize — send verdict emails & update statuses
+async function handleSendVerdictEmails(req, res) {
   try {
     const { abstract_ids } = req.body; // optional: specific IDs; if empty, all reviewed
 
     let query = `
       SELECT a.id, a.title, a.user_id, r.verdict, r.presentation_type,
-             u.email, u.first_name
+             u.email, u.first_name, a.submission_number
       FROM abstracts a
       JOIN reviews r ON r.abstract_id = a.id
       JOIN users u ON u.id = a.user_id
-      WHERE a.status = 'Waiting for Review'
+      WHERE a.status IN ('Reviewed', 'Waiting for Review')
+        AND r.verdict IN ('Admitted', 'Refused')
     `;
     let params = [];
     if (abstract_ids && abstract_ids.length > 0) {
       query += ` AND a.id IN (${abstract_ids.map(() => '?').join(',')})`;
       params = abstract_ids;
     }
+    query += ` GROUP BY a.id`;
 
     const abstracts = db.prepare(query).all(...params);
+    if (!abstracts.length) {
+      return res.status(400).json({ error: 'No reviewed abstracts found with valid verdicts to send' });
+    }
+
     let sent = 0, failed = 0;
 
     for (const abs of abstracts) {
-      // Update status: Accepted → Waiting for File Upload; Refused → Refused
+      // Update status: Accepted/Admitted → Waiting for File Upload; Refused → Refused
       const newStatus = abs.verdict === 'Admitted' ? 'Waiting for File Upload' : 'Refused';
       db.prepare("UPDATE abstracts SET status=?, updated_at=unixepoch() WHERE id=?").run(newStatus, abs.id);
 
@@ -239,12 +319,16 @@ router.post('/finalize', requireAdmin, async (req, res) => {
       }
     }
 
-    res.json({ message: `Finalization complete. Emails sent: ${sent}, failed: ${failed}`, total: abstracts.length });
+    res.json({ message: `Emails processed: ${sent} sent, ${failed} failed`, total: abstracts.length, sent, failed });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Finalization failed' });
+    console.error('send-acceptance-emails error:', err);
+    res.status(500).json({ error: 'Failed to send acceptance emails: ' + err.message });
   }
-});
+}
+
+router.post('/finalize', requireAdmin, handleSendVerdictEmails);
+router.post('/send-acceptance-emails', requireAdmin, handleSendVerdictEmails);
+
 
 // POST /api/admin/remind-upload — send reminder email to upload presentation
 router.post('/remind-upload', requireAdmin, async (req, res) => {

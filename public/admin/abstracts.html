@@ -202,9 +202,10 @@
         <span class="sel-count"><span id="selCount">0</span> selected</span>
         <div class="bulk-divider"></div>
         <button class="btn btn-primary btn-sm" onclick="bulkAssign()" id="btnBulkAssign">👤 Assign Reviewer</button>
-        <button class="btn btn-outline btn-sm" onclick="bulkFinalize()" id="btnBulkFinalize">📧 Finalize &amp; Send Email</button>
-        <button class="btn btn-outline btn-sm" onclick="bulkRemind()" id="btnBulkRemind">⏰ Send Upload Reminder</button>
         <button class="btn btn-outline btn-sm" onclick="bulkEndReview()" id="btnBulkEndReview" style="border-color:#b91c1c;color:#b91c1c;">🔒 End Review</button>
+        <button class="btn btn-outline btn-sm" onclick="bulkGenerateEmail()" id="btnBulkGenerateEmail" style="border-color:#0284c7;color:#0284c7;">📝 Generate Email</button>
+        <button class="btn btn-outline btn-sm" onclick="bulkSendAcceptanceEmail()" id="btnBulkSendEmail" style="border-color:#16a34a;color:#16a34a;">📨 Send Acceptance Email</button>
+        <button class="btn btn-outline btn-sm" onclick="bulkRemind()" id="btnBulkRemind">⏰ Send Upload Reminder</button>
         <button class="btn btn-ghost btn-sm" onclick="clearSelection()">✕ Clear</button>
       </div>
 
@@ -328,6 +329,7 @@
     <div class="dp-footer">
       <button class="btn btn-ghost btn-sm" onclick="closePanel()">Close</button>
       <button class="btn btn-outline btn-sm" id="dpEndReviewBtn" onclick="endReview()" style="border-color:#b91c1c;color:#b91c1c;display:none" title="End Review – lock this abstract for new reviews">🔒 End Review</button>
+      <button class="btn btn-outline btn-sm" id="dpGenerateEmailBtn" onclick="generateEmailForCurrentPanel()" style="border-color:#0284c7;color:#0284c7;display:none" title="Generate and preview decision email">📝 Generate Email</button>
       <button class="btn btn-primary btn-sm" id="dpAssignBtn" onclick="openAssignFromPanel()">👤 Assign Reviewer</button>
     </div>
   </div>
@@ -352,6 +354,71 @@
     <div class="modal-footer">
       <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveAssignment()" id="assignBtn">Save Assignment</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Generate Email Preview Modal ─────────────────────────────── -->
+<div class="modal-overlay" id="emailPreviewModal" onclick="closeEmailModalClick(event)">
+  <div class="modal" style="max-width:760px; max-height:92vh; display:flex; flex-direction:column; overflow:hidden;">
+    <div class="modal-header" style="flex-shrink:0;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.3rem;">📝</span>
+        <div>
+          <h3 style="margin:0; font-size:1.05rem; font-weight:700;">Generated Emails Preview</h3>
+          <p style="margin:0; font-size:.78rem; color:var(--gray-500);" id="emailModalSubtitle">Review email text before sending to authors</p>
+        </div>
+      </div>
+      <button class="modal-close" onclick="closeEmailModal()">×</button>
+    </div>
+
+    <!-- Multi-email tab bar -->
+    <div id="emailPreviewTabs" style="display:flex; gap:8px; padding:10px 20px; background:var(--gray-50); border-bottom:1px solid var(--gray-200); overflow-x:auto; flex-shrink:0;"></div>
+
+    <!-- Scrollable content area -->
+    <div class="modal-body" style="padding:18px 22px; overflow-y:auto; flex:1;">
+      <!-- Email metadata box -->
+      <div style="background:var(--gray-50); border:1px solid var(--gray-200); border-radius:8px; padding:12px 16px; margin-bottom:14px; font-size:.85rem;">
+        <div style="display:grid; grid-template-columns:90px 1fr; row-gap:8px; align-items:center;">
+          <span style="font-size:.72rem; font-weight:700; text-transform:uppercase; color:var(--gray-500);">To:</span>
+          <div><strong id="previewToName" style="color:var(--gray-900);"></strong> &lt;<span id="previewToEmail" style="color:var(--blue);"></span>&gt;</div>
+
+          <span style="font-size:.72rem; font-weight:700; text-transform:uppercase; color:var(--gray-500);">Abstract:</span>
+          <div><strong id="previewAbsNum" style="color:var(--gray-800);"></strong> — <span id="previewAbsTitle" style="color:var(--gray-700);"></span></div>
+
+          <span style="font-size:.72rem; font-weight:700; text-transform:uppercase; color:var(--gray-500);">Verdict:</span>
+          <div id="previewVerdictBadge"></div>
+
+          <span style="font-size:.72rem; font-weight:700; text-transform:uppercase; color:var(--gray-500);">Subject:</span>
+          <div><code id="previewSubject" style="background:#fff; border:1px solid var(--gray-300); padding:2px 8px; border-radius:4px; font-size:.82rem; color:var(--gray-800);"></code></div>
+        </div>
+      </div>
+
+      <!-- Preview tabs: HTML vs Text -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div style="font-size:.75rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; color:var(--gray-500);">Email Body Preview</div>
+        <div style="display:flex; gap:6px;">
+          <button type="button" class="btn btn-ghost btn-xs" id="btnPreviewHtml" onclick="setEmailPreviewTab('html')" style="font-weight:700; font-size:.75rem; border:1px solid var(--gray-300); background:var(--gray-200);">Formatted</button>
+          <button type="button" class="btn btn-ghost btn-xs" id="btnPreviewText" onclick="setEmailPreviewTab('text')" style="font-size:.75rem; border:1px solid var(--gray-300);">Plain Text</button>
+        </div>
+      </div>
+
+      <!-- Formatted HTML Preview -->
+      <div id="previewHtmlWrap" style="border:1px solid var(--gray-300); border-radius:8px; overflow:hidden; background:#fff; padding:12px;">
+        <div id="previewHtmlContent"></div>
+      </div>
+
+      <!-- Plain Text Preview -->
+      <pre id="previewTextWrap" style="display:none; margin:0; padding:14px; background:var(--gray-50); border:1px solid var(--gray-300); border-radius:8px; font-size:.83rem; line-height:1.6; white-space:pre-wrap; word-break:break-word; font-family:monospace; color:var(--gray-800);"></pre>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="modal-footer" style="flex-shrink:0; display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:.82rem; color:var(--gray-500);" id="emailModalCounter">1 of 1 email</div>
+      <div style="display:flex; gap:10px;">
+        <button class="btn btn-ghost btn-sm" onclick="closeEmailModal()">Close</button>
+        <button class="btn btn-success btn-sm" id="btnModalSend" onclick="sendEmailsFromModal()">📨 Send Acceptance Email(s)</button>
+      </div>
     </div>
   </div>
 </div>
@@ -726,10 +793,12 @@ function updateBulkBar() {
   if (!ids.length) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
   const sel = abstracts.filter(a => ids.includes(a.id));
-  document.getElementById('btnBulkAssign').disabled    = !sel.some(a=>!FINALIZED.includes(a.status)&&a.status!=='Draft');
-  document.getElementById('btnBulkFinalize').disabled  = !sel.some(a=>a.status==='Waiting for Review'&&(a.verdict==='Admitted'||a.verdict==='Refused'));
-  document.getElementById('btnBulkRemind').disabled    = !sel.some(a=>a.status==='Waiting for File Upload');
-  document.getElementById('btnBulkEndReview').disabled = !sel.some(a=>a.status==='Waiting for Review'&&a.total_score!=null);
+  document.getElementById('btnBulkAssign').disabled        = !sel.some(a=>!FINALIZED.includes(a.status)&&a.status!=='Draft');
+  document.getElementById('btnBulkEndReview').disabled     = !sel.some(a=>a.status==='Waiting for Review'&&a.total_score!=null);
+  const emailEligible = sel.some(a=>(a.status==='Reviewed'||a.status==='Waiting for Review')&&(a.verdict==='Admitted'||a.verdict==='Refused'));
+  document.getElementById('btnBulkGenerateEmail').disabled = !emailEligible;
+  document.getElementById('btnBulkSendEmail').disabled     = !emailEligible;
+  document.getElementById('btnBulkRemind').disabled        = !sel.some(a=>a.status==='Waiting for File Upload');
 }
 
 // ── Bulk Actions ──────────────────────────────────────────────────────
@@ -743,15 +812,190 @@ function bulkAssign() {
   document.getElementById('reviewerSelect').value='';
   document.getElementById('assignModal').classList.add('open');
 }
-async function bulkFinalize() {
+
+// ── Generate Email & Send Acceptance Email ───────────────────────────
+let generatedEmailPreviews = [];
+let activePreviewIndex = 0;
+let previewTabMode = 'html';
+
+async function bulkGenerateEmail() {
   const ids = getChecked();
-  const sel = abstracts.filter(a=>ids.includes(a.id)&&a.status==='Waiting for Review'&&(a.verdict==='Admitted'||a.verdict==='Refused'));
-  if (!sel.length) { showToast('No valid abstracts to finalize in selection','error'); return; }
-  if (!confirm(`Finalize ${sel.length} abstract(s) and send email notifications?\n\nIDs: ${sel.map(a=>`#${a.submission_number||a.id}`).join(', ')}`)) return;
+  const sel = abstracts.filter(a => ids.includes(a.id) && (a.status === 'Reviewed' || a.status === 'Waiting for Review') && (a.verdict === 'Admitted' || a.verdict === 'Refused'));
+  if (!sel.length) {
+    showToast('No eligible reviewed abstracts in selection. Abstracts must be reviewed with an Admitted or Refused verdict.', 'error');
+    return;
+  }
+  await loadAndShowEmailPreviews(sel.map(a => a.id));
+}
+
+async function generateEmailForCurrentPanel() {
+  if (!currentPanelId) return;
+  await loadAndShowEmailPreviews([currentPanelId]);
+}
+
+async function loadAndShowEmailPreviews(abstractIds) {
+  const btnGen = document.getElementById('btnBulkGenerateEmail');
+  const originalText = btnGen ? btnGen.textContent : '';
+  if (btnGen) { btnGen.disabled = true; btnGen.textContent = 'Generating…'; }
   try {
-    const r = await apiFetch('/admin/finalize',{method:'POST',body:JSON.stringify({abstract_ids:sel.map(a=>a.id)})});
-    showToast(r.message); clearSelection(); init();
-  } catch(e) { showToast(e.message,'error'); }
+    const res = await apiFetch(`/admin/preview-emails?abstract_ids=${abstractIds.join(',')}`);
+    if (!res.previews || !res.previews.length) {
+      showToast('No emails could be generated for the selected abstracts.', 'error');
+      return;
+    }
+    generatedEmailPreviews = res.previews;
+    activePreviewIndex = 0;
+    renderEmailPreviewModal();
+    setEmailPreviewTab('html');
+    document.getElementById('emailPreviewModal').classList.add('open');
+  } catch(e) {
+    showToast(e.message || 'Failed to generate email preview', 'error');
+  } finally {
+    if (btnGen) { btnGen.disabled = false; btnGen.textContent = originalText; }
+  }
+}
+
+function renderEmailPreviewModal() {
+  const previews = generatedEmailPreviews;
+  if (!previews || !previews.length) return;
+  const current = previews[activePreviewIndex] || previews[0];
+  if (!current) return;
+
+  // Tabs for multiple emails
+  const tabsWrap = document.getElementById('emailPreviewTabs');
+  if (previews.length > 1) {
+    tabsWrap.style.display = 'flex';
+    tabsWrap.innerHTML = previews.map((p, idx) => {
+      const active = idx === activePreviewIndex;
+      const vIcon = p.verdict === 'Admitted' ? '✅' : '❌';
+      return `<button type="button" onclick="selectPreviewIndex(${idx})" style="padding:6px 14px; border-radius:6px; font-size:.78rem; font-weight:600; cursor:pointer; white-space:nowrap; border:1px solid ${active ? 'var(--blue)' : 'var(--gray-300)'}; background:${active ? 'var(--blue)' : '#fff'}; color:${active ? '#fff' : 'var(--gray-700)'}; transition:all .15s;">
+        ${vIcon} #${p.submission_number || p.abstract_id} · ${esc(p.to_name)}
+      </button>`;
+    }).join('');
+  } else {
+    tabsWrap.style.display = 'none';
+  }
+
+  // Populate metadata
+  document.getElementById('previewToName').textContent  = current.to_name;
+  document.getElementById('previewToEmail').textContent = current.to_email;
+  document.getElementById('previewAbsNum').textContent  = `#${current.submission_number || current.abstract_id}`;
+  document.getElementById('previewAbsTitle').textContent= current.title;
+
+  const isAccepted = current.verdict === 'Admitted';
+  document.getElementById('previewVerdictBadge').innerHTML = isAccepted
+    ? `<span style="background:#dcfce7; color:#166534; font-weight:700; font-size:.78rem; padding:3px 10px; border-radius:10px; border:1px solid #86efac;">✅ Admitted (${esc(current.presentation_type || 'Oral Communication')})</span>`
+    : `<span style="background:#fee2e2; color:#991b1b; font-weight:700; font-size:.78rem; padding:3px 10px; border-radius:10px; border:1px solid #fca5a5;">❌ Refused</span>`;
+
+  document.getElementById('previewSubject').textContent = current.subject;
+
+  // Populate preview contents
+  document.getElementById('previewHtmlContent').innerHTML = current.html_preview;
+  document.getElementById('previewTextWrap').textContent   = current.text_preview;
+
+  // Counter & Subtitle
+  document.getElementById('emailModalCounter').textContent = `Email ${activePreviewIndex + 1} of ${previews.length}`;
+  document.getElementById('emailModalSubtitle').textContent = previews.length === 1
+    ? `Generated decision email for #${current.submission_number || current.abstract_id}`
+    : `Viewing generated email ${activePreviewIndex + 1} of ${previews.length}`;
+
+  const sendBtn = document.getElementById('btnModalSend');
+  sendBtn.textContent = previews.length === 1 ? '📨 Send Acceptance Email' : `📨 Send Acceptance Emails (${previews.length})`;
+}
+
+function selectPreviewIndex(idx) {
+  activePreviewIndex = idx;
+  renderEmailPreviewModal();
+}
+
+function setEmailPreviewTab(mode) {
+  previewTabMode = mode;
+  const btnHtml = document.getElementById('btnPreviewHtml');
+  const btnText = document.getElementById('btnPreviewText');
+  const htmlWrap = document.getElementById('previewHtmlWrap');
+  const textWrap = document.getElementById('previewTextWrap');
+
+  if (mode === 'html') {
+    htmlWrap.style.display = 'block';
+    textWrap.style.display = 'none';
+    btnHtml.style.background = 'var(--gray-200)';
+    btnHtml.style.fontWeight = '700';
+    btnText.style.background = 'transparent';
+    btnText.style.fontWeight = 'normal';
+  } else {
+    htmlWrap.style.display = 'none';
+    textWrap.style.display = 'block';
+    btnText.style.background = 'var(--gray-200)';
+    btnText.style.fontWeight = '700';
+    btnHtml.style.background = 'transparent';
+    btnHtml.style.fontWeight = 'normal';
+  }
+}
+
+function closeEmailModal() {
+  document.getElementById('emailPreviewModal').classList.remove('open');
+}
+function closeEmailModalClick(e) {
+  if (e.target === document.getElementById('emailPreviewModal')) closeEmailModal();
+}
+
+async function bulkSendAcceptanceEmail() {
+  const ids = getChecked();
+  const sel = abstracts.filter(a => ids.includes(a.id) && (a.status === 'Reviewed' || a.status === 'Waiting for Review') && (a.verdict === 'Admitted' || a.verdict === 'Refused'));
+  if (!sel.length) {
+    showToast('No eligible reviewed abstracts in selection. Abstracts must be reviewed with an Admitted or Refused verdict.', 'error');
+    return;
+  }
+
+  const labels = sel.map(a => `  • #${a.submission_number || a.id} (${a.verdict === 'Admitted' ? 'Admitted' : 'Refused'}) — ${a.title}`).join('\n');
+  if (!confirm(`Send acceptance / verdict emails to ${sel.length} author(s)?\n\n${labels}\n\nThis will send email notifications and update abstract statuses.`)) {
+    return;
+  }
+
+  const btn = document.getElementById('btnBulkSendEmail');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await apiFetch('/admin/send-acceptance-emails', {
+      method: 'POST',
+      body: JSON.stringify({ abstract_ids: sel.map(a => a.id) })
+    });
+    showToast(res.message || 'Acceptance emails sent successfully!');
+    clearSelection();
+    await init();
+  } catch(e) {
+    showToast(e.message || 'Failed to send acceptance emails', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📨 Send Acceptance Email';
+  }
+}
+
+async function sendEmailsFromModal() {
+  if (!generatedEmailPreviews || !generatedEmailPreviews.length) return;
+  const ids = generatedEmailPreviews.map(p => p.abstract_id);
+  if (!confirm(`Send acceptance / verdict emails to ${ids.length} author(s) now?`)) return;
+
+  const btn = document.getElementById('btnModalSend');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    const res = await apiFetch('/admin/send-acceptance-emails', {
+      method: 'POST',
+      body: JSON.stringify({ abstract_ids: ids })
+    });
+    showToast(res.message || 'Emails sent successfully!');
+    closeEmailModal();
+    if (currentPanelId) closePanel();
+    clearSelection();
+    await init();
+  } catch(e) {
+    showToast(e.message || 'Failed to send emails', 'error');
+    btn.disabled = false;
+    btn.textContent = '📨 Send Acceptance Email(s)';
+  }
 }
 async function bulkRemind() {
   const ids = getChecked();
@@ -821,6 +1065,13 @@ async function openPanel(id) {
   endReviewBtn.style.display = canEndReview ? '' : 'none';
   endReviewBtn.disabled = false;
   endReviewBtn.textContent = '🔒 End Review';
+
+  // Show/hide Generate Email button: visible when status is 'Reviewed' or 'Waiting for Review' and has verdict
+  const canEmail = (a.status === 'Reviewed' || a.status === 'Waiting for Review') && (a.verdict === 'Admitted' || a.verdict === 'Refused');
+  const genEmailBtn = document.getElementById('dpGenerateEmailBtn');
+  if (genEmailBtn) {
+    genEmailBtn.style.display = canEmail ? '' : 'none';
+  }
 
   document.getElementById('detailOverlay').classList.add('open');
   document.getElementById('dpBody').innerHTML = '<div style="padding:40px;text-align:center;color:var(--gray-400)">Loading details…</div>';
