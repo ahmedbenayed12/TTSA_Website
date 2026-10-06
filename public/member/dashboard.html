@@ -1088,6 +1088,7 @@ window.addEventListener('hashchange', () => {
 /* ========================================================= */
 async function loadDashboard() {
   try {
+    const token = getToken() || '';
     const [me, abstracts, settings] = await Promise.all([
       apiFetch('/auth/me'),
       apiFetch('/abstracts'),
@@ -1197,34 +1198,21 @@ async function loadDashboard() {
         }
       }
 
-      if (pendingUploadAbstracts.length > 0) {
-        // Still has file(s) waiting for upload
-        if (uploadDeadlineDate) {
-          if (uploadPassed) {
-            document.getElementById('deadlineText').innerHTML = `
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div>⚠️ Presentation file upload deadline has <strong>passed</strong> (${uploadDeadlineFormatted}).</div>
-                ${programNoticeHtml}
-                ${templateButtonHtml}
-              </div>`;
-            document.getElementById('deadlineAlert').className = 'alert alert-warning';
-            document.getElementById('deadlineBadge').textContent = 'Upload Deadline Passed';
-            document.getElementById('deadlineBadge').className = 'badge badge-red';
-          } else {
-            document.getElementById('deadlineText').innerHTML = `
-              <div style="display:flex;flex-direction:column;gap:4px;">
-                <div>⏰ Presentation file upload deadline: <strong>${uploadDeadlineFormatted}</strong></div>
-                ${programNoticeHtml}
-                ${templateButtonHtml}
-              </div>`;
-            document.getElementById('deadlineAlert').className = 'alert alert-info';
-            document.getElementById('deadlineBadge').textContent = 'File Upload Open';
-            document.getElementById('deadlineBadge').className = 'badge badge-orange';
-          }
+      if (uploadDeadlineDate) {
+        if (uploadPassed) {
+          document.getElementById('deadlineText').innerHTML = `
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              <div>⚠️ Presentation file upload deadline has <strong>passed</strong> (${uploadDeadlineFormatted}).</div>
+              ${programNoticeHtml}
+              ${templateButtonHtml}
+            </div>`;
+          document.getElementById('deadlineAlert').className = 'alert alert-warning';
+          document.getElementById('deadlineBadge').textContent = 'Upload Deadline Passed';
+          document.getElementById('deadlineBadge').className = 'badge badge-red';
         } else {
           document.getElementById('deadlineText').innerHTML = `
             <div style="display:flex;flex-direction:column;gap:4px;">
-              <div>📤 Your abstract has been accepted! Please upload your final presentation file.</div>
+              <div>⏰ Presentation file upload deadline: <strong>${uploadDeadlineFormatted}</strong></div>
               ${programNoticeHtml}
               ${templateButtonHtml}
             </div>`;
@@ -1233,15 +1221,14 @@ async function loadDashboard() {
           document.getElementById('deadlineBadge').className = 'badge badge-orange';
         }
       } else {
-        // All accepted abstract presentation files are uploaded
         document.getElementById('deadlineText').innerHTML = `
           <div style="display:flex;flex-direction:column;gap:4px;">
-            <div>✅ Presentation file uploaded successfully.${uploadDeadlineFormatted ? ` (Upload deadline: <strong>${uploadDeadlineFormatted}</strong>)` : ''}</div>
+            <div>📤 Accepted abstract presentations: please check the scientific program and upload your presentation slides.</div>
             ${programNoticeHtml}
             ${templateButtonHtml}
           </div>`;
-        document.getElementById('deadlineAlert').className = 'alert alert-success';
-        document.getElementById('deadlineBadge').textContent = 'File Uploaded';
+        document.getElementById('deadlineAlert').className = 'alert alert-info';
+        document.getElementById('deadlineBadge').textContent = 'Accepted';
         document.getElementById('deadlineBadge').className = 'badge badge-green';
       }
 
@@ -1320,13 +1307,23 @@ async function loadDashboard() {
                 <div style="font-weight:600;font-size:.97rem;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px;">${abs.title}</div>
                 <div style="font-size:.78rem;color:var(--gray-500);margin-top:3px;">${abs.word_count} words &middot; ${abs.preference} presentation &middot; ${abs.author_count} author(s)</div>
                 ${abs.status === 'Waiting for File Upload' ? `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Please upload presentation file. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}</div>` : ''}
-                ${abs.status === 'Final File Uploaded' ? `<div style="font-size:.78rem;color:#15803d;font-weight:600;margin-top:4px;">✅ File uploaded. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}</div>` : ''}
+                ${abs.status === 'Final File Uploaded' ? `
+                  <div style="font-size:.8rem;color:#15803d;font-weight:600;margin-top:4px;">
+                    ✅ Presentation file uploaded successfully${abs.file_name ? `: <strong>${esc(abs.file_name)}</strong>` : ''}.
+                  </div>
+                  <div style="font-size:.78rem;color:var(--gray-500);margin-top:2px;">
+                    Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}
+                  </div>` : ''}
               </div>
               <!-- Actions -->
-              <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+              <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;flex-wrap:wrap;">
                 ${abs.status === 'Waiting for File Upload' && settings.ppt_template_file ? `<a href="/api/template/download" class="btn btn-outline btn-sm" style="color:#0C589A;border-color:#0C589A;background:#fff;" title="Download PowerPoint presentation template">📥 PPT Template</a>` : ''}
                 ${abs.status === 'Waiting for File Upload' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-primary btn-sm" style="background:#e65100;border-color:#e65100;">📤 Upload File</a>` : ''}
-                ${abs.status === 'Final File Uploaded' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;">📤 Re-upload File</a>` : ''}
+                ${abs.status === 'Final File Uploaded' ? `
+                  <a href="/api/abstracts/${abs.id}/file?token=${encodeURIComponent(token)}" class="btn btn-outline btn-sm" style="color:#15803d;border-color:#16a34a;background:#f0fdf4;font-weight:700;display:inline-flex;align-items:center;gap:4px;" title="Download your uploaded presentation file" download>
+                    📥 Download File
+                  </a>
+                  <a href="/member/upload.html?id=${abs.id}" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;">📤 Re-upload File</a>` : ''}
                 ${!abs.is_locked && !passed && !['Waiting for File Upload', 'Final File Uploaded'].includes(abs.status)
                   ? `<a href="/member/edit.html?id=${abs.id}" class="btn btn-outline btn-sm">Edit</a>
                      <button class="btn btn-danger btn-sm" onclick="delAbstract(${abs.id})">Delete</button>`

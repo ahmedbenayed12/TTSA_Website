@@ -126,12 +126,17 @@
             <span id="presType" class="badge badge-blue" style="margin-left: 8px;"></span>
           </div>
 
-          <div id="currentFileBox" class="current-file" style="display:none">
-            <div class="cf-icon">✓</div>
-            <div class="cf-text">
-              <h4>File already uploaded</h4>
-              <p id="currentFileName"></p>
+          <div id="currentFileBox" class="current-file" style="display:none;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+            <div style="display:flex;align-items:center;gap:16px;">
+              <div class="cf-icon">✓</div>
+              <div class="cf-text">
+                <h4>File already uploaded</h4>
+                <p id="currentFileName"></p>
+              </div>
             </div>
+            <a id="currentFileDownloadLink" href="#" class="btn btn-sm btn-outline" style="color:#166534;border-color:#16a34a;background:#fff;display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;" download>
+              📥 Download File
+            </a>
           </div>
 
           <form id="uploadForm">
@@ -271,6 +276,10 @@ async function init() {
   if (abstract.file_path) {
     document.getElementById('currentFileBox').style.display = 'flex';
     document.getElementById('currentFileName').textContent = abstract.file_name || 'Presentation uploaded';
+    const dlLink = document.getElementById('currentFileDownloadLink');
+    if (dlLink) {
+      dlLink.href = `/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}`;
+    }
   }
 
   const deadline = settings.upload_deadline ? new Date(settings.upload_deadline) : null;

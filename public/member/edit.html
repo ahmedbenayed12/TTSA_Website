@@ -314,7 +314,7 @@ async function init() {
     const info = document.getElementById('infoBox');
     let uploadHtml = `🎉 Your abstract was <strong>Accepted</strong>! <a href="/member/upload.html?id=${absId}" class="btn btn-success btn-sm" style="margin-left:12px">📤 ${abstract.status === 'Final File Uploaded' ? 'Re-upload' : 'Upload'} Presentation</a>`;
     if (abstract.file_path) {
-      uploadHtml += `<a href="/api/abstracts/${absId}/file" class="btn btn-outline btn-sm" style="margin-left:8px" download>💾 Download Uploaded File</a>`;
+      uploadHtml += `<a href="/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}" class="btn btn-outline btn-sm" style="margin-left:8px" download>💾 Download Uploaded File</a>`;
     }
     info.innerHTML = uploadHtml;
     info.className = 'alert alert-success';

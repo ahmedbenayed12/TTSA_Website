@@ -338,7 +338,8 @@ router.get('/:id/file', requireMember, (req, res) => {
     if (!abstract.file_path || !fs.existsSync(abstract.file_path)) {
       return res.status(404).json({ error: 'File not found' });
     }
-    res.download(abstract.file_path, abstract.file_name);
+    const downloadName = abstract.file_name || (`presentation_${abstract.id}${path.extname(abstract.file_path)}`);
+    res.download(abstract.file_path, downloadName);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Failed to download file' });
