@@ -312,10 +312,22 @@ async function init() {
   // Show upload button if Waiting for File Upload or Final File Uploaded
   if (['Waiting for File Upload', 'Final File Uploaded'].includes(abstract.status)) {
     const info = document.getElementById('infoBox');
-    let uploadHtml = `🎉 Your abstract was <strong>Accepted</strong>! <a href="/member/upload.html?id=${absId}" class="btn btn-success btn-sm" style="margin-left:12px">📤 ${abstract.status === 'Final File Uploaded' ? 'Re-upload' : 'Upload'} Presentation</a>`;
-    if (abstract.file_path) {
-      uploadHtml += `<a href="/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}" class="btn btn-outline btn-sm" style="margin-left:8px" download>💾 Download Uploaded File</a>`;
-    }
+    const inst = typeof getSlideInstructions === 'function' ? getSlideInstructions(abstract.presentation_type, abstract.preference) : null;
+    let uploadHtml = `<div style="display:flex;flex-direction:column;gap:6px;width:100%;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div>
+          🎉 Your abstract was <strong>Accepted</strong>!
+          ${inst ? `<span class="badge ${inst.badgeClass}" style="margin-left:8px;">${inst.icon} ${inst.type}</span>` : ''}
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <a href="/member/upload.html?id=${absId}" class="btn btn-success btn-sm">📤 ${abstract.status === 'Final File Uploaded' ? 'Re-upload' : 'Upload'} Presentation</a>
+          ${abstract.file_path ? `<a href="/api/abstracts/${absId}/file?token=${encodeURIComponent(getToken())}" class="btn btn-outline btn-sm" download>💾 Download Uploaded File</a>` : ''}
+        </div>
+      </div>
+      ${inst ? `<div style="font-size:.82rem;color:#166534;background:rgba(255,255,255,0.6);padding:6px 10px;border-radius:6px;margin-top:2px;">
+        <strong>${inst.icon} Slide Guidelines:</strong> ${inst.text}
+      </div>` : ''}
+    </div>`;
     info.innerHTML = uploadHtml;
     info.className = 'alert alert-success';
     info.style.display='flex';

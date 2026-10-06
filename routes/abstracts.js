@@ -64,8 +64,10 @@ function isSubmissionStarted() {
 router.get('/', requireMember, (req, res) => {
   const abstracts = db.prepare(`
     SELECT a.*, 
+      r.presentation_type,
       (SELECT COUNT(*) FROM authors WHERE abstract_id = a.id) AS author_count
     FROM abstracts a 
+    LEFT JOIN reviews r ON r.abstract_id = a.id
     WHERE a.user_id = ? 
     ORDER BY a.created_at DESC
   `).all(req.user.id);
@@ -74,7 +76,12 @@ router.get('/', requireMember, (req, res) => {
 
 // GET /api/abstracts/:id — get single abstract with authors
 router.get('/:id', requireMember, (req, res) => {
-  const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ? AND user_id = ?').get(req.params.id, req.user.id);
+  const abstract = db.prepare(`
+    SELECT a.*, r.presentation_type, r.verdict
+    FROM abstracts a
+    LEFT JOIN reviews r ON r.abstract_id = a.id
+    WHERE a.id = ? AND a.user_id = ?
+  `).get(req.params.id, req.user.id);
   if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
 
   const authors = db.prepare('SELECT * FROM authors WHERE abstract_id = ? ORDER BY sort_order').all(abstract.id);

@@ -94,3 +94,46 @@ function esc(s) {
     .replace(/'/g, '&#039;');
 }
 
+function getSlideInstructions(presentationType, preference) {
+  const pType = (presentationType || preference || '').toLowerCase().trim();
+  if (pType.includes('oral')) {
+    return {
+      type: 'Oral Communication',
+      badgeClass: 'badge-blue',
+      time: '5 mn to present',
+      slides: 'unlimited slide number',
+      icon: '🎤',
+      text: '5 mn to present, unlimited slide number'
+    };
+  } else if (pType.includes('commented') && !pType.includes('non')) {
+    return {
+      type: 'Commented E-Poster',
+      badgeClass: 'badge-orange',
+      time: '3 mn to present',
+      slides: '3 slides limit',
+      icon: '📊',
+      text: '3 mn to present and 3 slides limit'
+    };
+  } else if (pType.includes('non') || (pType.includes('poster') && !pType.includes('commented'))) {
+    return {
+      type: 'Non-Commented E-Poster',
+      badgeClass: 'badge-purple',
+      time: 'Digital display',
+      slides: 'only 1 slide',
+      icon: '📌',
+      text: 'only 1 slide'
+    };
+  } else if (pType.includes('video')) {
+    return {
+      type: 'Video',
+      badgeClass: 'badge-red',
+      time: 'Video presentation',
+      slides: 'instruction available soon',
+      icon: '🎥',
+      text: 'instruction available soon'
+    };
+  }
+  return null;
+}
+
+
