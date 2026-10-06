@@ -36,6 +36,34 @@ const uploadEventPoster = multer({
   }
 });
 
+// Multer config for presentation templates (.pptx, .ppt, .potx, etc.)
+const templateStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = process.env.RENDER === 'true'
+      ? '/data/uploads/templates'
+      : path.join(__dirname, '..', 'public', 'uploads', 'templates');
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    cb(null, `template_${Date.now()}${ext}`);
+  }
+});
+const uploadTemplate = multer({
+  storage: templateStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB
+  fileFilter: (req, file, cb) => {
+    const allowedExts = ['.pptx', '.ppt', '.potx', '.pot', '.key', '.pdf'];
+    const ext = path.extname(file.originalname).toLowerCase();
+    if (allowedExts.includes(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PowerPoint templates or presentation files allowed (.pptx, .ppt, .potx, .key, .pdf)'));
+    }
+  }
+});
+
 // ─── ABSTRACTS ────────────────────────────────────────────────────────────────
 
 // GET /api/admin/abstracts — all abstracts with review info
@@ -387,6 +415,60 @@ router.put('/settings', requireAdmin, (req, res) => {
     update.run(String(value), key);
   }
   res.json({ message: 'Settings updated' });
+});
+
+// POST /api/admin/template — upload PPT presentation template
+router.post('/template', uploadTemplate.single('template'), requireAdmin, (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'Please select a PowerPoint template file (.pptx, .ppt, .potx)' });
+  }
+
+  // Delete old template file from disk if it exists
+  const oldRow = db.prepare("SELECT value FROM settings WHERE key='ppt_template_file'").get();
+  if (oldRow && oldRow.value) {
+    const oldRel = oldRow.value.replace(/^\/uploads\//, '');
+    const baseDir = process.env.RENDER === 'true' ? '/data/uploads' : path.join(__dirname, '..', 'public', 'uploads');
+    const oldPath = path.join(baseDir, oldRel);
+    try {
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    } catch(err) {
+      console.warn('Could not delete old template file:', err.message);
+    }
+  }
+
+  const fileUrl = `/uploads/templates/${req.file.filename}`;
+  const fileName = req.file.originalname;
+
+  const update = db.prepare("UPDATE settings SET value=?, updated_at=unixepoch() WHERE key=?");
+  const insert = db.prepare("INSERT OR IGNORE INTO settings(key, value) VALUES(?,?)");
+
+  insert.run('ppt_template_file', fileUrl);
+  update.run(fileUrl, 'ppt_template_file');
+
+  insert.run('ppt_template_name', fileName);
+  update.run(fileName, 'ppt_template_name');
+
+  res.json({ message: 'Template uploaded successfully', file_url: fileUrl, file_name: fileName });
+});
+
+// DELETE /api/admin/template — remove current PPT template
+router.delete('/template', requireAdmin, (req, res) => {
+  const oldRow = db.prepare("SELECT value FROM settings WHERE key='ppt_template_file'").get();
+  if (oldRow && oldRow.value) {
+    const oldRel = oldRow.value.replace(/^\/uploads\//, '');
+    const baseDir = process.env.RENDER === 'true' ? '/data/uploads' : path.join(__dirname, '..', 'public', 'uploads');
+    const oldPath = path.join(baseDir, oldRel);
+    try {
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+    } catch(err) {
+      console.warn('Could not delete template file:', err.message);
+    }
+  }
+
+  db.prepare("UPDATE settings SET value='', updated_at=unixepoch() WHERE key='ppt_template_file'").run();
+  db.prepare("UPDATE settings SET value='', updated_at=unixepoch() WHERE key='ppt_template_name'").run();
+
+  res.json({ message: 'Template removed successfully' });
 });
 
 // ─── EVENTS ───────────────────────────────────────────────────────────────────

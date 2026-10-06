@@ -104,6 +104,20 @@
         <span id="deadlineText">Loading deadline…</span>
       </div>
 
+      <div id="templateBanner" class="alert alert-info" style="display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px;background:#eef2ff;border-color:#c7d2fe;color:#3730a3;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="font-size:1.4rem;">📊</span>
+          <div>
+            <strong id="templateBannerTitle" style="display:block;font-size:.9rem;">Official Presentation Template</strong>
+            <span style="font-size:.8rem;color:#4f46e5;">Please use the congress template to prepare your presentation slides.</span>
+          </div>
+        </div>
+        <a id="templateDownloadBtn" href="/api/template/download" class="btn btn-sm btn-primary" style="flex-shrink:0;text-decoration:none;display:inline-flex;align-items:center;gap:6px;" download>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download PPT Template
+        </a>
+      </div>
+
       <div class="card" style="max-width: 600px; margin: 0 auto;">
         <div class="card-body">
           <div style="text-align: center; margin-bottom: 24px;">
@@ -279,6 +293,16 @@ async function init() {
         <div>📤 Please upload your final presentation file before the congress.</div>
         <div style="font-size:.85rem;">${programSentence}</div>
       </div>`;
+  }
+
+  if (settings.ppt_template_file) {
+    const banner = document.getElementById('templateBanner');
+    if (banner) {
+      banner.style.display = 'flex';
+      if (settings.ppt_template_name) {
+        document.getElementById('templateBannerTitle').textContent = `Official Template (${settings.ppt_template_name})`;
+      }
+    }
   }
 }
 

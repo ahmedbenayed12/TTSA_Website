@@ -174,12 +174,17 @@
 
         <!-- Integrated Submission Slots -->
         <div id="slotsSection" style="margin-bottom:32px;border-radius:var(--radius-lg);transition:box-shadow 0.3s ease;">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
             <div>
               <h3 style="margin-bottom:2px">My Submission Slots</h3>
               <span style="font-size:.82rem;color:var(--gray-500)">Max 5 abstracts per participant</span>
             </div>
-            <a href="/member/submit.html" class="btn btn-outline btn-sm" id="slotsAddBtn">+ Submit Abstract</a>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              <a href="/api/template/download" id="topPptTemplateBtn" class="btn btn-outline btn-sm" style="display:none;font-weight:700;border-color:#b82538;color:#b82538;background:#fff;" title="Download Official Presentation Template">
+                📥 Download PPT Template
+              </a>
+              <a href="/member/submit.html" class="btn btn-outline btn-sm" id="slotsAddBtn">+ Submit Abstract</a>
+            </div>
           </div>
           <div id="slotList" style="display:flex;flex-direction:column;gap:14px">
             <div class="loading-center"><div class="spinner"></div></div>
@@ -1141,8 +1146,25 @@ async function loadDashboard() {
       passed = now > d;
     }
 
-    // Program verification sentence
+    // Program verification sentence & template button
     const programNoticeHtml = `<div style="font-size:.85rem;margin-top:2px;">Please check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="font-weight:700;text-decoration:underline;color:inherit;">Scientific Program</a> page to verify the date and hour of your presentation.</div>`;
+    const templateButtonHtml = settings.ppt_template_file ? `
+      <div style="margin-top:8px;">
+        <a href="/api/template/download" class="btn btn-outline btn-sm" style="background:#fff;border-color:#0C589A;color:#0C589A;font-weight:700;display:inline-flex;align-items:center;gap:6px;box-shadow:0 1px 2px rgba(0,0,0,.05);" title="Download official PowerPoint presentation template">
+          📥 Download Official PPT Template (${esc(settings.ppt_template_name || 'Presentation Template')})
+        </a>
+      </div>` : '';
+
+    // Show/hide top PPT Template button in slots header
+    const topTplBtn = document.getElementById('topPptTemplateBtn');
+    if (topTplBtn) {
+      if (settings.ppt_template_file) {
+        topTplBtn.style.display = 'inline-flex';
+        topTplBtn.title = `Download ${settings.ppt_template_name || 'Official Presentation Template'}`;
+      } else {
+        topTplBtn.style.display = 'none';
+      }
+    }
 
     if (hasUploadEmail) {
       // User has received the acceptance email to upload presentation file
@@ -1172,6 +1194,7 @@ async function loadDashboard() {
               <div style="display:flex;flex-direction:column;gap:4px;">
                 <div>⚠️ Presentation file upload deadline has <strong>passed</strong> (${uploadDeadlineFormatted}).</div>
                 ${programNoticeHtml}
+                ${templateButtonHtml}
               </div>`;
             document.getElementById('deadlineAlert').className = 'alert alert-warning';
             document.getElementById('deadlineBadge').textContent = 'Upload Deadline Passed';
@@ -1181,6 +1204,7 @@ async function loadDashboard() {
               <div style="display:flex;flex-direction:column;gap:4px;">
                 <div>⏰ Presentation file upload deadline: <strong>${uploadDeadlineFormatted}</strong></div>
                 ${programNoticeHtml}
+                ${templateButtonHtml}
               </div>`;
             document.getElementById('deadlineAlert').className = 'alert alert-info';
             document.getElementById('deadlineBadge').textContent = 'File Upload Open';
@@ -1191,6 +1215,7 @@ async function loadDashboard() {
             <div style="display:flex;flex-direction:column;gap:4px;">
               <div>📤 Your abstract has been accepted! Please upload your final presentation file.</div>
               ${programNoticeHtml}
+              ${templateButtonHtml}
             </div>`;
           document.getElementById('deadlineAlert').className = 'alert alert-info';
           document.getElementById('deadlineBadge').textContent = 'File Upload Open';
@@ -1202,6 +1227,7 @@ async function loadDashboard() {
           <div style="display:flex;flex-direction:column;gap:4px;">
             <div>✅ Presentation file uploaded successfully.${uploadDeadlineFormatted ? ` (Upload deadline: <strong>${uploadDeadlineFormatted}</strong>)` : ''}</div>
             ${programNoticeHtml}
+            ${templateButtonHtml}
           </div>`;
         document.getElementById('deadlineAlert').className = 'alert alert-success';
         document.getElementById('deadlineBadge').textContent = 'File Uploaded';
@@ -1282,11 +1308,12 @@ async function loadDashboard() {
                 </div>
                 <div style="font-weight:600;font-size:.97rem;color:var(--gray-800);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:480px;">${abs.title}</div>
                 <div style="font-size:.78rem;color:var(--gray-500);margin-top:3px;">${abs.word_count} words &middot; ${abs.preference} presentation &middot; ${abs.author_count} author(s)</div>
-                ${abs.status === 'Waiting for File Upload' ? `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Please upload presentation file. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.</div>` : ''}
-                ${abs.status === 'Final File Uploaded' ? `<div style="font-size:.78rem;color:#15803d;font-weight:600;margin-top:4px;">✅ File uploaded. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.</div>` : ''}
+                ${abs.status === 'Waiting for File Upload' ? `<div style="font-size:.78rem;color:#c2410c;font-weight:600;margin-top:4px;">⏰ Please upload presentation file. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}</div>` : ''}
+                ${abs.status === 'Final File Uploaded' ? `<div style="font-size:.78rem;color:#15803d;font-weight:600;margin-top:4px;">✅ File uploaded. Check the <a href="#program" onclick="switchPortalTab('program'); return false;" style="text-decoration:underline;color:#0C589A;font-weight:700;">Scientific Program</a> to verify date &amp; hour.${settings.ppt_template_file ? ` &middot; <a href="/api/template/download" style="text-decoration:underline;color:#0C589A;font-weight:700;">Download PPT Template</a>` : ''}</div>` : ''}
               </div>
               <!-- Actions -->
-              <div style="display:flex;gap:8px;flex-shrink:0;">
+              <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+                ${abs.status === 'Waiting for File Upload' && settings.ppt_template_file ? `<a href="/api/template/download" class="btn btn-outline btn-sm" style="color:#0C589A;border-color:#0C589A;background:#fff;" title="Download PowerPoint presentation template">📥 PPT Template</a>` : ''}
                 ${abs.status === 'Waiting for File Upload' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-primary btn-sm" style="background:#e65100;border-color:#e65100;">📤 Upload File</a>` : ''}
                 ${abs.status === 'Final File Uploaded' ? `<a href="/member/upload.html?id=${abs.id}" class="btn btn-outline btn-sm" style="color:#7b1fa2;border-color:#7b1fa2;">📤 Re-upload File</a>` : ''}
                 ${!abs.is_locked && !passed && !['Waiting for File Upload', 'Final File Uploaded'].includes(abs.status)

@@ -101,6 +101,47 @@
           </div>
         </div>
 
+        <!-- PPT Presentation Template Card -->
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:1.3rem;">📊</span>
+              <div>
+                <h3 style="margin:0;font-size:1.05rem;">Official Presentation Template (PPT / PPTX)</h3>
+                <p style="margin:0;font-size:.78rem;color:var(--gray-500);">Upload the official PowerPoint template for participants to download and prepare their slides.</p>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Current Template Display -->
+            <div id="currentTemplateBox" style="display:none;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:8px;padding:14px 18px;margin-bottom:18px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                <div style="display:flex;align-items:center;gap:12px;">
+                  <div style="width:40px;height:40px;border-radius:8px;background:#fee2e2;color:#b91c1c;display:flex;align-items:center;justify-content:center;font-size:1.3rem;">📊</div>
+                  <div>
+                    <div style="font-weight:700;font-size:.92rem;color:var(--gray-900);" id="templateFileName">—</div>
+                    <div style="font-size:.76rem;color:var(--gray-500);">Current template available for participants to download on their dashboard</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;">
+                  <a href="/api/template/download" class="btn btn-outline btn-sm" id="btnDownloadTemplate" target="_blank">📥 Download / Preview</a>
+                  <button type="button" class="btn btn-danger btn-sm" onclick="deleteTemplate()" id="btnDeleteTemplate">🗑 Remove</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Upload Input -->
+            <div>
+              <label class="form-label">Upload Template File (.pptx, .ppt, .potx, .key, .pdf)</label>
+              <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+                <input type="file" id="pptTemplateInput" accept=".pptx,.ppt,.potx,.pot,.key,.pdf" class="form-control" style="flex:1;min-width:260px;" />
+                <button type="button" class="btn btn-primary" onclick="uploadPptTemplate()" id="btnUploadTemplate">📤 Upload Template</button>
+              </div>
+              <div class="form-hint" style="margin-top:6px;">Accepted formats: <strong>.pptx, .ppt, .potx, .key, .pdf</strong> (Max 50MB). When uploaded, participants will immediately see a button to download it on their dashboard.</div>
+            </div>
+          </div>
+        </div>
+
         <div style="display:flex;justify-content:flex-end">
           <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">💾 Save Settings</button>
         </div>
@@ -170,6 +211,70 @@ async function init() {
   if (settings.submission_start)    document.getElementById('submission_start').value    = settings.submission_start.substring(0,16);
   if (settings.submission_deadline) document.getElementById('submission_deadline').value = settings.submission_deadline.substring(0,16);
   if (settings.upload_deadline)     document.getElementById('upload_deadline').value     = settings.upload_deadline.substring(0,16);
+
+  if (settings.ppt_template_file) {
+    document.getElementById('currentTemplateBox').style.display = 'block';
+    document.getElementById('templateFileName').textContent = settings.ppt_template_name || 'TTSA_Presentation_Template.pptx';
+  } else {
+    document.getElementById('currentTemplateBox').style.display = 'none';
+  }
+}
+
+async function uploadPptTemplate() {
+  const fileInput = document.getElementById('pptTemplateInput');
+  if (!fileInput.files || !fileInput.files[0]) {
+    showToast('Please choose a file to upload first', 'error');
+    return;
+  }
+  const file = fileInput.files[0];
+  const formData = new FormData();
+  formData.append('template', file);
+
+  const btn = document.getElementById('btnUploadTemplate');
+  btn.disabled = true;
+  btn.textContent = 'Uploading…';
+
+  try {
+    const token = getToken();
+    const res = await fetch('/api/admin/template', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      },
+      body: formData
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to upload template');
+
+    showToast('Presentation template uploaded successfully!');
+    fileInput.value = '';
+    document.getElementById('currentTemplateBox').style.display = 'block';
+    document.getElementById('templateFileName').textContent = data.file_name || file.name;
+  } catch(err) {
+    showToast(err.message || 'Upload failed', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📤 Upload Template';
+  }
+}
+
+async function deleteTemplate() {
+  if (!confirm('Are you sure you want to remove the current presentation template? Participants will no longer be able to download it.')) return;
+  const btn = document.getElementById('btnDeleteTemplate');
+  btn.disabled = true;
+  btn.textContent = 'Removing…';
+
+  try {
+    const res = await apiFetch('/admin/template', { method: 'DELETE' });
+    showToast(res.message || 'Template removed successfully');
+    document.getElementById('currentTemplateBox').style.display = 'none';
+    document.getElementById('pptTemplateInput').value = '';
+  } catch(err) {
+    showToast(err.message || 'Failed to remove template', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '🗑 Remove';
+  }
 }
 
 async function saveAdminProfile() {
