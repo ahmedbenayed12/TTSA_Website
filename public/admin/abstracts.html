@@ -204,6 +204,7 @@
         <button class="btn btn-primary btn-sm" onclick="bulkAssign()" id="btnBulkAssign">👤 Assign Reviewer</button>
         <button class="btn btn-outline btn-sm" onclick="bulkFinalize()" id="btnBulkFinalize">📧 Finalize &amp; Send Email</button>
         <button class="btn btn-outline btn-sm" onclick="bulkRemind()" id="btnBulkRemind">⏰ Send Upload Reminder</button>
+        <button class="btn btn-outline btn-sm" onclick="bulkEndReview()" id="btnBulkEndReview" style="border-color:#b91c1c;color:#b91c1c;">🔒 End Review</button>
         <button class="btn btn-ghost btn-sm" onclick="clearSelection()">✕ Clear</button>
       </div>
 
@@ -725,9 +726,10 @@ function updateBulkBar() {
   if (!ids.length) { bar.classList.remove('visible'); return; }
   bar.classList.add('visible');
   const sel = abstracts.filter(a => ids.includes(a.id));
-  document.getElementById('btnBulkAssign').disabled   = !sel.some(a=>!FINALIZED.includes(a.status)&&a.status!=='Draft');
-  document.getElementById('btnBulkFinalize').disabled = !sel.some(a=>a.status==='Waiting for Review'&&(a.verdict==='Admitted'||a.verdict==='Refused'));
-  document.getElementById('btnBulkRemind').disabled   = !sel.some(a=>a.status==='Waiting for File Upload');
+  document.getElementById('btnBulkAssign').disabled    = !sel.some(a=>!FINALIZED.includes(a.status)&&a.status!=='Draft');
+  document.getElementById('btnBulkFinalize').disabled  = !sel.some(a=>a.status==='Waiting for Review'&&(a.verdict==='Admitted'||a.verdict==='Refused'));
+  document.getElementById('btnBulkRemind').disabled    = !sel.some(a=>a.status==='Waiting for File Upload');
+  document.getElementById('btnBulkEndReview').disabled = !sel.some(a=>a.status==='Waiting for Review'&&a.total_score!=null);
 }
 
 // ── Bulk Actions ──────────────────────────────────────────────────────
@@ -762,6 +764,40 @@ async function bulkRemind() {
     showToast(r.message); clearSelection();
   } catch(e) { showToast(e.message,'error'); }
   btn.disabled=false; btn.textContent='⏰ Send Upload Reminder';
+}
+
+async function bulkEndReview() {
+  const ids = getChecked();
+  // Only abstracts that are 'Waiting for Review' AND already have a score
+  const sel = abstracts.filter(a => ids.includes(a.id) && a.status === 'Waiting for Review' && a.total_score != null);
+  if (!sel.length) { showToast('No eligible abstracts in selection. Abstracts must be in "Waiting for Review" status with a submitted review.', 'error'); return; }
+
+  const labels = sel.map(a => `  • #${a.submission_number||a.id} — ${a.title}`).join('\n');
+  if (!confirm(`End Review for ${sel.length} abstract(s)?\n\n${labels}\n\nThis will:\n• Lock all selected abstracts — no new reviews accepted\n• Set their status to "Reviewed"\n\nThis action cannot be undone.`)) return;
+
+  const btn = document.getElementById('btnBulkEndReview');
+  btn.disabled = true;
+  btn.textContent = 'Processing…';
+
+  let ok = 0, fail = 0;
+  for (const a of sel) {
+    try {
+      await apiFetch(`/admin/abstracts/${a.id}/end-review`, { method: 'PATCH' });
+      ok++;
+    } catch(e) {
+      console.error(`End review failed for #${a.submission_number||a.id}:`, e.message);
+      fail++;
+    }
+  }
+
+  btn.disabled = false;
+  btn.textContent = '🔒 End Review';
+  clearSelection();
+
+  if (ok > 0) showToast(`Review ended for ${ok} abstract(s)${fail ? ` — ${fail} failed` : ''}`);
+  else showToast('Failed to end review for all selected abstracts', 'error');
+
+  await init();
 }
 
 // ── Detail Panel ──────────────────────────────────────────────────────
