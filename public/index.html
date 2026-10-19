@@ -200,7 +200,7 @@
     /* Custom Styles for Congress Content */
     .welcome-split {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 48px;
       flex-wrap: wrap;
       margin-top: 24px;
@@ -212,7 +212,8 @@
     .welcome-image-container {
       flex: 1;
       min-width: 300px;
-      position: relative;
+      position: sticky;
+      top: 88px;
     }
     .welcome-image {
       width: 100%;
@@ -247,7 +248,39 @@
       font-size: 1.02rem;
       line-height: 1.8;
       color: var(--gray-600);
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      text-align: justify;
+      text-justify: inter-word;
+    }
+    .welcome-text p strong {
+      color: var(--gray-900);
+      font-weight: 600;
+    }
+    .president-themes-list {
+      list-style: none;
+      padding: 0;
+      margin: 4px 0 22px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .president-themes-list li {
+      position: relative;
+      padding-left: 24px;
+      font-size: 1rem;
+      color: var(--gray-800);
+      line-height: 1.6;
+    }
+    .president-themes-list li::before {
+      content: '';
+      position: absolute;
+      left: 6px;
+      top: 9px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--blue);
+      box-shadow: 0 0 0 3px var(--blue-light);
     }
     
     .scientific-grid {
@@ -347,6 +380,233 @@
       line-height: 1.5;
       color: var(--gray-600);
     }
+
+    /* ─── ORGANIZING COMMITTEE ─────────────────────────────────────────── */
+    .comity-president-wrap {
+      max-width: 380px;
+      margin: 0 auto 28px auto;
+    }
+    .comity-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px 14px;
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .comity-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(12, 88, 154, 0.08);
+      border-color: rgba(12, 88, 154, 0.3);
+    }
+    .comity-president-card {
+      background: linear-gradient(180deg, #ffffff 0%, var(--blue-light) 100%);
+      border: 2px solid var(--blue);
+      box-shadow: 0 6px 20px rgba(12, 88, 154, 0.1);
+      padding: 20px 22px;
+    }
+    .comity-president-badge {
+      display: inline-block;
+      background: var(--blue);
+      color: var(--white);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 4px 12px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+    }
+    .comity-name {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: var(--gray-900);
+      margin-bottom: 3px;
+    }
+    .comity-president-card .comity-name {
+      font-size: 1.18rem;
+      color: var(--blue-dark);
+      margin-bottom: 4px;
+    }
+    .comity-role {
+      font-size: 0.84rem;
+      color: var(--blue);
+      font-weight: 600;
+    }
+    .comity-member-role {
+      font-size: 0.72rem;
+      color: var(--gray-500);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .comity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+      gap: 14px;
+    }
+
+    /* ─── SPONSORS SECTION ─────────────────────────────────────────────── */
+    .sponsors-tier {
+      margin-bottom: 40px;
+      text-align: center;
+    }
+    .sponsors-tier:last-child {
+      margin-bottom: 0;
+    }
+    .sponsors-tier-label {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 5px 18px;
+      border-radius: 20px;
+      margin-bottom: 18px;
+    }
+    .tier-platinum .sponsors-tier-label {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      color: #0f172a;
+      border: 1px solid #94a3b8;
+      box-shadow: 0 2px 8px rgba(148, 163, 184, 0.25);
+    }
+    .tier-gold .sponsors-tier-label {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      color: #78350f;
+      border: 1px solid #f59e0b;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.2);
+    }
+    .tier-silver .sponsors-tier-label {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      color: #334155;
+      border: 1px solid #cbd5e1;
+    }
+    .tier-bronze .sponsors-tier-label {
+      background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+      color: #9a3412;
+      border: 1px solid #fb923c;
+    }
+
+    .sponsors-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+    }
+    .sponsor-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s ease;
+      text-align: center;
+    }
+    .sponsor-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .sponsor-card-platinum {
+      padding: 20px 54px;
+      min-height: 120px;
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #0f172a;
+      border: 2px solid #94a3b8;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-shadow: 0 4px 16px rgba(148, 163, 184, 0.25);
+      letter-spacing: 0.5px;
+    }
+    .sponsor-card-platinum:hover {
+      border-color: #334155;
+      box-shadow: 0 8px 24px rgba(51, 65, 85, 0.25);
+    }
+
+    .sponsor-card-gold {
+      padding: 14px 36px;
+      min-height: 96px;
+      font-size: 1.12rem;
+      font-weight: 700;
+      color: #78350f;
+      border: 1.5px solid #fcd34d;
+      background: linear-gradient(180deg, #ffffff 0%, #fffdfa 100%);
+      box-shadow: 0 3px 12px rgba(245, 158, 11, 0.12);
+    }
+    .sponsor-card-gold:hover {
+      border-color: #f59e0b;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.22);
+    }
+
+    .sponsor-card-silver {
+      padding: 12px 26px;
+      min-height: 72px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #334155;
+      border: 1px solid #cbd5e1;
+      background: var(--white);
+    }
+    .sponsor-card-silver:hover {
+      border-color: #94a3b8;
+      box-shadow: 0 6px 16px rgba(100, 116, 139, 0.15);
+    }
+
+    .sponsor-card-bronze {
+      padding: 10px 18px;
+      min-height: 66px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: #57534e;
+      border: 1px solid #e7e5e4;
+      background: var(--white);
+    }
+    .sponsor-card-bronze:hover {
+      border-color: #ea580c;
+      color: #9a3412;
+      box-shadow: 0 4px 14px rgba(234, 88, 12, 0.12);
+    }
+
+    .sponsor-logo {
+      max-width: 100%;
+      height: auto;
+      object-fit: contain;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+    .sponsor-card:hover .sponsor-logo {
+      transform: scale(1.05);
+    }
+    .sponsor-logo-platinum {
+      height: 96px;
+      max-width: 440px;
+    }
+    .sponsor-logo-gold {
+      height: 38px;
+      max-width: 170px;
+    }
+    .sponsor-logo-bluesail {
+      height: 76px !important;
+      max-width: 200px !important;
+    }
+    .sponsor-logo-silver {
+      height: 44px;
+      max-width: 150px;
+    }
+    .sponsor-logo-bronze {
+      height: 38px;
+      max-width: 130px;
+    }
+    .sponsor-logo-gmiha {
+      height: 48px !important;
+      max-width: 165px !important;
+    }
   </style>
 </head>
 <body>
@@ -430,17 +690,30 @@
   <div class="container">
     <div class="welcome-split">
       <div class="welcome-text">
-        <div class="welcome-badge">Welcome & Invitation</div>
+        <div class="welcome-badge">A Word from the President</div>
         <h2>Welcome to the 5th TTSA National Congress</h2>
-        <p>The Tunisian Thoracic Surgery Association (TTSA) is delighted to invite you to the 5th edition of its National Congress, held on November 6–7, 2026, in the historic city of Sfax at the prestigious Borj Dhiafa Hotel.</p>
-        <p>This premier annual event brings together thoracic surgeons, pulmonologists, oncologists, anesthesiologists, and healthcare professionals. This year, our scientific program focuses on innovation, interdisciplinary collaboration, and the sharing of clinical expertise to meet the rapidly evolving technological challenges of our specialty.</p>
+        <p>On behalf of the <strong>Tunisian Thoracic Surgery Association (TTSA)</strong>, I am honored and delighted to welcome you to the <strong>5th edition of our National Congress</strong>, taking place on <strong>November 6–7, 2026</strong>, in the historic city of <strong>Sfax</strong> at the prestigious <strong>Borj Dhiafa Hotel</strong>.</p>
+        <p>This edition is proudly organized in close collaboration with the <strong>French Society of Thoracic and Cardiovascular Surgery (SFCTCV)</strong>, the <strong>Tunisian Society of Neurology (STN)</strong>, and the <strong>Association of Pulmonologists and Allergists of Central and Southern Tunisia (APACS)</strong>.</p>
+        <p>This year, we have designed a rich and comprehensive scientific program featuring <strong>5 specialized medical and paramedical workshops</strong> alongside <strong>more than 75 scientific communications</strong> (oral sessions and commented posters). Our discussions and conference sessions will focus on <strong>4 main themes</strong>:</p>
+        <ul class="president-themes-list">
+          <li><strong>Robotic Surgery</strong></li>
+          <li><strong>Thymic Pathology</strong></li>
+          <li><strong>Endobronchial Approach</strong></li>
+          <li><strong>Perioperative Management</strong></li>
+        </ul>
+        <p>The success of this congress relies on strong partnerships. I would like to express my sincere gratitude to the partnering <strong>national and international learned societies</strong> for their invaluable scientific contribution, which continually enriches our exchanges. I also extend my warmest thanks to our <strong>sponsors and industry partners</strong> for their unwavering support and commitment to continuing medical and paramedical education.</p>
+        <p>I wish you all a fruitful congress, inspiring scientific discussions, and a wonderful stay in Sfax.</p>
+        <div style="margin-top: 24px; border-left: 3px solid var(--blue); padding-left: 14px;">
+          <div style="font-weight: 700; color: var(--blue-dark); font-size: 1.05rem;">Pr. Abdessalem HENTATI</div>
+          <div style="font-size: 0.9rem; color: var(--gray-500); font-weight: 500;">President of the TTSA</div>
+        </div>
         <div style="margin-top: 32px; display: flex; gap: 16px; flex-wrap: wrap;">
           <a href="/registration-info.html" class="btn" style="background:var(--red); color:#fff;">Register Now</a>
           <a href="/program.html" class="btn btn-outline">View Program</a>
         </div>
       </div>
       <div class="welcome-image-container">
-        <img src="/img/congress-poster.jpg" alt="5th National Thoracic Surgery Congress Poster" class="welcome-image" style="max-width: 450px; display: block; margin: 0 auto;">
+        <img src="/img/congress-poster.jpg?v=2" alt="5th National Thoracic Surgery Congress Poster" class="welcome-image" style="max-width: 450px; display: block; margin: 0 auto;">
         <div style="text-align: center; margin-top: 12px; font-size: 0.85rem; color: var(--gray-500); font-style: italic;">
           5th National Thoracic Surgery Congress Poster
         </div>
@@ -530,6 +803,200 @@
         <div class="workshop-category">Research</div>
         <h4>Posters & Video Sessions</h4>
         <p>Dynamic presentation areas designed to showcase the research of junior doctors and share complex surgical videos.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ORGANIZING COMMITTEE -->
+<section class="section section-alt" id="organizing-committee">
+  <div class="container">
+    <div class="section-title">
+      <h2>Organizing Committee</h2>
+      <p>The dedicated team organizing the 5th TTSA National Congress.</p>
+    </div>
+
+    <!-- President of the Organizing Committee -->
+    <div class="comity-president-wrap">
+      <div class="comity-card comity-president-card">
+        <span class="comity-president-badge">President</span>
+        <h3 class="comity-name">Dr Mahdi Abdennadher</h3>
+        <p class="comity-role">President of the Organizing Committee</p>
+      </div>
+    </div>
+
+    <!-- Committee Members -->
+    <div class="comity-grid">
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Walid Abid</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Ahmed Ben Ayed</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Wassim Chaieb</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Abdessalem Hentati</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Saber Hachicha</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Amina Abdlekbir</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Mohamed Sadok Boudaya</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Ali Bensalem</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Malek Abbes</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCIENTIFIC COMMITTEE -->
+<section class="section" id="scientific-committee">
+  <div class="container">
+    <div class="section-title">
+      <h2>Scientific Committee</h2>
+      <p>Distinguished experts and specialists overseeing the scientific excellence of the 5th TTSA Congress.</p>
+    </div>
+
+    <!-- President of the Scientific Committee -->
+    <div class="comity-president-wrap">
+      <div class="comity-card comity-president-card">
+        <span class="comity-president-badge">President</span>
+        <h3 class="comity-name">Dr Abdessalem Hentati</h3>
+        <p class="comity-role">President of the Scientific Committee</p>
+      </div>
+    </div>
+
+    <!-- Committee Members -->
+    <div class="comity-grid">
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Jean-Marc Baste</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Stéphane Renaud</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Marc Filaire</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Lobna Maalej</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+
+      <div class="comity-card">
+        <h4 class="comity-name">Dr Walid Feki</h4>
+        <span class="comity-member-role">Committee Member</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SPONSORS -->
+<section class="section section-alt" id="sponsors">
+  <div class="container">
+    <div class="section-title">
+      <h2>Our Sponsors</h2>
+      <p>We gratefully acknowledge the generous support and commitment of our industry partners.</p>
+    </div>
+
+    <!-- PLATINUM -->
+    <div class="sponsors-tier tier-platinum">
+      <div class="sponsors-tier-label">Platinum Sponsor</div>
+      <div class="sponsors-grid">
+        <div class="sponsor-card sponsor-card-platinum">
+          <img src="/img/sponsors/medtronic.png" alt="Medtronic" class="sponsor-logo sponsor-logo-platinum"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- GOLD -->
+    <div class="sponsors-tier tier-gold">
+      <div class="sponsors-tier-label">Gold Sponsors</div>
+      <div class="sponsors-grid">
+        <div class="sponsor-card sponsor-card-gold">
+          <img src="/img/sponsors/touchstone.png" alt="Touchstone" class="sponsor-logo sponsor-logo-gold"/>
+        </div>
+        <div class="sponsor-card sponsor-card-gold">
+          <img src="/img/sponsors/bluesail.jpg" alt="Bluesail" class="sponsor-logo sponsor-logo-bluesail"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- SILVER -->
+    <div class="sponsors-tier tier-silver">
+      <div class="sponsors-tier-label">Silver Sponsors</div>
+      <div class="sponsors-grid">
+        <div class="sponsor-card sponsor-card-silver">
+          <img src="/img/sponsors/mdid.jpg" alt="MDID" class="sponsor-logo sponsor-logo-silver"/>
+        </div>
+        <div class="sponsor-card sponsor-card-silver">
+          <img src="/img/sponsors/miama.png" alt="MIAMA" class="sponsor-logo sponsor-logo-silver"/>
+        </div>
+        <div class="sponsor-card sponsor-card-silver">
+          <img src="/img/sponsors/dar-essaydali.png" alt="Dar Essaydali" class="sponsor-logo sponsor-logo-silver"/>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRONZE -->
+    <div class="sponsors-tier tier-bronze">
+      <div class="sponsors-tier-label">Bronze Sponsors</div>
+      <div class="sponsors-grid">
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/gmiha-houria.png" alt="Gmiha Houria Medical" class="sponsor-logo sponsor-logo-gmiha"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/medis.jpg" alt="MEDIS" class="sponsor-logo sponsor-logo-bronze" style="height: 55px; max-width: 140px;"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/sofemed.jpg" alt="SOFEMED" class="sponsor-logo sponsor-logo-bronze" style="height: 40px;"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/galpharma.jpg" alt="Galpharma" class="sponsor-logo sponsor-logo-bronze" style="height: 60px; max-width: 140px;"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/syphax.png" alt="Polyclinique Syphax" class="sponsor-logo sponsor-logo-bronze" style="height: 44px; max-width: 140px;"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/teriak.jpg" alt="Teriak" class="sponsor-logo sponsor-logo-bronze" style="height: 62px; max-width: 165px;"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/co-access.png" alt="CO ACCESS Distribution" class="sponsor-logo sponsor-logo-bronze" style="height: 56px; max-width: 140px;"/>
+        </div>
+        <div class="sponsor-card sponsor-card-bronze">
+          <img src="/img/sponsors/ethicon.png" alt="ETHICON" class="sponsor-logo sponsor-logo-bronze" style="height: 55px; max-width: 175px;"/>
+        </div>
       </div>
     </div>
   </div>
