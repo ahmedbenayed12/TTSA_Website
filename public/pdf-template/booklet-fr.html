@@ -1,0 +1,2968 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>TTSA - Programme Scientifique Officiel 2026 (FR - A5)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap');
+
+    @page {
+      size: A5 portrait;
+      margin: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: #eaedf2;
+      color: #1e293b;
+      font-size: 6.8pt;
+      line-height: 1.26;
+    }
+
+    /* ─── PAGE CONTAINER A5 (148mm x 210mm) ───────────────────────────── */
+    .page {
+      width: 148mm;
+      height: 210mm;
+      max-height: 210mm;
+      position: relative;
+      background: #ffffff;
+      margin: 0 auto 15px auto;
+      padding: 9mm 9mm 10mm 9mm;
+      overflow: hidden;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    @media print {
+      body {
+        background: transparent;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+
+    /* ─── RUNNING HEADERS & FOOTERS ──────────────────────────────────── */
+    .running-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 2mm;
+      border-bottom: 1.2px solid #0c3b6d;
+      margin-bottom: 2.8mm;
+      flex-shrink: 0;
+    }
+    .running-header-left {
+      display: flex;
+      align-items: center;
+      gap: 2mm;
+    }
+    .running-header-logo {
+      height: 6.5mm;
+      width: auto;
+    }
+    
+    .running-header-title {
+      font-size: 6.2pt;
+      font-weight: 700;
+      color: #0c3b6d;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .running-header-title sup,
+    sup {
+      text-transform: lowercase !important;
+      font-size: 0.65em !important;
+      font-weight: 600;
+      vertical-align: super;
+      line-height: 0;
+    }
+    .running-header-date {
+      font-size: 5.6pt;
+      font-weight: 600;
+      color: #b82538;
+      background: #fff1f2;
+      padding: 1mm 2mm;
+      border-radius: 1.5mm;
+      border: 0.5px solid #fecdd3;
+    }
+
+    .running-footer {
+      position: absolute;
+      bottom: 3.5mm;
+      left: 9mm;
+      right: 9mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 0.8px solid #e2e8f0;
+      padding-top: 1.5mm;
+      font-size: 5.6pt;
+      color: #64748b;
+      font-weight: 500;
+    }
+    .running-footer-left {
+      font-weight: 600;
+      color: #0c3b6d;
+    }
+    .running-footer-page {
+      font-weight: 700;
+      color: #b82538;
+    }
+
+    /* ─── VECTOR FLAG HELPER ─────────────────────────────────────────── */
+    .flag {
+      display: inline-block;
+      vertical-align: middle;
+      border-radius: 1px;
+      margin-left: 2px;
+      box-shadow: 0 0.5px 1px rgba(0,0,0,0.25);
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PAGE 0: PAGE DE GARDE - AFFICHE OFFICIELLE PLEINE PAGE (A5)
+       ═══════════════════════════════════════════════════════════════════ */
+    .cover-page {
+      padding: 0 !important;
+      margin: 0 auto 15px auto;
+      background: #071e3d;
+      width: 148mm;
+      height: 210mm;
+      max-height: 210mm;
+      overflow: hidden;
+      display: block !important;
+      line-height: 0;
+      border: none;
+    }
+    .cover-poster-full {
+      width: 148mm;
+      height: 210mm;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+      display: block;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PAGE 2: MOT DU PRÉSIDENT & 4 THÈMES
+       ═══════════════════════════════════════════════════════════════════ */
+    .section-headline {
+      font-size: 8.8pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      margin-bottom: 1.5mm;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      position: relative;
+      display: inline-block;
+    }
+    .section-headline::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -0.8mm;
+      width: 12mm;
+      height: 1.2px;
+      background: #b82538;
+    }
+
+    .president-section {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 2.5px solid #0c3b6d;
+      border-radius: 2mm;
+      padding: 2.5mm 3mm;
+      margin-bottom: 2.5mm;
+    }
+    .president-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5mm;
+      border-bottom: 0.8px dashed #cbd5e1;
+      padding-bottom: 1.2mm;
+    }
+    .president-title {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #0c3b6d;
+    }
+    .president-badge {
+      font-size: 5.5pt;
+      font-weight: 700;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.6mm 1.8mm;
+      border-radius: 1mm;
+      text-transform: uppercase;
+    }
+    /* ─── MOT DU PRÉSIDENT PLEINE PAGE (A5) ─────────────────────────── */
+    .president-fullpage {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3.5px solid #0c3b6d;
+      border-radius: 2.2mm;
+      padding: 3.5mm 4.5mm;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+      flex: none;
+      margin-bottom: 2mm;
+    }
+    .president-salutation {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      margin-bottom: 2.2mm;
+      border-bottom: 0.8px dashed #cbd5e1;
+      padding-bottom: 1.5mm;
+    }
+    .president-full-text {
+      font-size: 6.1pt;
+      line-height: 1.4;
+      color: #334155;
+      text-align: justify;
+      margin-bottom: 2mm;
+    }
+    .president-sign-block {
+      margin-top: 2.5mm;
+      padding-top: 2.2mm;
+      border-top: 0.8px dashed #cbd5e1;
+      display: flex;
+      justify-content: flex-end;
+      text-align: right;
+    }
+    .president-sign-right {
+      text-align: right;
+    }
+    .president-sign-name {
+      font-size: 7.5pt;
+      font-weight: 800;
+      color: #0c3b6d;
+    }
+    .president-sign-role {
+      font-size: 6pt;
+      font-weight: 700;
+      color: #b82538;
+      margin-bottom: 0.6mm;
+    }
+    .president-sign-date {
+      font-size: 5.5pt;
+      color: #64748b;
+      font-style: italic;
+    }
+    .president-sign-inst {
+      font-size: 5.4pt;
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    /* ─── SOMMAIRE PLEINE PAGE (A5) ─────────────────────────────────── */
+    .sommaire-header-block {
+      background: linear-gradient(135deg, #071e3d 0%, #0c3b6d 100%);
+      color: #ffffff;
+      border-radius: 2mm;
+      padding: 3mm 4mm;
+      margin-bottom: 2.8mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 6px rgba(12,59,109,0.18);
+    }
+    .sommaire-title-main {
+      font-size: 9.5pt;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+    .sommaire-subtitle-main {
+      font-size: 5.8pt;
+      font-weight: 600;
+      color: #93c5fd;
+      margin-top: 0.5mm;
+    }
+    .sommaire-header-badge {
+      background: #b82538;
+      color: #ffffff;
+      font-size: 6.2pt;
+      font-weight: 800;
+      padding: 1mm 2.5mm;
+      border-radius: 1.5mm;
+      letter-spacing: 0.06em;
+      box-shadow: 0 1px 4px rgba(184,37,56,0.3);
+    }
+    .sommaire-list-full {
+      display: flex;
+      flex-direction: column;
+      gap: 2.3mm;
+      margin-bottom: 2.5mm;
+    }
+    .sommaire-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3.5px solid #0c3b6d;
+      border-radius: 2mm;
+      padding: 2.4mm 3.2mm;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .sommaire-card:nth-child(even) {
+      border-left-color: #b82538;
+      background: #fafbfc;
+    }
+    .sommaire-card-left {
+      display: flex;
+      align-items: center;
+      gap: 2.8mm;
+      flex: 1;
+      min-width: 0;
+    }
+    .sommaire-card-badge {
+      width: 7.2mm;
+      height: 7.2mm;
+      border-radius: 1.5mm;
+      background: #0c3b6d;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6.5pt;
+      font-weight: 800;
+      flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(12,59,109,0.25);
+    }
+    .sommaire-card:nth-child(even) .sommaire-card-badge {
+      background: #b82538;
+      box-shadow: 0 1px 3px rgba(184,37,56,0.25);
+    }
+    .sommaire-card-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6mm;
+      min-width: 0;
+    }
+    .sommaire-card-title {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      line-height: 1.2;
+    }
+    .sommaire-card-desc {
+      font-size: 5.6pt;
+      color: #475569;
+      font-weight: 500;
+      line-height: 1.22;
+    }
+    .sommaire-card-page-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      flex-shrink: 0;
+      margin-left: 2.5mm;
+    }
+    .sommaire-card-page-btn {
+      font-size: 6.8pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      background: #e0f2fe;
+      border: 0.8px solid #bae6fd;
+      padding: 1.2mm 2.8mm;
+      border-radius: 1.5mm;
+      white-space: nowrap;
+      letter-spacing: 0.02em;
+    }
+    .sommaire-card:nth-child(even) .sommaire-card-page-btn {
+      color: #b82538;
+      background: #fff1f2;
+      border-color: #fecdd3;
+    }
+    .sommaire-footer-banner {
+      margin-top: auto;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 2mm;
+      padding: 2.2mm 3.2mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2mm;
+    }
+    .sommaire-banner-col {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4mm;
+    }
+    .sommaire-banner-col.right {
+      align-items: flex-end;
+      text-align: right;
+    }
+    .sommaire-banner-label {
+      font-size: 4.8pt;
+      font-weight: 800;
+      color: #b82538;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .sommaire-banner-val {
+      font-size: 5.4pt;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    /* ─── PAGE 2 : À PROPOS, OBJECTIFS & BUREAU TTSA (A5) ────────────── */
+    .about-intro-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-left: 3px solid #0c3b6d;
+      border-radius: 1.8mm;
+      padding: 2.2mm 3mm;
+      margin-bottom: 2mm;
+    }
+    .about-intro-text {
+      font-size: 5.9pt;
+      line-height: 1.34;
+      color: #334155;
+      text-align: justify;
+    }
+    .goals-compact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5mm;
+      margin-bottom: 2.2mm;
+    }
+    .goal-pill-card {
+      background: #ffffff;
+      border: 0.8px solid #e2e8f0;
+      border-radius: 1.5mm;
+      padding: 1.4mm 2mm;
+      display: flex;
+      align-items: flex-start;
+      gap: 1.8mm;
+    }
+    .goal-pill-card.full-width {
+      grid-column: span 2;
+    }
+    .goal-icon-badge {
+      width: 4.8mm;
+      height: 4.8mm;
+      border-radius: 1.2mm;
+      background: #0c3b6d;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 5.5pt;
+      font-weight: 800;
+      flex-shrink: 0;
+      margin-top: 0.2mm;
+    }
+    .goal-pill-content {
+      display: flex;
+      flex-direction: column;
+    }
+    .goal-pill-title {
+      font-size: 6pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      line-height: 1.2;
+    }
+    .goal-pill-desc {
+      font-size: 5.1pt;
+      color: #64748b;
+      line-height: 1.2;
+    }
+    .board-compact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.4mm;
+    }
+    .board-member-card {
+      background: #ffffff;
+      border: 0.8px solid #cbd5e1;
+      border-top: 2px solid #0c3b6d;
+      border-radius: 1.5mm;
+      padding: 1.4mm 1.8mm;
+      text-align: center;
+    }
+    .board-member-card.president-highlight {
+      border-top-color: #b82538;
+      background: #fffbfa;
+      grid-column: span 3;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.6mm 3mm;
+    }
+    .board-card-name {
+      font-size: 6.2pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+    }
+    .board-card-role {
+      font-size: 5.1pt;
+      font-weight: 700;
+      color: #0369a1;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      margin-top: 0.3mm;
+    }
+    .president-highlight .board-card-role {
+      color: #b82538;
+      font-size: 5.4pt;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PAGE 3: COMITÉS & SOCIÉTÉS SAVANTES
+       ═══════════════════════════════════════════════════════════════════ */
+    .committees-wrap {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm;
+      margin-bottom: 2.5mm;
+    }
+    .committee-box {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 2mm;
+      padding: 2.2mm;
+    }
+    .committee-box-title {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      text-transform: uppercase;
+      margin-bottom: 1.5mm;
+      border-bottom: 1px solid #0c3b6d;
+      padding-bottom: 0.8mm;
+    }
+    .committee-president-card {
+      background: #ffffff;
+      border: 0.8px solid #93c5fd;
+      border-radius: 1.5mm;
+      padding: 1.2mm 1.8mm;
+      margin-bottom: 1.5mm;
+      text-align: center;
+    }
+    .committee-president-name {
+      font-size: 6.8pt;
+      font-weight: 800;
+      color: #0c3b6d;
+    }
+    .committee-president-label {
+      font-size: 5.5pt;
+      font-weight: 700;
+      color: #b82538;
+      text-transform: uppercase;
+    }
+    .committee-members-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.8mm;
+    }
+    .committee-member-item {
+      background: #ffffff;
+      border: 0.8px solid #e2e8f0;
+      border-radius: 1.2mm;
+      padding: 0.8mm 1.5mm;
+      font-size: 5.8pt;
+      font-weight: 600;
+      color: #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .societies-box {
+      background: #ffffff;
+      border: 1px solid #0c3b6d;
+      border-radius: 2mm;
+      padding: 2mm 2.5mm;
+    }
+    .societies-title {
+      font-size: 7pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 1.5mm;
+    }
+    .societies-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.8mm;
+      align-items: center;
+      text-align: center;
+    }
+    .society-card {
+      border: 0.8px solid #e2e8f0;
+      border-radius: 1.5mm;
+      padding: 1.2mm 1mm;
+      background: #f8fafc;
+    }
+    .society-img {
+      height: 6.5mm;
+      max-width: 100%;
+      object-fit: contain;
+      margin-bottom: 1mm;
+    }
+    .society-name {
+      font-size: 5.5pt;
+      font-weight: 700;
+      color: #1e293b;
+      line-height: 1.15;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PAGES 4-7: PROGRAMME SCIENTIFIQUE
+       ═══════════════════════════════════════════════════════════════════ */
+    .day-banner {
+      background: linear-gradient(135deg, #0c3b6d 0%, #071e3d 100%);
+      color: #ffffff;
+      padding: 1.8mm 3mm;
+      border-radius: 1.5mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2mm;
+      flex-shrink: 0;
+    }
+    .day-banner-date {
+      font-size: 8pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+    .day-banner-badge {
+      background: #b82538;
+      color: #ffffff;
+      font-size: 5.6pt;
+      font-weight: 800;
+      padding: 0.8mm 2.2mm;
+      border-radius: 10px;
+      text-transform: uppercase;
+    }
+
+    .program-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0 1.2mm;
+    }
+    .prog-row {
+      background: #ffffff;
+    }
+    .prog-time {
+      width: 18.5mm;
+      background: #f1f5f9;
+      border: 0.8px solid #cbd5e1;
+      border-right: none;
+      border-top-left-radius: 1.5mm;
+      border-bottom-left-radius: 1.5mm;
+      padding: 1.1mm 1.4mm;
+      vertical-align: top;
+      text-align: center;
+      font-size: 5.7pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      line-height: 1.2;
+    }
+    .prog-content {
+      border: 0.8px solid #cbd5e1;
+      border-left: 3.5px solid #0c3b6d;
+      border-top-right-radius: 1.5mm;
+      border-bottom-right-radius: 1.5mm;
+      padding: 1.1mm 2mm;
+      vertical-align: top;
+    }
+
+    /* 1. Workshops (Ateliers) : Jaune #eab308 / #fffbeb / #fef08a */
+    .prog-row.workshop .prog-time, .prog-time.workshop-time {
+      background: #fef08a;
+      color: #854d0e;
+      border-color: #fde047;
+    }
+    .prog-content.workshop {
+      border-left-color: #eab308;
+      background: #fffbeb;
+      border-color: #fef08a;
+    }
+    .badge-type.workshop {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    /* 2. Conference / Sessions Thématiques Plénières : Rouge #b82538 / #fff5f5 / #fecdd3 */
+    .prog-row.session .prog-time, .prog-time.session-time {
+      background: #fee2e2;
+      color: #991b1b;
+      border-color: #fca5a5;
+    }
+    .prog-content.session {
+      border-left-color: #b82538;
+      background: #fff5f5;
+      border-color: #fecdd3;
+    }
+    .badge-type.session {
+      background: #fdeaed;
+      color: #b82538;
+    }
+
+    /* 3. Communications libres / Posters / Vidéos : Bleu #0C589A / #f0f7ff / #bae6fd */
+    .prog-row.posters .prog-time, .prog-row.comm .prog-time, .prog-time.comm-time {
+      background: #e0f2fe;
+      color: #0369a1;
+      border-color: #7dd3fc;
+    }
+    .prog-content.posters, .prog-content.comm {
+      border-left-color: #0C589A;
+      background: #f0f7ff;
+      border-color: #bae6fd;
+    }
+    .badge-type.posters, .badge-type.comm {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+
+    /* 4. Pauses & Déjeuner : Vert #10b981 / #f0fdf4 / #bbf7d0 */
+    .prog-row.pause .prog-time, .prog-row.break-row .prog-time, .prog-time.break-time {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+    .prog-content.pause, .prog-content.break {
+      border-left-color: #10b981;
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .badge-type.pause {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    /* 5. Symposium : Violet #8b5cf6 / #f5f3ff / #ddd6fe */
+    .prog-row.symposium .prog-time, .prog-row.symp .prog-time, .prog-time.symp-time {
+      background: #ede9fe;
+      color: #6d28d9;
+      border-color: #c4b5fd;
+    }
+    .prog-content.symposium, .prog-content.symp {
+      border-left-color: #8b5cf6;
+      background: #f5f3ff;
+      border-color: #ddd6fe;
+    }
+    .badge-type.symposium, .badge-type.symp {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+
+    /* 6. Inauguration & Clôture : Ambre / Or #d97706 / #fffbeb / #fde68a */
+    .prog-row.event .prog-time, .prog-row.inaug-row .prog-time, .prog-time.inaug-time {
+      background: #fef3c7;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+    .prog-content.event, .prog-content.inaug {
+      border-left-color: #d97706;
+      background: #fffbeb;
+      border-color: #fde68a;
+    }
+    .badge-type.event, .badge-type.inaug {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .prog-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 0.5mm;
+    }
+    .prog-title {
+      font-size: 6.8pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.15;
+    }
+    .prog-badges {
+      display: flex;
+      gap: 1mm;
+      flex-shrink: 0;
+    }
+    .badge-room {
+      font-size: 5.2pt;
+      font-weight: 700;
+      color: #0369a1;
+      background: #e0f2fe;
+      padding: 0.3mm 1.4mm;
+      border-radius: 0.8mm;
+    }
+    .badge-room-alt {
+      font-size: 5.2pt;
+      font-weight: 700;
+      color: #6b21a8;
+      background: #f3e8ff;
+      padding: 0.3mm 1.4mm;
+      border-radius: 0.8mm;
+    }
+    .badge-chair {
+      font-size: 5.2pt;
+      font-weight: 700;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 0.3mm 1.4mm;
+      border-radius: 0.8mm;
+    }
+    .badge-type {
+      font-size: 5.2pt;
+      font-weight: 700;
+      color: #475569;
+      background: #f1f5f9;
+      padding: 0.3mm 1.4mm;
+      border-radius: 0.8mm;
+      text-transform: uppercase;
+    }
+
+    .prog-details {
+      font-size: 6pt;
+      color: #334155;
+      line-height: 1.22;
+    }
+    .prog-speaker {
+      font-weight: 700;
+      color: #0c3b6d;
+    }
+    .prog-moderators {
+      font-style: italic;
+      color: #64748b;
+      margin-bottom: 0.6mm;
+      font-size: 5.6pt;
+    }
+
+    .talks-list {
+      margin-top: 1mm;
+      border-top: 0.8px dashed #e2e8f0;
+      padding-top: 0.8mm;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6mm;
+    }
+    .talk-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-size: 5.7pt;
+      line-height: 1.18;
+    }
+    .talk-title {
+      color: #1e293b;
+      font-weight: 500;
+      flex: 1;
+    }
+    .talk-speaker {
+      color: #0c3b6d;
+      font-weight: 700;
+      margin-left: 1.5mm;
+      white-space: nowrap;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       PAGE 8: SPONSORS & CONTACTS (A5)
+       ═══════════════════════════════════════════════════════════════════ */
+    .sponsors-intro {
+      text-align: center;
+      margin-bottom: 2mm;
+    }
+    .sponsors-intro p {
+      font-size: 6pt;
+      color: #475569;
+      max-width: 120mm;
+      margin: 0 auto;
+    }
+
+    .sponsor-tier-block {
+      margin-bottom: 2mm;
+      background: #f8fafc;
+      border: 0.8px solid #e2e8f0;
+      border-radius: 1.8mm;
+      padding: 1.5mm 2.2mm;
+    }
+    .tier-header {
+      display: inline-block;
+      font-size: 5.5pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 0.5mm 2mm;
+      border-radius: 8px;
+      margin-bottom: 1.2mm;
+    }
+    .tier-platinum-label {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      color: #0f172a;
+      border: 0.6px solid #94a3b8;
+    }
+    .tier-gold-label {
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+      color: #78350f;
+      border: 0.6px solid #f59e0b;
+    }
+    .tier-silver-label {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      color: #334155;
+      border: 0.6px solid #cbd5e1;
+    }
+    .tier-bronze-label {
+      background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
+      color: #9a3412;
+      border: 0.6px solid #fb923c;
+    }
+
+    .sponsors-logos-flex {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 1.8mm;
+    }
+    .sponsor-logo-box {
+      background: #ffffff;
+      border: 0.8px solid #cbd5e1;
+      border-radius: 1.5mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.2mm 2mm;
+    }
+    .sponsor-logo-box.plat { min-width: 34mm; height: 11mm; border: 1.2px solid #94a3b8; }
+    .sponsor-logo-box.gold { min-width: 24mm; height: 9mm; border: 1px solid #f59e0b; }
+    .sponsor-logo-box.silver { min-width: 18mm; height: 7.5mm; }
+    .sponsor-logo-box.bronze { min-width: 14mm; height: 6.5mm; }
+    .sponsor-logo-box img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: contain;
+    }
+
+    .contacts-footer-card {
+      margin-top: auto;
+      background: linear-gradient(135deg, #071e3d 0%, #0c3b6d 100%);
+      color: #ffffff;
+      border-radius: 2mm;
+      padding: 2.5mm 3.5mm;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm;
+      font-size: 5.8pt;
+    }
+    .contacts-title {
+      font-size: 6.8pt;
+      font-weight: 800;
+      color: #fca5a5;
+      text-transform: uppercase;
+      margin-bottom: 0.8mm;
+    }
+    .contacts-text {
+      color: #e2e8f0;
+      line-height: 1.35;
+    }
+    .contacts-highlight {
+      font-weight: 700;
+      color: #ffffff;
+    }
+  
+    .comms-list {
+      margin-top: 0.8mm;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45mm;
+    }
+    .comm-item {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2mm;
+      font-size: 5.1pt;
+      line-height: 1.2;
+      border-bottom: 0.4px dotted #cbd5e1;
+      padding-bottom: 0.35mm;
+    }
+    .comm-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .comm-order {
+      display: inline-block;
+      min-width: 3.3mm;
+      height: 3.3mm;
+      line-height: 3.3mm;
+      text-align: center;
+      background: #e2e8f0;
+      color: #334155;
+      font-weight: 800;
+      font-size: 4.5pt;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .comm-id {
+      display: inline-block;
+      padding: 0.2mm 0.9mm;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 0.5px solid #bae6fd;
+      font-weight: 800;
+      font-size: 4.8pt;
+      border-radius: 0.6mm;
+      flex-shrink: 0;
+    }
+    .comm-title {
+      flex: 1;
+      color: #1e293b;
+      font-weight: 600;
+    }
+    .comm-author {
+      color: #0c3b6d;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding-left: 1.5mm;
+    }
+
+
+    /* ─── PAGE 13 : INFORMATIONS PRATIQUES & CONTACTS (A5) ────────────── */
+    .contact-page-container {
+      display: flex;
+      flex-direction: column;
+      gap: 2.2mm;
+      margin-top: 1.5mm;
+    }
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm;
+    }
+    .contact-card {
+      background: #f8fafc;
+      border: 0.8px solid #cbd5e1;
+      border-radius: 2mm;
+      padding: 2.8mm 3.2mm;
+      display: flex;
+      flex-direction: column;
+      gap: 1.8mm;
+    }
+    .contact-card.featured {
+      background: #ffffff;
+      border-color: #93c5fd;
+      border-left: 3.5px solid #0C589A;
+      box-shadow: 0 1px 3px rgba(12, 88, 154, 0.05);
+    }
+    .contact-card.venue {
+      background: #ffffff;
+      border-color: #cbd5e1;
+      border-left: 3.5px solid #0369a1;
+      box-shadow: 0 1px 3px rgba(3, 105, 161, 0.05);
+    }
+    .contact-card.badges {
+      background: #ffffff;
+      border-color: #fed7aa;
+      border-left: 3.5px solid #d97706;
+      box-shadow: 0 1px 3px rgba(217, 119, 6, 0.05);
+    }
+    .contact-card.tech {
+      background: #ffffff;
+      border-color: #ddd6fe;
+      border-left: 3.5px solid #7c3aed;
+      box-shadow: 0 1px 3px rgba(124, 58, 237, 0.05);
+    }
+    .contact-card-header {
+      display: flex;
+      align-items: center;
+      gap: 2mm;
+      border-bottom: 0.6px solid #e2e8f0;
+      padding-bottom: 1.4mm;
+    }
+    .contact-card-icon {
+      width: 5.8mm;
+      height: 5.8mm;
+      border-radius: 1.2mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 6.2pt;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    .contact-card-title {
+      font-size: 6.8pt;
+      font-weight: 800;
+      color: #071e3d;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+    .contact-card-body {
+      font-size: 5.6pt;
+      color: #334155;
+      line-height: 1.38;
+      display: flex;
+      flex-direction: column;
+      gap: 1.4mm;
+    }
+    .contact-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2mm;
+    }
+    .contact-info-label {
+      font-weight: 700;
+      color: #0c3b6d;
+      min-width: 17mm;
+      flex-shrink: 0;
+    }
+    .contact-info-val {
+      color: #1e293b;
+      flex: 1;
+    }
+    .contact-vip-banner {
+      background: linear-gradient(135deg, #071e3d 0%, #0c3b6d 100%);
+      border-radius: 2.2mm;
+      padding: 3mm 3.8mm;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3.5mm;
+      margin-top: 1mm;
+    }
+    .contact-vip-text {
+      font-size: 5.9pt;
+      line-height: 1.38;
+      color: #f1f5f9;
+      flex: 1;
+    }
+    .contact-vip-highlight {
+      font-weight: 800;
+      color: #fca5a5;
+    }
+    .contact-vip-badge {
+      background: rgba(255, 255, 255, 0.12);
+      border: 0.8px solid rgba(255, 255, 255, 0.25);
+      border-radius: 1.8mm;
+      padding: 2mm 3.2mm;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .contact-vip-badge-url {
+      font-size: 7.2pt;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.02em;
+    }
+    .contact-vip-badge-sub {
+      font-size: 4.8pt;
+      color: #93c5fd;
+      text-transform: uppercase;
+      margin-top: 0.3mm;
+      letter-spacing: 0.04em;
+    }
+
+
+    /* ─── PATRIMOINE HISTORIQUE : THAENAE (THYNA) ─────────────────────── */
+    .heritage-free-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 3.5mm;
+    }
+    .heritage-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 82mm;
+    }
+    .heritage-free-img {
+      width: 82mm;
+      height: auto;
+      display: block;
+      border-radius: 1.5mm;
+      box-shadow: 0 1.5px 5px rgba(0,0,0,0.12);
+    }
+    .heritage-free-caption {
+      width: 82mm;
+      margin-top: 1.8mm;
+      font-size: 5.2pt;
+      line-height: 1.35;
+      color: #475569;
+      font-style: italic;
+      text-align: justify;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 0 : PAGE DE GARDE - AFFICHE OFFICIELLE DU CONGRÈS (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page cover-page">
+    <img src="/img/congress-poster.jpg" alt="Affiche Officielle du 5ème Congrès National de Chirurgie Thoracique - TTSA 2026" class="cover-poster-full">
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 1 : MOT DE BIENVENUE DU PRÉSIDENT (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">5<sup>ème</sup> Congrès National de Chirurgie Thoracique</span>
+      </div>
+      <span class="running-header-date">06 - 07 Novembre 2026</span>
+    </div>
+
+    <div class="section-headline">Mot de Bienvenue du Président</div>
+
+    <div class="president-fullpage">
+      <div class="president-salutation">
+        Chers confrères, chers amis, chers partenaires,
+      </div>
+
+      <p class="president-full-text">
+        Au nom du bureau de la <strong>Société Tunisienne de Chirurgie Thoracique (TTSA)</strong>, j’ai l’honneur et le grand plaisir de vous accueillir à la <strong>5<sup>ème</sup> édition de notre Congrès National de Chirurgie Thoracique</strong>, qui se tiendra les <strong>06 et 07 Novembre 2026</strong> dans la ville historique de <strong>Sfax</strong>, au sein du prestigieux <strong>Hôtel Borj Dhiafa</strong>.
+      </p>
+
+      <p class="president-full-text">
+        Cette édition 2026 est placée sous le signe de l'ouverture internationale, du partage d'expériences et de l'interdisciplinarité. Elle est organisée en étroite synergie avec nos prestigieuses sociétés partenaires : la <strong>Société Française de Chirurgie Thoracique et Cardio-Vasculaire (SFCTCV)</strong>, la <strong>Société Tunisienne de Neurologie (STN)</strong> et l’<strong>Association des Pneumologues et Allergologues du Centre et Sud Tunisien (APACS)</strong>.
+      </p>
+
+      <p class="president-full-text">
+        Notre comité scientifique vous propose un programme d’une haute exigence académique, centré autour de <strong>4 thématiques majeures</strong> : la <strong>Chirurgie Robotique</strong> et ses perspectives d'avenir, les consensus actuels dans la <strong>Pathologie Thymique</strong>, les avancées interventionnelles des <strong>Voies Endo-bronchiques</strong>, et l'optimisation des parcours en <strong>Gestion Péri-opératoire</strong>.
+      </p>
+
+      <p class="president-full-text">
+        Avec <strong>5 ateliers spécialisés</strong> médico-chirurgicaux et paramédicaux ainsi que plus de <strong>75 communications scientifiques</strong> sélectionnées, ces journées constitueront une opportunité exceptionnelle de perfectionnement pour nos jeunes collègues et d'échanges d'expertise entre praticiens chevronnés.
+      </p>
+
+      <p class="president-full-text">
+        J'exprime ma profonde gratitude aux experts nationaux et étrangers pour leur apport inestimable, ainsi qu'à l'ensemble de nos partenaires de l'industrie médicale dont le soutien fidèle et indéfectible permet la concrétisation de cet événement d'envergure.
+      </p>
+
+      <p class="president-full-text">
+        Je vous souhaite à toutes et à tous un congrès particulièrement enrichissant, des débats chaleureux et un séjour mémorable à Sfax.
+      </p>
+
+      <div class="president-sign-block">
+        <div class="president-sign-right">
+          <div class="president-sign-name">Pr. Abdessalem HENTATI</div>
+          <div class="president-sign-role">Président de la TTSA</div>
+          <div class="president-sign-date">Sfax, Novembre 2026</div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- PATRIMOINE HISTORIQUE : THAENAE (THYNA) -->
+    <div class="heritage-free-wrap">
+      <div class="heritage-inner">
+        <img src="/img/thyna-ruines.png" alt="Ruines de l'antique Thaenae (Thyna)" class="heritage-free-img">
+        <div class="heritage-free-caption">
+          Ruines de l'antique Thaenae (Thyna). Point névralgique du commerce africain dès le II<sup>e</sup> siècle av. J.-C., la cité fut progressivement abandonnée au profit de sa voisine Taparura, donnant naissance en 849 à l'actuelle ville de Sfax, héritière directe de sa population et de ses matériaux de construction.
+        </div>
+      </div>
+    </div>
+
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 1 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 2 : À PROPOS, OBJECTIFS & BUREAU DE LA TTSA (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">5<sup>ème</sup> Congrès National de Chirurgie Thoracique</span>
+      </div>
+      <span class="running-header-date">06 - 07 Novembre 2026</span>
+    </div>
+
+    <div class="section-headline">À Propos de la TTSA</div>
+
+    <div class="about-intro-box">
+      <p class="about-intro-text">
+        La <strong>Société de Chirurgie Thoracique Tunisienne</strong> est la société savante nationale qui rassemble l’ensemble des chirurgiens thoraciques tunisiens des secteurs public, hospitalo-universitaire et libéral, ainsi que les médecins résidents en cours de formation.
+      </p>
+      <div style="margin-top: 1.2mm; font-size: 5.3pt; color: #0c3b6d; font-weight: 700; background: #e0f2fe; padding: 0.8mm 2mm; border-radius: 1mm; display: inline-block;">
+        🏛️ Création officielle : 11 Janvier 2022
+      </div>
+    </div>
+
+    <div class="section-headline" style="margin-top: 0.5mm;">Objectifs Stratégiques</div>
+
+    <div class="goals-compact-grid">
+      <div class="goal-pill-card">
+        <div class="goal-icon-badge">01</div>
+        <div class="goal-pill-content">
+          <div class="goal-pill-title">Excellence &amp; Pensée Scientifique</div>
+          <div class="goal-pill-desc">Développer la réflexion scientifique et la performance professionnelle continue en chirurgie thoracique.</div>
+        </div>
+      </div>
+
+      <div class="goal-pill-card">
+        <div class="goal-icon-badge">02</div>
+        <div class="goal-pill-content">
+          <div class="goal-pill-title">Relations &amp; Expertise Consultative</div>
+          <div class="goal-pill-desc">Créer des réseaux scientifiques et fournir des avis experts consultatifs dans la spécialité.</div>
+        </div>
+      </div>
+
+      <div class="goal-pill-card">
+        <div class="goal-icon-badge">03</div>
+        <div class="goal-pill-content">
+          <div class="goal-pill-title">Santé Publique &amp; Prévention</div>
+          <div class="goal-pill-desc">Sensibiliser le grand public aux risques majeurs du tabagisme et aux affections thoraciques.</div>
+        </div>
+      </div>
+
+      <div class="goal-pill-card">
+        <div class="goal-icon-badge">04</div>
+        <div class="goal-pill-content">
+          <div class="goal-pill-title">Coordination des Soins aux Patients</div>
+          <div class="goal-pill-desc">Harmoniser et optimiser la prise en charge globale des patients relevant de chirurgie thoracique.</div>
+        </div>
+      </div>
+
+      <div class="goal-pill-card full-width">
+        <div class="goal-icon-badge">05</div>
+        <div class="goal-pill-content">
+          <div class="goal-pill-title">Partenariats &amp; Rayonnement International</div>
+          <div class="goal-pill-desc">Tisser des coopérations bilatérales durables avec les sociétés savantes homologues régionales et internationales.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-headline" style="margin-top: 0.5mm;">Bureau Exécutif de la TTSA</div>
+
+    <div class="board-compact-grid">
+      <div class="board-member-card president-highlight">
+        <div>
+          <div class="board-card-name">Dr. Abdessalem HENTATI</div>
+          <div class="board-card-role">Président de la TTSA</div>
+        </div>
+        <span style="font-size: 5pt; font-weight: 800; background: #b82538; color: #fff; padding: 0.6mm 1.8mm; border-radius: 1mm;">MANDAT 2025 - 2026</span>
+      </div>
+
+      <div class="board-member-card">
+        <div class="board-card-name">Dr Saber HACHICHA</div>
+        <div class="board-card-role">Vice-Président</div>
+      </div>
+
+      <div class="board-member-card">
+        <div class="board-card-name">Dr Mahdi ABDENNADHER</div>
+        <div class="board-card-role">Secrétaire Général</div>
+      </div>
+
+      <div class="board-member-card">
+        <div class="board-card-name">Dr Amina ABDELKEBIR</div>
+        <div class="board-card-role">Secrétaire Générale Adjointe</div>
+      </div>
+
+      <div class="board-member-card">
+        <div class="board-card-name">Dr M. S. BOUDAYA</div>
+        <div class="board-card-role">Trésorier</div>
+      </div>
+
+      <div class="board-member-card">
+        <div class="board-card-name">Dr Walid ABID</div>
+        <div class="board-card-role">Trésorier Adjoint</div>
+      </div>
+
+      <div class="board-member-card">
+        <div class="board-card-name">Dr Wassim CHAIEB</div>
+        <div class="board-card-role">Représentant des Résidents</div>
+      </div>
+    </div>
+
+    
+    <!-- PATRIMOINE HISTORIQUE : ENCEINTE FORTIFIÉE DE SFAX -->
+    <div class="heritage-free-wrap">
+      <div class="heritage-inner" style="width: 66mm;">
+        <img src="/img/sfax-remparts.jpg" alt="Enceinte fortifiée de Sfax" class="heritage-free-img" style="width: 66mm; height: auto;">
+        <div class="heritage-free-caption" style="width: 66mm; font-size: 5pt; line-height: 1.3;">
+          Vue sur l'enceinte fortifiée de Sfax, fondée au IX<sup>e</sup> siècle sous l'impulsion de l'émir aghlabide Aboul Abbas Mohamed et supervisée par le cadi de la ville, Ali Ibn Aslam Al-Bakri. Symbole de la puissance défensive de l'Ifriqiya aghlabide, ce rempart ceinture intégralement la médina sur plus de deux kilomètres depuis plus de onze siècles.
+        </div>
+      </div>
+    </div>
+
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 2 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 3 : COMITÉS & SOCIÉTÉS SAVANTES PARTENAIRES (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">5<sup>ème</sup> Congrès National de Chirurgie Thoracique</span>
+      </div>
+      <span class="running-header-date">06 - 07 Novembre 2026</span>
+    </div>
+
+    <div class="section-headline">Comités du Congrès</div>
+
+    <div class="committees-wrap">
+      <!-- Comité d'Organisation -->
+      <div class="committee-box">
+        <div class="committee-box-title">Comité d'Organisation</div>
+        <div class="committee-president-card">
+          <div class="committee-president-label">Président</div>
+          <div class="committee-president-name">Dr Mahdi ABDENNADHER</div>
+        </div>
+        <ul class="committee-members-list">
+          <li class="committee-member-item"><span>Dr Walid ABID</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Ahmed BEN AYED</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Wassim CHAIEB</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Abdessalem HENTATI</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Saber HACHICHA</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Amina ABDELKEBIR</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr M. S. BOUDAYA</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Ali BENSALEM</span> <span style="color:#64748b;">Membre</span></li>
+          <li class="committee-member-item"><span>Dr Malek ABBES</span> <span style="color:#64748b;">Membre</span></li>
+        </ul>
+      </div>
+
+      <!-- Comité Scientifique -->
+      <div class="committee-box">
+        <div class="committee-box-title">Comité Scientifique</div>
+        <div class="committee-president-card">
+          <div class="committee-president-label">Président</div>
+          <div class="committee-president-name">Dr Abdessalem HENTATI</div>
+        </div>
+        <ul class="committee-members-list">
+          <li class="committee-member-item"><span>Dr Jean-Marc BASTE</span> <span style="color:#b82538;font-weight:700;">SFCTCV (FR)</span></li>
+          <li class="committee-member-item"><span>Dr Stéphane RENAUD</span> <span style="color:#b82538;font-weight:700;">SFCTCV (FR)</span></li>
+          <li class="committee-member-item"><span>Dr Marc FILAIRE</span> <span style="color:#b82538;font-weight:700;">SFCTCV (FR)</span></li>
+          <li class="committee-member-item"><span>Dr Lobna MAALEJ</span> <span style="color:#0284c7;font-weight:700;">STN (TN)</span></li>
+          <li class="committee-member-item"><span>Dr Walid FEKI</span> <span style="color:#0284c7;font-weight:700;">APACS (TN)</span></li>
+        </ul>
+
+        <div style="margin-top: 2mm; padding: 1.5mm; background:#ffffff; border:0.8px dashed #cbd5e1; border-radius:1.5mm;">
+          <div style="font-size:5.6pt; font-weight:700; color:#0c3b6d; text-transform:uppercase;">Sélection Scientifique :</div>
+          <div style="font-size:5.4pt; color:#475569; line-height:1.2;">
+            Évaluation par les pairs de plus de 75 résumés nationaux et internationaux.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sociétés Savantes Partenaires -->
+    <div class="societies-box">
+      <div class="societies-title">Sociétés Savantes Partenaires</div>
+      <div class="societies-grid">
+        <div class="society-card">
+          <img src="/img/logo.svg" alt="TTSA" class="society-img">
+          <div class="society-name">TTSA</div>
+          <div style="font-size:5pt; color:#64748b;">Chirurgie Thoracique</div>
+        </div>
+        <div class="society-card">
+          <img src="/img/sfctcv-logo.png" alt="SFCTCV" class="society-img">
+          <div class="society-name">SFCTCV</div>
+          <div style="font-size:5pt; color:#64748b;">Chirurgie Thoracique &amp; CV</div>
+        </div>
+        <div class="society-card">
+          <img src="/img/stn-logo.png" alt="STN" class="society-img">
+          <div class="society-name">STN</div>
+          <div style="font-size:5pt; color:#64748b;">Neurologie</div>
+        </div>
+        <div class="society-card">
+          <img src="/img/apacs-logo.jpg" alt="APACS" class="society-img">
+          <div class="society-name">APACS</div>
+          <div style="font-size:5pt; color:#64748b;">Pneumo-Allergologie</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 3 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 4 : PARTENAIRES & SPONSORS OFFICIELS (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Partenaires &amp; Sponsors Officiels</span>
+      </div>
+      <span class="running-header-date">5<sup>ème</sup> Congrès National TTSA 2026</span>
+    </div>
+
+    <div class="sponsors-intro">
+      <div class="section-headline" style="text-align:center;">Remerciements aux Partenaires</div>
+      <p>
+        La Société Tunisienne de Chirurgie Thoracique (TTSA) remercie chaleureusement ses partenaires industriels pour leur soutien au progrès de la chirurgie thoracique.
+      </p>
+    </div>
+
+    <!-- PLATINUM -->
+    <div class="sponsor-tier-block">
+      <span class="tier-header tier-platinum-label">Sponsor Platine</span>
+      <div class="sponsors-logos-flex">
+        <div class="sponsor-logo-box plat">
+          <img src="/img/sponsors/medtronic.png" alt="Medtronic">
+        </div>
+      </div>
+    </div>
+
+    <!-- GOLD -->
+    <div class="sponsor-tier-block">
+      <span class="tier-header tier-gold-label">Sponsors Or</span>
+      <div class="sponsors-logos-flex">
+        <div class="sponsor-logo-box gold"><img src="/img/sponsors/touchstone.png" alt="Touchstone"></div>
+        <div class="sponsor-logo-box gold"><img src="/img/sponsors/bluesail.jpg" alt="Bluesail"></div>
+      </div>
+    </div>
+
+    <!-- SILVER -->
+    <div class="sponsor-tier-block">
+      <span class="tier-header tier-silver-label">Sponsors Argent</span>
+      <div class="sponsors-logos-flex">
+        <div class="sponsor-logo-box silver"><img src="/img/sponsors/mdid.jpg" alt="MDID"></div>
+        <div class="sponsor-logo-box silver"><img src="/img/sponsors/miama.png" alt="MIAMA"></div>
+        <div class="sponsor-logo-box silver"><img src="/img/sponsors/dar-essaydali.png" alt="Dar Essaydali"></div>
+      </div>
+    </div>
+
+    <!-- BRONZE -->
+    <div class="sponsor-tier-block">
+      <span class="tier-header tier-bronze-label">Sponsors Bronze</span>
+      <div class="sponsors-logos-flex">
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/gmiha-houria.png" alt="Gmiha Houria"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/medis.jpg" alt="MEDIS"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/sofemed.jpg" alt="SOFEMED"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/galpharma.jpg" alt="Galpharma"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/syphax.png" alt="Syphax"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/teriak.jpg" alt="Teriak"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/co-access.png" alt="CO ACCESS"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/ethicon.png" alt="ETHICON"></div>
+      </div>
+    </div>
+
+    <!-- CONTACTS & LIEU -->
+    <div class="contacts-footer-card">
+      <div>
+        <div class="contacts-title">Secrétariat Général</div>
+        <div class="contacts-text">
+          <span class="contacts-highlight">TTSA</span> · CHU H. Bourguiba, Sfax<br>
+          Email : <span class="contacts-highlight">contact@ttsa.tn</span><br>
+          Site Web : <span class="contacts-highlight">www.ttsa.tn</span>
+        </div>
+      </div>
+      <div>
+        <div class="contacts-title">Lieu du Congrès</div>
+        <div class="contacts-text">
+          <span class="contacts-highlight">Hôtel Borj Dhiafa</span><br>
+          Route Soukra Km 3, Sfax 3052<br>
+          Dates : <span class="contacts-highlight">06 &amp; 07 Novembre 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 4 sur 12</span>
+    </div>
+  </div>
+
+  
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 5 : PROGRAMME - VENDREDI 06 NOVEMBRE (MATINÉE & ATELIERS)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Programme Scientifique</span>
+      </div>
+      <span class="running-header-date">Vendredi 06 Novembre 2026</span>
+    </div>
+
+    <div class="day-banner">
+      <div class="day-banner-date">Vendredi 06 Novembre 2026</div>
+      <div class="day-banner-badge">Jour 1 · Ateliers Pratiques</div>
+    </div>
+
+    <table class="program-table">
+      <!-- 08h00 - 12h30 -->
+      <tr class="prog-row workshop">
+        <td class="prog-time">08h00<br>12h30</td>
+        <td class="prog-content workshop">
+          <div class="prog-title-row">
+            <div class="prog-title">Workshop: Initiation à la chirurgie robotique</div>
+            <div class="prog-badges"><span class="badge-type workshop">Workshop</span></div>
+          </div>
+          <div class="prog-details">
+            <div class="prog-speaker">
+              Dr Mohammed BEN AMAR <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+            </div>
+            <div style="font-size:5.4pt; color:#854d0e; margin-top:0.4mm;">Formation pratique hands-on &amp; immersion robotique.</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 12h30 - 13h00 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">12h30<br>13h00</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Pause / Transition</div>
+            <div class="prog-badges"><span class="badge-type pause">Pause</span></div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 13h00 - 14h00 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">13h00<br>14h00</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Pause Déjeuner</div>
+            <div class="prog-badges"><span class="badge-type pause">Déjeuner</span></div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 14h00 - 15h30 (Ateliers en parallèle) -->
+      <tr class="prog-row workshop">
+        <td class="prog-time">14h00<br>15h30</td>
+        <td class="prog-content workshop">
+          <!-- Salle 1 -->
+          <div>
+            <div class="prog-title-row">
+              <div class="prog-title">Atelier médical: Ergonomie du personnel de santé</div>
+              <div class="prog-badges">
+                <span class="badge-room">Salle 1: Salle Vizir</span>
+                <span class="badge-type workshop">Workshop</span>
+              </div>
+            </div>
+            <div class="prog-details">
+              <span class="prog-speaker">Majda ALILA</span> <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+            </div>
+          </div>
+
+          <!-- Salle 2 -->
+          <div style="margin-top: 2mm; padding-top: 1.5mm; border-top: 0.8px dashed #fde047;">
+            <div class="prog-title-row">
+              <div class="prog-title">Atelier paramédical 1: Anesthésie en chirurgie thoracique</div>
+              <div class="prog-badges">
+                <span class="badge-room-alt">Salle 2: Salle Diwan</span>
+                <span class="badge-type workshop">Workshop</span>
+              </div>
+            </div>
+            <div class="prog-details">
+              <span class="prog-speaker">Dr Mariem BOUSARSAR</span> <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+              &amp; <span class="prog-speaker">Mme Hbiba KSOURI</span> <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 5 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 6 : PROGRAMME - VENDREDI 06 NOVEMBRE (POSTERS COMMENTÉS 1 & ATELIERS)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Programme Scientifique</span>
+      </div>
+      <span class="running-header-date">Vendredi 06 Novembre 2026 (Après-midi)</span>
+    </div>
+
+    <div class="day-banner">
+      <div class="day-banner-date">Vendredi 06 Novembre 2026 (Après-midi)</div>
+      <div class="day-banner-badge">Posters Commentés 1 &amp; Ateliers</div>
+    </div>
+
+    <table class="program-table">
+      <!-- 15h30 - 16h30 -->
+      <tr class="prog-row posters">
+        <td class="prog-time comm-time">15h30<br>16h30</td>
+        <td class="prog-content posters">
+          <!-- Salle 1 -->
+          <div>
+            <div class="prog-title-row">
+              <div class="prog-title">Session Posters commentés 1 (14 Communications)</div>
+              <div class="prog-badges">
+                <span class="badge-room">Salle 1: Salle Vizir</span>
+                <span class="badge-type posters">Posters</span>
+              </div>
+            </div>
+            <div class="prog-moderators">Modérateurs : Dr Amina Abdelkbir, Dr Ahmed Bakhti, Dr Mohamed Rebai</div>
+            <div class="comms-list">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">#34</span>
+              <span class="comm-title">Surgical management of chest wall deformities using the ravitch technique: A single-center experience</span>
+              <span class="comm-author">Ahmed BAKHTI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">#26</span>
+              <span class="comm-title">Surgery for Emphysematous Bullae: Impact on Respiratory Function</span>
+              <span class="comm-author">Ali Ben Salem</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">#68</span>
+              <span class="comm-title">Traitement chirurgical des hernies diaphragmatiques post traumatique</span>
+              <span class="comm-author">Amina Abdelkebir</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">*6</span>
+              <span class="comm-title">Séquestration Pulmonaire : A propos de 6 cas</span>
+              <span class="comm-author">Benhalilou Sabrina</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">5</span>
+              <span class="comm-id">#73</span>
+              <span class="comm-title">Hémoptysie sur kyste hydatique pulmonaire : Maîtriser le risque, réussir la chirurgie</span>
+              <span class="comm-author">HALA ALIMI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">6</span>
+              <span class="comm-id">#65</span>
+              <span class="comm-title">FACTEURS PRÉDICTIFS DE MORBI-MORTALITÉ APRÈS CHIRURGIE DE L'ASPERGILLOME PULMONAIRE</span>
+              <span class="comm-author">HALA ALIMI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">7</span>
+              <span class="comm-id">#74</span>
+              <span class="comm-title">FACTEURS PRÉDICTIFS DE MORBI-MORTALITÉ APRÈS CHIRURGIE DE L'ASPERGILLOME PULMONAIRE</span>
+              <span class="comm-author">HALA ALIMI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">8</span>
+              <span class="comm-id">#63</span>
+              <span class="comm-title">Résections pulmonaires dans la prise en charge de la tuberculose : indications et résultats</span>
+              <span class="comm-author">Manel Ben Tahar</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">9</span>
+              <span class="comm-id">*5</span>
+              <span class="comm-title">Abord thoracique d’une rupture traumatique du diaphragme : à propos de 09 cas</span>
+              <span class="comm-author">Mansour Fekkak</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">10</span>
+              <span class="comm-id">#46</span>
+              <span class="comm-title">Chirurgie des hémoptysies secondaires à une hyper-vascularisation bronchique</span>
+              <span class="comm-author">selma madhi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">11</span>
+              <span class="comm-id">#59</span>
+              <span class="comm-title">Pneumothorax cataménial : une entité rare à reconnaître</span>
+              <span class="comm-author">siwar hamdi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">12</span>
+              <span class="comm-id">#7</span>
+              <span class="comm-title">Prise en charge chirurgicale des kystes hydatiques pulmonaires géants</span>
+              <span class="comm-author">Wifek Saidani</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">13</span>
+              <span class="comm-id">#6</span>
+              <span class="comm-title">Pneumonectomie pour kyste hydatique hépatique rompu dans le thorax : à propos d’un cas</span>
+              <span class="comm-author">Wifek Saidani</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">14</span>
+              <span class="comm-id">#42</span>
+              <span class="comm-title">Sténoses laryngo-trachéales complexes : stratégies chirurgicales et résultats</span>
+              <span class="comm-author">Yosr Ben Attig</span>
+            </div>
+            </div>
+          </div>
+
+          <!-- Salle 2 -->
+          <div style="margin-top: 1.5mm; padding-top: 1.2mm; border-top: 0.8px dashed #bae6fd;">
+            <div class="prog-title-row">
+              <div class="prog-title">Atelier paramédical 2: Instrumentation en chirurgie robotique</div>
+              <div class="prog-badges">
+                <span class="badge-room-alt">Salle 2: Salle Diwan</span>
+                <span class="badge-type workshop">Workshop</span>
+              </div>
+            </div>
+            <div class="prog-details">
+              <span class="prog-speaker">Dr Mohamed Ben Amor</span> <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+              &amp; <span class="prog-speaker">Mme Sirine BOULILA</span> <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 16h30 - 17h00 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">16h30<br>17h00</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Pause</div>
+            <div class="prog-badges"><span class="badge-type pause">Pause</span></div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 6 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 7 : PROGRAMME - VENDREDI 06 NOVEMBRE (POSTERS COMMENTÉS 2 & ATELIER)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Programme Scientifique</span>
+      </div>
+      <span class="running-header-date">Vendredi 06 Novembre 2026 (Fin d'après-midi)</span>
+    </div>
+
+    <div class="day-banner">
+      <div class="day-banner-date">Vendredi 06 Novembre 2026 (Fin d'après-midi)</div>
+      <div class="day-banner-badge">Posters Commentés 2 &amp; Paramédical</div>
+    </div>
+
+    <table class="program-table">
+      <!-- 17h00 - 18h00 -->
+      <tr class="prog-row posters">
+        <td class="prog-time comm-time">17h00<br>18h00</td>
+        <td class="prog-content posters">
+          <!-- Salle 1 -->
+          <div>
+            <div class="prog-title-row">
+              <div class="prog-title">Session Posters commentés 2 (15 Communications)</div>
+              <div class="prog-badges">
+                <span class="badge-room">Salle 1: Salle Vizir</span>
+                <span class="badge-type posters">Posters</span>
+              </div>
+            </div>
+            <div class="prog-moderators">Modérateurs : Dr Mahdi Abdenadher, Dr Aymen Ben Ayed, Dr Wifek Saidani</div>
+            <div class="comms-list">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">*7</span>
+              <span class="comm-title">Massive Iatrogenic Hemothorax Following Internal Jugular Vein Catheterization: The Role of Video-Assisted Thoracoscopic Surgery — A Case Report</span>
+              <span class="comm-author">Anfal BENMESSAOUD</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">#20</span>
+              <span class="comm-title">Apport de l’imagerie dans le diagnostic et la planification chirurgicale de la séquestration pulmonaire</span>
+              <span class="comm-author">Chiraz Albouzidi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">#19</span>
+              <span class="comm-title">Pneumothorax sur poumon pathologique : la pleurodèse au talc est-elle une bonne alternative ?</span>
+              <span class="comm-author">Fatma Inched Jemal</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">#12</span>
+              <span class="comm-title">Pneumothorax spontané primitif chez les professionnels en activité : complications postopératoires et facteurs prédictifs</span>
+              <span class="comm-author">Hanen Bouattour</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">5</span>
+              <span class="comm-id">#24</span>
+              <span class="comm-title">Complexité chirurgicale et morbidité postopératoire après résection pulmonaire pour dilatations des bronches</span>
+              <span class="comm-author">Hanine Bel Hadj Mabrouk</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">6</span>
+              <span class="comm-id">#23</span>
+              <span class="comm-title">Vidéothoracoscopie versus chirurgie ouverte pour la résection pulmonaire dans les dilatations des bronches : étude rétrospective monocentrique</span>
+              <span class="comm-author">Hanine Bel Hadj Mabrouk</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">7</span>
+              <span class="comm-id">*14</span>
+              <span class="comm-title">Thymectomy and Myasthenia : How Can Perioperative Management Be Optimized ?</span>
+              <span class="comm-author">Karima ACHOUR</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">8</span>
+              <span class="comm-id">#71</span>
+              <span class="comm-title">La prise en charge des chondrosarcomes</span>
+              <span class="comm-author">Malek Abbes</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">9</span>
+              <span class="comm-id">#3</span>
+              <span class="comm-title">Rôle des pneumologues dans l’orientation des patients vers la vidéothoracoscopie (VATS) à DAKAR, SENEGAL : connaissances, pratiques et obstacles</span>
+              <span class="comm-author">Moussa Samba</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">10</span>
+              <span class="comm-id">#16</span>
+              <span class="comm-title">Prise en charge chirurgicale du pneumothorax spontané primitif chez le militaire actif : résultats et reprise de l’activité professionnelle</span>
+              <span class="comm-author">Siwar Hamdi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">11</span>
+              <span class="comm-id">#11</span>
+              <span class="comm-title">COMPLICATIONS POSTOPÉRATOIRES APRÈS POSE D’UNE CHAMBRE À CATHÉTER IMPLANTABLE PAR ABORD CÉPHALIQUE : INCIDENCE ET FACTEURS PRÉDICTIFS INDÉPENDANTS</span>
+              <span class="comm-author">Siwar Hamdi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">12</span>
+              <span class="comm-id">*11</span>
+              <span class="comm-title">A Mediastinal Mimicker in the Lung Parenchyme: The Triumph of Surgery over an Ectopic Thymoma</span>
+              <span class="comm-author">TADJINE YOUCEF</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">13</span>
+              <span class="comm-id">#38</span>
+              <span class="comm-title">Bénéfice neurologique et allègement thérapeutique après thymectomie pour myasthénie : série monocentrique de 84 patients</span>
+              <span class="comm-author">Wassim Chaieb</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">14</span>
+              <span class="comm-id">#15</span>
+              <span class="comm-title">Ruptures diaphragmatiques post traumatiques : résultats de la chirurgie par voie thoracique.</span>
+              <span class="comm-author">Wifek Saidani</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">15</span>
+              <span class="comm-id">#10</span>
+              <span class="comm-title">Prise en charge chirurgicale de la myasthénie grave juvénile</span>
+              <span class="comm-author">Wifek Saidani</span>
+            </div>
+            </div>
+          </div>
+
+          <!-- Salle 2 -->
+          <div style="margin-top: 1.5mm; padding-top: 1.2mm; border-top: 0.8px dashed #bae6fd;">
+            <div class="prog-title-row">
+              <div class="prog-title">Atelier paramédical 2: Gestion de l’anticoagulation en péri opératoire</div>
+              <div class="prog-badges">
+                <span class="badge-room-alt">Salle 2: Salle Diwan</span>
+                <span class="badge-type workshop">Workshop</span>
+              </div>
+            </div>
+            <div class="prog-details">
+              <span class="prog-speaker">Dr Sonia OUERGHI</span> <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 7 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 8 : PROGRAMME - VENDREDI 06 NOVEMBRE (POSTERS 3 & INAUGURATION)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Programme Scientifique</span>
+      </div>
+      <span class="running-header-date">Vendredi 06 Novembre 2026 (Soirée)</span>
+    </div>
+
+    <div class="day-banner">
+      <div class="day-banner-date">Vendredi 06 Novembre 2026 (Soirée)</div>
+      <div class="day-banner-badge">Posters 3 &amp; Cérémonie Inaugurale</div>
+    </div>
+
+    <table class="program-table">
+      <!-- 18h00 - 19h00 -->
+      <tr class="prog-row posters">
+        <td class="prog-time comm-time">18h00<br>19h00</td>
+        <td class="prog-content posters">
+          <!-- Salle 1 -->
+          <div>
+            <div class="prog-title-row">
+              <div class="prog-title">Session Posters commentés 3 (14 Communications)</div>
+              <div class="prog-badges">
+                <span class="badge-room">Salle 1: Salle Vizir</span>
+                <span class="badge-type posters">Posters</span>
+              </div>
+            </div>
+            <div class="prog-moderators">Modérateurs : Dr Ahmed Ben Ayed, Dr Ghassen Ben Halima, Dr Mariem Haj Dahmen</div>
+            <div class="comms-list">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">#33</span>
+              <span class="comm-title">Surgical Management of Pancoast-Tobias Tumors: A Retrospective Study of 18 Cases</span>
+              <span class="comm-author">Ahmed BAKHTI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">#25</span>
+              <span class="comm-title">Pulmonary Metastasectomy: A 25-Year Single-Center Experience</span>
+              <span class="comm-author">Ali Ben Salem</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">*16</span>
+              <span class="comm-title">Thymome et myasthénie : particularité de la prise en charge chirurgicale</span>
+              <span class="comm-author">Bensiali khadidja</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">#49</span>
+              <span class="comm-title">Segmentectomie anatomique pour néoplasie pulmonaire : notre expérience</span>
+              <span class="comm-author">Eya Fourati</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">5</span>
+              <span class="comm-id">#18</span>
+              <span class="comm-title">Résection pulmonaire étendue à la paroi thoracique pour cancer du poumon non à petites cellules : expérience monocentrique de 31 cas</span>
+              <span class="comm-author">Fatma Inched Jemal</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">6</span>
+              <span class="comm-id">*15</span>
+              <span class="comm-title">Prehabilitation in Thoracic Surgery: The Surgeon at the Heart of an Integrated Perioperative Pathway</span>
+              <span class="comm-author">Karima ACHOUR</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">7</span>
+              <span class="comm-id">#61</span>
+              <span class="comm-title">Résultats de la chirurgie des cancers bronchopulmonaires non à petites cellules (CNPC) localement avancés stade cT4</span>
+              <span class="comm-author">Mohamed REBEI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">8</span>
+              <span class="comm-id">*17</span>
+              <span class="comm-title">Prise en charge des tumeurs de Pancoast Tobias, quoi de neuf ?</span>
+              <span class="comm-author">S. CHALAL</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">9</span>
+              <span class="comm-id">*18</span>
+              <span class="comm-title">Chirurgie thoracique vidéo-assistée au CHU Mustapha : expérience de 147 procédures</span>
+              <span class="comm-author">Samir TCHOUAR</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">10</span>
+              <span class="comm-id">*19</span>
+              <span class="comm-title">Sleeve resections dans la prise en charge des tumeurs carcinoïdes bronchiques</span>
+              <span class="comm-author">Samir TCHOUAR</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">11</span>
+              <span class="comm-id">*20</span>
+              <span class="comm-title">De la thoracotomie à la VATS : quelle place pour la chirurgie mini-invasive dans les urgences thoraciques ?</span>
+              <span class="comm-author">Samir TCHOUAR</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">12</span>
+              <span class="comm-id">#52</span>
+              <span class="comm-title">Résections pulmonaires élargies à la carène : à propos de 15 cas</span>
+              <span class="comm-author">Selma Madhi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">13</span>
+              <span class="comm-id">#36</span>
+              <span class="comm-title">Résultats oncologiques de la chirurgie des thymomes associés à la myasthénie : expérience monocentrique sur 22 ans</span>
+              <span class="comm-author">Wassim Chaieb</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">14</span>
+              <span class="comm-id">#35</span>
+              <span class="comm-title">Performance diagnostique de l'intelligence artificielle sur radiographie thoracique pour la détection des nodules pulmonaires suspects et du cancer pulmonaire : revue systématique et méta-analyse</span>
+              <span class="comm-author">Wassim Chaieb</span>
+            </div>
+            </div>
+          </div>
+
+          <!-- Salle 2 -->
+          <div style="margin-top: 1.5mm; padding-top: 1.2mm; border-top: 0.8px dashed #bae6fd;">
+            <div class="prog-title-row">
+              <div class="prog-title">Communications orales Paramédicales</div>
+              <div class="prog-badges">
+                <span class="badge-room-alt">Salle 2: Salle Diwan</span>
+                <span class="badge-type posters">Communication</span>
+              </div>
+            </div>
+            <div class="prog-moderators">Modérateurs : Dr Kaouther Ben Amara, Dr Selma Madhi, Mme Sagiaa Ben Nasser, Mme Neira Bouajila</div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 19h00 -->
+      <tr class="prog-row event">
+        <td class="prog-time">19h00</td>
+        <td class="prog-content event">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#92400e;">Inauguration officielle du congrès</div>
+            <div class="prog-badges"><span class="badge-type event">Inauguration</span></div>
+          </div>
+          <div class="prog-details" style="font-weight:600; color:#b45309; line-height:1.3;">
+            Ouverture solennelle · Discours des sociétés savantes partenaires · Cocktail de bienvenue.
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 8 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 9 : PROGRAMME - SAMEDI 07 NOVEMBRE (MATINÉE)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Programme Scientifique</span>
+      </div>
+      <span class="running-header-date">Samedi 07 Novembre 2026 (Matinée)</span>
+    </div>
+
+    <div class="day-banner">
+      <div class="day-banner-date">Samedi 07 Novembre 2026 (Matinée)</div>
+      <div class="day-banner-badge">Communications Libres &amp; Session Robotique</div>
+    </div>
+
+    <table class="program-table">
+      <!-- 08h00 - 08h30 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">08h00<br>08h30</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Accueil et inscription</div>
+            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type pause">Accueil</span></div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 08h30 - 09h30 -->
+      <tr class="prog-row posters">
+        <td class="prog-time comm-time">08h30<br>09h30</td>
+        <td class="prog-content posters">
+          <div class="prog-title-row">
+            <div class="prog-title">Communications libres 1: Kyste Hydatique du thorax (8 Communications)</div>
+            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type posters">Communication</span></div>
+          </div>
+          <div class="prog-moderators">Modérateurs : Dr Sabeur Hachicha, Dr Sadok Hammemi, Dr Ahmed Lasmar</div>
+          <div class="comms-list">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">#32</span>
+              <span class="comm-title">Machine Learning for Safer Resections: Development and Validation of a Predictive Model for Pulmonary Hydatidosis</span>
+              <span class="comm-author">Ali Ben Salem</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">*3</span>
+              <span class="comm-title">Place des exérèses pulmonaires dans le traitement du kyste hydatique pulmonaire</span>
+              <span class="comm-author">Azeddine Simerabet</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">*2</span>
+              <span class="comm-title">TRAITEMENT NON CONSERVATEUR DU KYSTE HYDATIQUE PULMONAIRE : INDICATIONS ET EXPERIENCE DE NOTRE SERVICE</span>
+              <span class="comm-author">Benhalilou Sabrina</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">*4</span>
+              <span class="comm-title">One Health Approach &amp; Cystic Echinococcosis: Towards an Integrated Model of Prevention and Management in Thoracic Surgery</span>
+              <span class="comm-author">Karima ACHOUR</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">5</span>
+              <span class="comm-id">#27</span>
+              <span class="comm-title">Embolie pulmonaire hydatique : expérience monocentrique sur 27 ans</span>
+              <span class="comm-author">Mariem HADJ DAHMANE</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">6</span>
+              <span class="comm-id">#66</span>
+              <span class="comm-title">Particularités de la prise en charge de l’hémoptysie massive d’origine hydatique</span>
+              <span class="comm-author">Mohamed REBEI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">7</span>
+              <span class="comm-id">#58</span>
+              <span class="comm-title">Chirurgie des kystes hydatiques pulmonaires par videothoracoscopie : faisabilité et résultat</span>
+              <span class="comm-author">Mohamed REBEI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">8</span>
+              <span class="comm-id">#48</span>
+              <span class="comm-title">Facteurs de risque de morbidité post-opératoire dans la chirurgie du kyste hydatique pulmonaire : analyse d'une cohorte de 1056 patients</span>
+              <span class="comm-author">Safa Boudabous</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 09h30 - 10h30 -->
+      <tr class="prog-row posters">
+        <td class="prog-time comm-time">09h30<br>10h30</td>
+        <td class="prog-content posters">
+          <div class="prog-title-row">
+            <div class="prog-title">Communications libres 2: Traumatisme thoracique (6 Communications)</div>
+            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type posters">Communication</span></div>
+          </div>
+          <div class="prog-moderators">Modérateurs : Dr Jalel Mohamed, Dr Bechir Ben Radhia, Dr Yosr Ben Attig</div>
+          <div class="comms-list">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">*1</span>
+              <span class="comm-title">Stabilisation des volets thoraciques par un matériel d'ostéosynthèse thoracique : à propos d’une étude de 81 cas.</span>
+              <span class="comm-author">Mansour FEKKAK</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">#57</span>
+              <span class="comm-title">Particularités de la prise en charge des plaies pénétrantes du thorax</span>
+              <span class="comm-author">Mohamed REBEI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">#5</span>
+              <span class="comm-title">Chirurgie diaphragmatique au CHNU de Fann : indications, techniques et résultats d’une série de 32 cas</span>
+              <span class="comm-author">Moussa SAMBA</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">#17</span>
+              <span class="comm-title">Traumatisme thoracique fermé chez le militaire actif : profil lésionnel et présentation clinique</span>
+              <span class="comm-author">Siwar HAMDI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">5</span>
+              <span class="comm-id">#55</span>
+              <span class="comm-title">Ostéosynthèse costale par broches : technique, indications et résultats postopératoires</span>
+              <span class="comm-author">Yosr BEN ATTIG</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">6</span>
+              <span class="comm-id">#70</span>
+              <span class="comm-title">Prise en charge du traumatisme thoracique dans un milieu chirurgical</span>
+              <span class="comm-author">Youssef ABBES</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 10h30 - 11h00 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">10h30<br>11h00</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Pause</div>
+            <div class="prog-badges"><span class="badge-type pause">Pause</span></div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 11h00 - 12h30 -->
+      <tr class="prog-row session">
+        <td class="prog-time">11h00<br>12h30</td>
+        <td class="prog-content session">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#991b1b;">Session 1: Chirurgie robotique (SFCTCV)</div>
+            <div class="prog-badges">
+              <span class="badge-room">Salle Vizir</span>
+              <span class="badge-chair">SFCTCV</span>
+              <span class="badge-type session">Plénière</span>
+            </div>
+          </div>
+          <div class="prog-details">
+            <div style="font-weight:700; color:#b82538; margin-bottom:0.3mm;">
+              Présidé par Dr Stéphane RENAUD <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg>
+            </div>
+            <div class="prog-moderators">Modérateurs : Dr Hazem Zribi, Dr Manel Chtourou, Dr Alessio Mariolo</div>
+            <div class="talks-list" style="margin-top:0.6mm;">
+              <div class="talk-item">
+                <span class="talk-title">• Programme de chirurgie thoracique robotique (20 mn)</span>
+                <span class="talk-speaker">Dr Ludovic Fournel <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Rentabilisation d’un programme robotique (20 mn)</span>
+                <span class="talk-speaker">Dr Joseph Seitlinger <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Chirurgie thoracique robotique et pièges à éviter (20 mn)</span>
+                <span class="talk-speaker">Pr Stéphane Renaud <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+              <div class="talk-item" style="color:#0c3b6d; font-weight:700;">
+                <span class="talk-title">• Discussion générale (30 mn)</span>
+                <span class="talk-speaker">Assemblée</span>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 12h30 - 13h00 -->
+      <tr class="prog-row symposium">
+        <td class="prog-time">12h30<br>13h00</td>
+        <td class="prog-content symposium">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#6d28d9;">Symposium</div>
+            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type symposium">Symposium</span></div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 13h00 - 14h00 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">13h00<br>14h00</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Déjeuner</div>
+            <div class="prog-badges"><span class="badge-type pause">Déjeuner</span></div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 9 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 10 : PROGRAMME - SAMEDI 07 NOVEMBRE (APRÈS-MIDI & CLÔTURE)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Programme Scientifique</span>
+      </div>
+      <span class="running-header-date">Samedi 07 Novembre 2026 (Après-midi)</span>
+    </div>
+
+    <div class="day-banner">
+      <div class="day-banner-date">Samedi 07 Novembre 2026 (Après-midi)</div>
+      <div class="day-banner-badge">Sessions Plénières, Vidéos &amp; Clôture</div>
+    </div>
+
+    <table class="program-table">
+      <!-- 14h00 - 15h30 -->
+      <tr class="prog-row session">
+        <td class="prog-time">14h00<br>15h30</td>
+        <td class="prog-content session">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#991b1b;">Session 2: Pathologie thymique</div>
+            <div class="prog-badges">
+              <span class="badge-room">Salle Vizir</span>
+              <span class="badge-chair">STN</span>
+              <span class="badge-type session">Plénière</span>
+            </div>
+          </div>
+          <div class="prog-details">
+            <div style="font-weight:700; color:#b82538; margin-bottom:0.2mm;">Société Tunisienne de Neurologie</div>
+            <div class="prog-moderators">Modérateurs : Dr Chokri Mhiri, Dr Lobna Maalej, Dr Adel Marghli, Dr Imed Frikha, Dr Mariem Ben Amor</div>
+            <div class="talks-list" style="margin-top:0.4mm;">
+              <div class="talk-item">
+                <span class="talk-title">• Thymectomie par voies mini-invasives : quelle approche ? (15 mn)</span>
+                <span class="talk-speaker">Dr M. S. BOUDAYA <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Thymome localement avancé : quelles options en néoadjuvant en 2026 ? (15 mn)</span>
+                <span class="talk-speaker">Dr Afef KHANFIR <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• La place du curage ganglionnaire dans la chirurgie des thymomes (15 mn)</span>
+                <span class="talk-speaker">Dr Imen BOUASSIDA <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Les nouvelles recommandations de la prise en charge de la myasthénie (15 mn)</span>
+                <span class="talk-speaker">Dr Amina GARGOURI <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 15h30 - 16h30 -->
+      <tr class="prog-row session">
+        <td class="prog-time">15h30<br>16h30</td>
+        <td class="prog-content session">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#991b1b;">Session 3: Approche Endobronchique</div>
+            <div class="prog-badges">
+              <span class="badge-room">Salle Vizir</span>
+              <span class="badge-chair">SFCTCV</span>
+              <span class="badge-type session">Plénière</span>
+            </div>
+          </div>
+          <div class="prog-details">
+            <div style="font-weight:700; color:#b82538; margin-bottom:0.2mm;">
+              Présidé par Pr Marc FILAIRE (SFCTCV) <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg>
+            </div>
+            <div class="prog-moderators">Modérateurs : Dr Tarek Kilani, Dr Belhassen Smati, Dr Rami Elleuch</div>
+            <div class="talks-list" style="margin-top:0.4mm;">
+              <div class="talk-item">
+                <span class="talk-title">• Staging ganglionnaire : de la médiastinoscopie à l’EBUS (15 mn)</span>
+                <span class="talk-speaker">Dr Laura Filaire <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Prise en charge des sténoses trachéales (15 mn)</span>
+                <span class="talk-speaker">Dr Géraud Galvaing <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Bronchoscopie rigide et tumeurs endobronchiques (15 mn)</span>
+                <span class="talk-speaker">Pr Marc Filaire <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 16h30 - 17h00 -->
+      <tr class="prog-row pause">
+        <td class="prog-time">16h30<br>17h00</td>
+        <td class="prog-content pause">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#065f46;">Pause</div>
+            <div class="prog-badges"><span class="badge-type pause">Pause</span></div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 17h00 - 18h00 -->
+      <tr class="prog-row session">
+        <td class="prog-time">17h00<br>18h00</td>
+        <td class="prog-content session">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#991b1b;">Session 4: La gestion périopératoire</div>
+            <div class="prog-badges">
+              <span class="badge-room">Salle Vizir</span>
+              <span class="badge-chair">APACS</span>
+              <span class="badge-type session">Plénière</span>
+            </div>
+          </div>
+          <div class="prog-details">
+            <div style="font-weight:700; color:#b82538; margin-bottom:0.2mm;">APACS</div>
+            <div class="prog-moderators">Modérateurs : Dr Sami Kammoun, Dr Sadok Hammami, Dr Wajdi Ketata, Dr Nessrine Kallel</div>
+            <div class="talks-list" style="margin-top:0.4mm;">
+              <div class="talk-item">
+                <span class="talk-title">• Bullage prolongé en post opératoire : prévention et traitement (15 mn)</span>
+                <span class="talk-speaker">Dr Abdessalem HENTATI <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Réhabilitation préopératoire : indications et intérêts (15 mn)</span>
+                <span class="talk-speaker">Dr Walid FEKI <svg class="flag" viewBox="-60 -40 120 80" width="12" height="8"><path fill="#e70013" d="M-60-40H60v80H-60z"/><circle fill="#fff" r="20"/><circle fill="#e70013" r="15"/><circle fill="#fff" cx="4" r="12"/><path fill="#e70013" d="M-5 0l16.281-5.29L1.22 8.56V-8.56L11.28 5.29z"/></svg></span>
+              </div>
+              <div class="talk-item">
+                <span class="talk-title">• Douleur chronique post opératoire : étiologies et prise en charge (15 mn)</span>
+                <span class="talk-speaker">Dr Rym ZAIMI <svg class="flag" viewBox="0 0 3 2" width="12" height="8"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></span>
+              </div>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 18h00 - 19h00 -->
+      <tr class="prog-row posters">
+        <td class="prog-time comm-time">18h00<br>19h00</td>
+        <td class="prog-content posters">
+          <div class="prog-title-row">
+            <div class="prog-title">Session 5: Séance vidéo (4 Communications)</div>
+            <div class="prog-badges">
+              <span class="badge-room">Salle Vizir</span>
+              <span class="badge-type posters">Vidéo</span>
+            </div>
+          </div>
+          <div class="prog-moderators">Modérateurs : Dr Imen Bouacida, Dr Majed Khiari, Dr Walid Abid</div>
+          <div class="comms-list">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">#31</span>
+              <span class="comm-title">Uniportal VATS Anatomical Resection for Intralobar Sequestration: Navigating Severe Inflammatory Tissue and Adhesions</span>
+              <span class="comm-author">Ali Ben Salem</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">#30</span>
+              <span class="comm-title">A Second Life for an ectopic parathyroid: Autograft to outsmart post-Resection Hypocalcemia</span>
+              <span class="comm-author">Ali Ben Salem</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">#29</span>
+              <span class="comm-title">Surgical treatment of recurrent post-intubation lower tracheal stenosis after failed endoscopic stenting</span>
+              <span class="comm-author">Ahmed BAKHTI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">#69</span>
+              <span class="comm-title">Approche thoracoscopique d'une séquestration pulmonaire intra lobaire</span>
+              <span class="comm-author">Amina Abdelkebir</span>
+            </div>
+          </div>
+        </td>
+      </tr>
+
+      <!-- 19h00 -->
+      <tr class="prog-row event">
+        <td class="prog-time">19h00</td>
+        <td class="prog-content event">
+          <div class="prog-title-row">
+            <div class="prog-title" style="color:#92400e; font-size:7.2pt;">Clôture du congrès &amp; Assemblée Générale de la TTSA</div>
+            <div class="prog-badges"><span class="badge-type event">Clôture</span></div>
+          </div>
+          <div class="prog-details" style="font-size:5.5pt; line-height:1.25;">
+            Attribution des Prix des Meilleures Communications Scientifiques &amp; Bilan de l'Assemblée Générale.
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 10 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 11 : POSTERS AFFICHÉS (NON COMMENTÉS) - PARTIE 1 (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Posters Affichés (Non Commentés)</span>
+      </div>
+      <span class="running-header-date">Vendredi 06 &amp; Samedi 07 Novembre 2026</span>
+    </div>
+
+    <div class="day-banner" style="background: linear-gradient(135deg, #0C589A 0%, #0369a1 100%);">
+      <div class="day-banner-date">Posters Affichés (Non Commentés) · Partie 1</div>
+      <div class="day-banner-badge" style="background:#e0f2fe; color:#0369a1;">Posters 01 à 16 · Pauses J1 &amp; J2</div>
+    </div>
+
+    <div style="background:#ffffff; border:0.8px solid #cbd5e1; border-left:3.5px solid #0C589A; border-radius:1.5mm; padding:2mm 2.5mm; margin-top:1.5mm;">
+      <div class="comms-list" style="gap:0.6mm;">
+            <div class="comm-item">
+              <span class="comm-order">1</span>
+              <span class="comm-id">*13</span>
+              <span class="comm-title">Kyste hydatique pulmonaire chez l’enfant : à propos d’un cas</span>
+              <span class="comm-author">A. Khelili</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">2</span>
+              <span class="comm-id">#41</span>
+              <span class="comm-title">Thoracic cystic lymphangioma: Surgical management and outcomes</span>
+              <span class="comm-author">Ahmed BAKHTI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">3</span>
+              <span class="comm-id">#28</span>
+              <span class="comm-title">Place de la chirurgie mini-invasive dans la prise en charge des tumeurs médiastinales</span>
+              <span class="comm-author">Amina Abdelkebir</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">4</span>
+              <span class="comm-id">*9</span>
+              <span class="comm-title">Recurrent Pleuro-Parietal Hydatid Cyst in a Child: A Case Report</span>
+              <span class="comm-author">Benameur H</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">5</span>
+              <span class="comm-id">*8</span>
+              <span class="comm-title">Penetrating Thoracic Trauma Caused by Double Metal Bars: From Emergency Management to Definitive Surgical Repair</span>
+              <span class="comm-author">Boughouaou Siham</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">6</span>
+              <span class="comm-id">#53</span>
+              <span class="comm-title">Chylothorax postopératoire : quand faut-il intervenir ?</span>
+              <span class="comm-author">Chiraz Albouzidi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">7</span>
+              <span class="comm-id">#45</span>
+              <span class="comm-title">La côte hydatique : une localisation exceptionnelle de l’échinococcose</span>
+              <span class="comm-author">Eya Fourati</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">8</span>
+              <span class="comm-id">#51</span>
+              <span class="comm-title">Perforation œsophagienne : stratégies de prise en charge chirurgicale et résultats</span>
+              <span class="comm-author">Eya Fourati</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">9</span>
+              <span class="comm-id">#21</span>
+              <span class="comm-title">Hydatidose médiastinale primitive : une localisation rare et sous-estimée</span>
+              <span class="comm-author">Fatma Inched Jemal</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">10</span>
+              <span class="comm-id">#22</span>
+              <span class="comm-title">Léiomyosarcome pulmonaire primitif : caractéristiques cliniques, prise en charge chirurgicale et résultats</span>
+              <span class="comm-author">Fatma Inched Jemal</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">11</span>
+              <span class="comm-id">*21</span>
+              <span class="comm-title">Hémothorax traumatique massif sous anticoagulation : quelle stratégie chirurgicale et quelle place pour la VATS ?</span>
+              <span class="comm-author">Hadji Chaima</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">12</span>
+              <span class="comm-id">#13</span>
+              <span class="comm-title">Cas clinique : Volumineux kyste hydatique médiastino-abdominal s’étendant à travers le hiatus de Larrey : à propos d’un cas rare</span>
+              <span class="comm-author">Hanen Bouattour</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">13</span>
+              <span class="comm-id">#14</span>
+              <span class="comm-title">Complications infectieuses après implantation d’un dispositif d’accès veineux totalement implantable : analyse rétrospective de 513 patients</span>
+              <span class="comm-author">Hanen Bouattour</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">14</span>
+              <span class="comm-id">*10</span>
+              <span class="comm-title">When a Hydatid Cyst Hides a Cancer: A Giant Pulmonary Mass Mimicking Hydatid Disease : A Case Report</span>
+              <span class="comm-author">Malek Bounefla</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">15</span>
+              <span class="comm-id">#67</span>
+              <span class="comm-title">La tuberculose révélée par un pneumothorax spontané : série de cas</span>
+              <span class="comm-author">Manel Ben Tahar</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">16</span>
+              <span class="comm-id">#72</span>
+              <span class="comm-title">La chirurgie de l’hydatidose pulmonaire chez les enfants</span>
+              <span class="comm-author">Manel Ben Tahar</span>
+            </div>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 11 sur 12</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 12 : POSTERS AFFICHÉS (NON COMMENTÉS) - PARTIE 2 (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">Posters Affichés (Non Commentés)</span>
+      </div>
+      <span class="running-header-date">Vendredi 06 &amp; Samedi 07 Novembre 2026</span>
+    </div>
+
+    <div class="day-banner" style="background: linear-gradient(135deg, #0C589A 0%, #0369a1 100%);">
+      <div class="day-banner-date">Posters Affichés (Non Commentés) · Partie 2</div>
+      <div class="day-banner-badge" style="background:#e0f2fe; color:#0369a1;">Posters 17 à 31 · Pauses J1 &amp; J2</div>
+    </div>
+
+    <div style="background:#ffffff; border:0.8px solid #cbd5e1; border-left:3.5px solid #0C589A; border-radius:1.5mm; padding:2mm 2.5mm; margin-top:1.5mm;">
+      <div class="comms-list" style="gap:0.6mm;">
+            <div class="comm-item">
+              <span class="comm-order">17</span>
+              <span class="comm-id">#75</span>
+              <span class="comm-title">La chirurgie des greffes aspergillaires compliquant la tuberculose pulmonaire</span>
+              <span class="comm-author">Manel Ben Tahar</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">18</span>
+              <span class="comm-id">#60</span>
+              <span class="comm-title">Traitement chirurgical des plaies trachéales iatrogènes : Techniques et résultats</span>
+              <span class="comm-author">Mohamed REBEI</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">19</span>
+              <span class="comm-id">*22</span>
+              <span class="comm-title">Neurofibrome cervicothoracique</span>
+              <span class="comm-author">Mohammed Smaili</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">20</span>
+              <span class="comm-id">#2</span>
+              <span class="comm-title">Kystes hydatiques pulmonaires bilatéraux : prise en charge chirurgicale par vidéothoracoscopie à propos d’un cas</span>
+              <span class="comm-author">Moussa Samba</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">21</span>
+              <span class="comm-id">#4</span>
+              <span class="comm-title">Rupture iatrogène de la bronche souche gauche par sonde double lumière lors d’une pneumonectomie : à propos d’un cas</span>
+              <span class="comm-author">Moussa Samba</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">22</span>
+              <span class="comm-id">#47</span>
+              <span class="comm-title">Amylose pulmonaire nodulaire isolée : une entité rare pseudo-tumorale</span>
+              <span class="comm-author">Safa Boudabous</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">23</span>
+              <span class="comm-id">#62</span>
+              <span class="comm-title">La prise en charge de la mucormycose pulmonaire</span>
+              <span class="comm-author">Safa Boudabous</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">24</span>
+              <span class="comm-id">#64</span>
+              <span class="comm-title">Apport de la vidéo-thoracoscopie dans la prise en charge des pleurésies néoplasiques : à propos de 58 cas</span>
+              <span class="comm-author">Safa Boudabous</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">25</span>
+              <span class="comm-id">#50</span>
+              <span class="comm-title">Résections pulmonaires élargies à l’axe bronchique : indications et résultats</span>
+              <span class="comm-author">Selma Madhi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">26</span>
+              <span class="comm-id">#54</span>
+              <span class="comm-title">Résections trachéales de durée prolongée : facteurs de risque et résultats</span>
+              <span class="comm-author">Selma Madhi</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">27</span>
+              <span class="comm-id">*12</span>
+              <span class="comm-title">Traumatic Left Atrial Injury Caused by a Stab Wound: Emergency Surgical Management of a Case</span>
+              <span class="comm-author">Terchi Soumia</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">28</span>
+              <span class="comm-id">#37</span>
+              <span class="comm-title">Suites postopératoires complexes après thymectomie pour myasthénie : incidence et facteurs associés dans une série de 84 patients</span>
+              <span class="comm-author">Wassim Chaieb</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">29</span>
+              <span class="comm-id">#39</span>
+              <span class="comm-title">Association entre suites postopératoires complexes et absence d’amélioration neurologique à long terme après thymectomie pour myasthénie</span>
+              <span class="comm-author">Wassim Chaieb</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">30</span>
+              <span class="comm-id">#8</span>
+              <span class="comm-title">Syndrome du lobe moyen révélant une tumeur carcinoide</span>
+              <span class="comm-author">Wifek Saidani</span>
+            </div>
+            <div class="comm-item">
+              <span class="comm-order">31</span>
+              <span class="comm-id">#40</span>
+              <span class="comm-title">Fistule œso-trachéale pédiatrique : diagnostic et challenge de la réparation chirurgicale</span>
+              <span class="comm-author">Yosr Ben Attig</span>
+            </div>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page">Page 12 sur 12</span>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════════
+       PAGE 13 : INFORMATIONS PRATIQUES & CONTACTS DU CONGRÈS (A5)
+       ═══════════════════════════════════════════════════════════════════ -->
+  <div class="page">
+    <div class="running-header">
+      <div class="running-header-left">
+        <img src="/img/logo.svg" alt="TTSA" class="running-header-logo">
+        <span class="running-header-title">5<sup>ème</sup> Congrès National de Chirurgie Thoracique</span>
+      </div>
+      <span class="running-header-date">06 - 07 Novembre 2026 · Sfax</span>
+    </div>
+
+    <div class="day-banner" style="background: linear-gradient(135deg, #071e3d 0%, #0c3b6d 100%);">
+      <div class="day-banner-date">Informations Pratiques &amp; Contacts Utiles</div>
+      <div class="day-banner-badge" style="background:#e0f2fe; color:#0369a1;">Secrétariat &amp; Organisation · TTSA 2026</div>
+    </div>
+
+    <div class="contact-page-container">
+      <div class="contact-grid">
+        <!-- CARTE 1 : Secrétariat Permanent TTSA -->
+        <div class="contact-card featured">
+          <div class="contact-card-header">
+            <div class="contact-card-icon" style="background:#0C589A;">TTSA</div>
+            <div class="contact-card-title">Secrétariat Permanent TTSA</div>
+          </div>
+          <div class="contact-card-body">
+            <div class="contact-info-row">
+              <span class="contact-info-label">Siège :</span>
+              <span class="contact-info-val">Service de Chirurgie Thoracique et Cardio-Vasculaire, CHU Habib Bourguiba, Sfax</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Email :</span>
+              <span class="contact-info-val"><strong>contact@ttsa.tn</strong><br>ttsa.contact@gmail.com</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Site Web :</span>
+              <span class="contact-info-val"><strong>www.ttsa.tn</strong></span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Guichet :</span>
+              <span class="contact-info-val">Hall principal de l'Hôtel Borj Dhiafa ouvert en continu durant tout le congrès</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE 2 : Lieu du Congrès & Accès -->
+        <div class="contact-card venue">
+          <div class="contact-card-header">
+            <div class="contact-card-icon" style="background:#0369a1;">LIEU</div>
+            <div class="contact-card-title">Hôtel Borj Dhiafa (5★)</div>
+          </div>
+          <div class="contact-card-body">
+            <div class="contact-info-row">
+              <span class="contact-info-label">Adresse :</span>
+              <span class="contact-info-val">Route Soukra Km 3, 3052 Sfax, Tunisie</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Téléphone :</span>
+              <span class="contact-info-val"><strong>+216 74 677 777</strong></span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Accès :</span>
+              <span class="contact-info-val">15 min de l'Aéroport Sfax-Thyna<br>10 min de la Gare SNCFT et Centre-ville</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Espaces :</span>
+              <span class="contact-info-val">Salle Plénière · Salles Ateliers · Espace Exposition &amp; Galerie Posters</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE 3 : Accueil, Badges & Attestations -->
+        <div class="contact-card badges">
+          <div class="contact-card-header">
+            <div class="contact-card-icon" style="background:#d97706;">INFO</div>
+            <div class="contact-card-title">Accueil, Badges &amp; Attestations</div>
+          </div>
+          <div class="contact-card-body">
+            <div class="contact-info-row">
+              <span class="contact-info-label">Ouverture :</span>
+              <span class="contact-info-val">Vendredi 06 Novembre à partir de <strong>08h00</strong> au desk d'accueil</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Badge :</span>
+              <span class="contact-info-val"><strong>Obligatoire</strong> pour l'accès aux salles de conférence, ateliers et déjeuners</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Attestations :</span>
+              <span class="contact-info-val">Délivrées sur place au bureau d'accueil et téléchargeables sur <strong>www.ttsa.tn</strong></span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Prix Congrès :</span>
+              <span class="contact-info-val">Remise des Prix Scientifiques lors de la séance de clôture (Samedi 16h45)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARTE 4 : Pré-projection & Support Technique -->
+        <div class="contact-card tech">
+          <div class="contact-card-header">
+            <div class="contact-card-icon" style="background:#7c3aed;">TECH</div>
+            <div class="contact-card-title">Pré-projection &amp; Support</div>
+          </div>
+          <div class="contact-card-body">
+            <div class="contact-info-row">
+              <span class="contact-info-label">Slide Room :</span>
+              <span class="contact-info-val">Dépôt des présentations au moins <strong>1 heure avant</strong> le début de chaque session</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Formats :</span>
+              <span class="contact-info-val">PowerPoint (16:9), Keynote ou PDF sur support USB</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">WhatsApp :</span>
+              <span class="contact-info-val"><strong>+216 23 935 354</strong> (Assistance technique)</span>
+            </div>
+            <div class="contact-info-row">
+              <span class="contact-info-label">Support :</span>
+              <span class="contact-info-val"><strong>ttsa.sbmission@gmail.com</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BANNIÈRE VIP / REMERCIEMENTS & PORTAIL WEB -->
+      <div class="contact-vip-banner">
+        <div class="contact-vip-text">
+          <span class="contact-vip-highlight">Le Bureau Exécutif de la TTSA</span> remercie chaleureusement l'ensemble des orateurs, présidents de séance, participants et partenaires industriels pour leur contribution active au rayonnement de la chirurgie thoracique tunisienne et internationale.
+        </div>
+        <div class="contact-vip-badge">
+          <div class="contact-vip-badge-url">www.ttsa.tn</div>
+          <div class="contact-vip-badge-sub">Portail Officiel TTSA</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span class="running-footer-left">Société de Chirurgie Thoracique Tunisienne</span>
+      <span class="running-footer-page"></span>
+    </div>
+  </div>
+
+</body>
+</html>

@@ -9,3 +9,4 @@ check_db.js
 migrate.js
 *.zip
 zip_full.js
+chrome-temp/
