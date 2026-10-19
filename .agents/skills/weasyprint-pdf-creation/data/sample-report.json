@@ -1,0 +1,28 @@
+{
+  "report": {
+    "label": "Monthly field note",
+    "title": "Tiny Launch Report",
+    "summary": "A compact, print-safe status report for product, marketing, or operations updates. Built to survive long notes and still look warm.",
+    "period": "April 2026",
+    "client": "Northstar Labs",
+    "status": "On track",
+    "owner": "Mango Studio",
+    "metrics": [
+      {"label": "Activated users", "value": "1,284", "note": "+18% from March"},
+      {"label": "Support load", "value": "42", "note": "tickets closed"},
+      {"label": "Cycle time", "value": "3.2d", "note": "median ship time"}
+    ],
+    "highlights": [
+      {"tag": "Win", "title": "Docs beat demos", "text": "The short setup guide produced more qualified trials than the polished launch video."},
+      {"tag": "Watch", "title": "Billing copy is fuzzy", "text": "Three users asked if annual pricing included workspace seats and export access."}
+    ],
+    "bars": [
+      {"name": "Organic", "value": 74},
+      {"name": "Newsletter", "value": 58},
+      {"name": "Partner", "value": 41},
+      {"name": "Search", "value": 36}
+    ],
+    "footer": "Use this as a one-page PDF snapshot, not a dashboard replacement.",
+    "contact": "mango.example · hello@mango.example"
+  }
+}

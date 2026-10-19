@@ -1,0 +1,17 @@
+{
+  "receipt": {
+    "merchant": "Mango Studio",
+    "address": "Casablanca · Remote · hello@mango.example",
+    "number": "RCPT-2026-044",
+    "date": "May 07",
+    "currency": "$",
+    "items": [
+      {"name": "Template polish", "amount": "420"},
+      {"name": "PDF QA pass", "amount": "180"},
+      {"name": "Thumbnail export", "amount": "60"}
+    ],
+    "total": "660",
+    "method": "Card ending 0420",
+    "note": "Thanks — this receipt was rendered from HTML/CSS with WeasyPrint. Keep it boring to run and pleasant to read."
+  }
+}

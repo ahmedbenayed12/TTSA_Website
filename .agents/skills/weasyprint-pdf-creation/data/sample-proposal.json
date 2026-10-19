@@ -1,0 +1,19 @@
+{
+  "proposal": {
+    "title": "PDF Template System",
+    "client": "Northstar Labs",
+    "intro": "A small source-controlled document system for invoices, briefs, reports, and proposals. No fragile screenshots. No low-level PDF drawing code.",
+    "price": "$6,400",
+    "timeline": "2 focused weeks",
+    "phases": [
+      {"title": "Design language", "text": "Set print tokens, type scale, spacing, and reusable page patterns."},
+      {"title": "Templates", "text": "Build HTML/CSS templates backed by sample JSON and ugly-data tests."},
+      {"title": "QA + handoff", "text": "Render PDFs, check text extraction, thumbnails, and template rules."}
+    ],
+    "deliverables": ["Invoice template", "Report template", "Proposal template", "One-page brief", "QA checklist"],
+    "assumptions": ["Client owns final copy", "One visual direction", "A4-first layout", "Static data inputs"],
+    "positioning": "Use web design where it helps, then render through a print engine built for paged output.",
+    "next_step": "Approve the source templates, then test with real long values before using in production.",
+    "contact": "mango.example · hello@mango.example"
+  }
+}

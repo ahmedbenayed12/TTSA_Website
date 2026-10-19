@@ -1,0 +1,21 @@
+{
+  "statement": {
+    "title": "Client Account Statement",
+    "intro": "A ledger-style PDF for balances, payments, and open charges. Designed to keep numbers aligned and descriptions wrap-safe.",
+    "account": "Northstar Labs",
+    "period": "May 2026",
+    "summary": [
+      {"label": "Opening", "value": "$1,200", "note": "from prior period"},
+      {"label": "Payments", "value": "$2,000", "note": "received"},
+      {"label": "Closing", "value": "$3,420", "note": "due this period"}
+    ],
+    "rows": [
+      {"date": "May 01", "description": "Opening balance", "amount": "$1,200", "balance": "$1,200", "kind": "debit"},
+      {"date": "May 03", "description": "Payment received - bank transfer", "amount": "-$2,000", "balance": "-$800", "kind": "credit"},
+      {"date": "May 12", "description": "Report design and PDF rendering system", "amount": "$2,800", "balance": "$2,000", "kind": "debit"},
+      {"date": "May 18", "description": "Long reference: NORTHSTAR-MANGO-STATEMENT-2026-VERY-LONG-ID", "amount": "$1,420", "balance": "$3,420", "kind": "debit"}
+    ],
+    "footer": "Balances are sample data for template testing.",
+    "contact": "mango.example · billing@mango.example"
+  }
+}

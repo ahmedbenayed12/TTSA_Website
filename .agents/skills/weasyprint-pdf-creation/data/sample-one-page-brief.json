@@ -1,0 +1,18 @@
+{
+  "brief": {
+    "title": "Should we replace markdown PDFs?",
+    "context": "Markdown exports are fast but bland. The current need is branded, reusable business PDFs without a large design toolchain.",
+    "decision": "Yes",
+    "signals": [
+      {"label": "Quality", "value": "Higher", "note": "Real layout, hierarchy, and print CSS."},
+      {"label": "Ops burden", "value": "Low", "note": "Python script, JSON data, source-controlled templates."},
+      {"label": "Risk", "value": "Medium", "note": "CSS support and native dependencies must be verified."}
+    ],
+    "matters": ["Readable extracted text", "A4 page discipline", "Long values wrap cleanly", "No JavaScript dependency"],
+    "risks": ["Unsupported CSS surprises", "Font differences across machines", "Pretty sample data hides overflow bugs"],
+    "recommendation": "Use WeasyPrint for owned designed PDFs; keep Playwright for JS-heavy pages.",
+    "rationale": "It keeps the authoring model simple while producing substantially better PDFs than generic exports.",
+    "owner": "Mango Studio",
+    "date": "May 2026"
+  }
+}

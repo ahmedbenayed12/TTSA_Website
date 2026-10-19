@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "skills": {
+    "browser-automation": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/browser-automation/SKILL.md",
+      "computedHash": "df2590b6464294d20878b6029f4bd2d6af761c17199478e82d1b111100873e57"
+    },
+    "frontend-design": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "808e01b929a2b0fabaede596026c8072ba967fe970ac331f2e75367ce548b3c0"
+    },
+    "weasyprint-pdf-creation": {
+      "source": "slapash/weasyprint-pdf-skill",
+      "sourceType": "github",
+      "skillPath": "SKILL.md",
+      "computedHash": "40e70c941090b4f6ff9d4374b887dc44e171063be2136fd6195b17607a0abcbb"
+    }
+  }
+}
