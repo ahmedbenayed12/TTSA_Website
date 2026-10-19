@@ -625,8 +625,25 @@
 .presentation-item.has-badge {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: nowrap;
+}
+
+.order-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
 }
 
 .poster-badge {
