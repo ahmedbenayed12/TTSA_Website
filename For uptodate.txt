@@ -1,0 +1,6 @@
+-Do not show blindness statu for participant
+-Correct luck of information popup in submission for obligatory information 
+-For score note Up to 10 if reviwer slect refused : show pop up : are you sure ?
+-Edit name and participant information
+-Admin can view as participant or reviwer
+-Many reviewer score ?
