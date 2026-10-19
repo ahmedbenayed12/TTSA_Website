@@ -246,7 +246,7 @@
           <div class="filters-row">
             <div class="search-box-wrap">
               <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, speaker, room..." data-en-placeholder="Search by topic, speaker, room..." data-fr-placeholder="Rechercher un sujet, intervenant, session..." onkeyup="handleSearch()"/>
+              <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, speaker, room..." data-en-placeholder="Search by topic, speaker, room..." data-fr-placeholder="Rechercher un sujet, intervenant, session..." oninput="handleSearch()" onkeyup="handleSearch()"/>
             </div>
 
             <div class="action-btns-group">
@@ -2719,14 +2719,17 @@ function toggleCommunicationSession(el) {
   const isExpanded = card.classList.contains('is-expanded');
   if (isExpanded) {
     card.classList.remove('is-expanded');
+    delete card.dataset.userExpanded;
     updateExpandBtn(card, false);
     if (el.closest('.list-collapse-bar.bottom')) {
       card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   } else {
     card.classList.add('is-expanded');
+    card.dataset.userExpanded = 'true';
     updateExpandBtn(card, true);
   }
+}
 }
 
 function updateExpandBtn(card, isExpanded) {
@@ -2819,8 +2822,23 @@ function applyFilters() {
     if (matchesDay && matchesCat && matchesQuery) {
       card.style.display = 'block';
       visibleCount++;
+
+      // Auto-expand collapsible sessions when searching
+      if (card.classList.contains('collapsible-session')) {
+        if (query) {
+          card.classList.add('is-expanded');
+          updateExpandBtn(card, true);
+        } else if (!card.dataset.userExpanded) {
+          card.classList.remove('is-expanded');
+          updateExpandBtn(card, false);
+        }
+      }
     } else {
       card.style.display = 'none';
+      if (!query && card.classList.contains('collapsible-session') && !card.dataset.userExpanded) {
+        card.classList.remove('is-expanded');
+        updateExpandBtn(card, false);
+      }
     }
   });
 

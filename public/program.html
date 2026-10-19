@@ -934,7 +934,7 @@
     <div class="filters-row">
       <div class="search-box-wrap">
         <svg class="search-icon-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, speaker, room..." data-en-placeholder="Search by topic, speaker, room..." data-fr-placeholder="Rechercher un sujet, intervenant, session..." onkeyup="handleSearch()"/>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search by topic, speaker, room..." data-en-placeholder="Search by topic, speaker, room..." data-fr-placeholder="Rechercher un sujet, intervenant, session..." oninput="handleSearch()" onkeyup="handleSearch()"/>
       </div>
 
       <div class="action-btns-group">
@@ -2775,14 +2775,17 @@ function toggleCommunicationSession(el) {
   const isExpanded = card.classList.contains('is-expanded');
   if (isExpanded) {
     card.classList.remove('is-expanded');
+    delete card.dataset.userExpanded;
     updateExpandBtn(card, false);
     if (el.closest('.list-collapse-bar.bottom')) {
       card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
   } else {
     card.classList.add('is-expanded');
+    card.dataset.userExpanded = 'true';
     updateExpandBtn(card, true);
   }
+}
 }
 
 function updateExpandBtn(card, isExpanded) {
@@ -2833,14 +2836,15 @@ function handleSearch() {
 }
 
 function applyFilters() {
-  const query = document.getElementById('searchInput').value.toLowerCase().trim();
+  const searchEl = document.getElementById('searchInput');
+  const query = searchEl ? searchEl.value.toLowerCase().trim() : '';
   const cards = document.querySelectorAll('.session-card');
   let visibleCount = 0;
 
   cards.forEach(card => {
     const cardDay = card.getAttribute('data-day');
     const cardCat = card.getAttribute('data-cat');
-    const searchData = card.getAttribute('data-search').toLowerCase();
+    const searchData = (card.getAttribute('data-search') || '').toLowerCase();
 
     // Check Day
     const matchesDay = (currentDay === 'all' || currentDay === cardDay);
@@ -2854,8 +2858,23 @@ function applyFilters() {
     if (matchesDay && matchesCat && matchesQuery) {
       card.style.display = 'block';
       visibleCount++;
+
+      // Auto-expand collapsible sessions when searching
+      if (card.classList.contains('collapsible-session')) {
+        if (query) {
+          card.classList.add('is-expanded');
+          updateExpandBtn(card, true);
+        } else if (!card.dataset.userExpanded) {
+          card.classList.remove('is-expanded');
+          updateExpandBtn(card, false);
+        }
+      }
     } else {
       card.style.display = 'none';
+      if (!query && card.classList.contains('collapsible-session') && !card.dataset.userExpanded) {
+        card.classList.remove('is-expanded');
+        updateExpandBtn(card, false);
+      }
     }
   });
 
@@ -2863,14 +2882,14 @@ function applyFilters() {
   const day1Cards = document.querySelectorAll('#day1-container .session-card[style="display: block;"]');
   const day2Cards = document.querySelectorAll('#day2-container .session-card[style="display: block;"]');
 
-  document.getElementById('day1-container').style.display = (currentDay !== 'day2' && day1Cards.length > 0) ? 'block' : 'none';
-  document.getElementById('day2-container').style.display = (currentDay !== 'day1' && day2Cards.length > 0) ? 'block' : 'none';
+  const d1 = document.getElementById('day1-container');
+  const d2 = document.getElementById('day2-container');
+  if (d1) d1.style.display = (currentDay !== 'day2' && day1Cards.length > 0) ? 'block' : 'none';
+  if (d2) d2.style.display = (currentDay !== 'day1' && day2Cards.length > 0) ? 'block' : 'none';
 
   const noResults = document.getElementById('no-results');
-  if (visibleCount === 0) {
-    noResults.style.display = 'block';
-  } else {
-    noResults.style.display = 'none';
+  if (noResults) {
+    noResults.style.display = (visibleCount === 0) ? 'block' : 'none';
   }
 }
 
