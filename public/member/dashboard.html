@@ -371,7 +371,7 @@
             </div>
 
             <!-- 15h30 - 16h30 (Card 1: Commented Posters 1) -->
-            <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 1 commented posters session 1 grande salle hall 1 #68 #73 #7 #65 #6 #74 #63 #59 #46 #42 #34 #26 *5 *6 68 73 7 65 6 74 63 59 46 42 34 26 5 6 amina abdelkebir hala alimi wifek saidani manel ben tahar siwar hamdi selma madhi yosr ben attig ahmed bakhti ali ben salem mansour fekkak benhalilou sabrina hernies diaphragmatiques traumatique hémoptysie kyste hydatique aspergillome pneumonectomie tuberculose pneumothorax cataménial hyper-vascularisation sténoses laryngo-trachéales ravitch emphysematous bullae séquestration pulmonaire">
+            <div class="session-card collapsible-session" data-day="day1" data-cat="posters" data-search="session posters commentés 1 commented posters session 1 grande salle hall 1 #68 #73 #7 #65 #6 #74 #63 #59 #46 #42 #34 #26 *5 *6 68 73 7 65 6 74 63 59 46 42 34 26 5 6 amina abdelkebir hala alimi wifek saidani manel ben tahar siwar hamdi selma madhi yosr ben attig ahmed bakhti ali ben salem mansour fekkak benhalilou sabrina hernies diaphragmatiques traumatique hémoptysie kyste hydatique aspergillome pneumonectomie tuberculose pneumothorax cataménial hyper-vascularisation sténoses laryngo-trachéales ravitch emphysematous bullae séquestration pulmonaire">
               <div class="session-card-header">
                 <div class="time-badge">15h30 - 16h30</div>
                 <div class="session-main-info">
@@ -380,11 +380,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-room" data-en="Hall 1: Salle Vizir" data-fr="Salle 1: Salle Vizir">Hall 1: Salle Vizir</span>
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(14)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">#34</span>
@@ -497,6 +509,13 @@
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Yosr Ben Attig</div>
                     </div>
                   </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -527,7 +546,7 @@
             </div>
 
             <!-- 17h00 - 18h00 (Card 1: Commented Posters 2) -->
-            <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 2 commented posters session 2 grande salle hall 1 #24 #23 #15 #20 #19 #16 #12 #11 #10 #38 #3 #71 *7 *11 *14 24 23 15 20 19 16 12 11 10 38 3 71 7 14 hanine bel hadj mabrouk wifek saidani chiraz albouzidi fatma inched jemal siwar hamdi hanen bouattour wassim chaieb moussa samba malek abbes anfal benmessaoud tadjine youcef karima achour dilatations des bronches ruptures diaphragmatiques séquestration pulmonaire pleurodèse talc pneumothorax spontané chambre à cathéter implantable abord céphalique myasthénie grave thymectomie vats dakar chondrosarcomes iatrogenic hemothorax catheterization mediastinal mimicker ectopic thymoma perioperative management">
+            <div class="session-card collapsible-session" data-day="day1" data-cat="posters" data-search="session posters commentés 2 commented posters session 2 grande salle hall 1 #24 #23 #15 #20 #19 #16 #12 #11 #10 #38 #3 #71 *7 *11 *14 24 23 15 20 19 16 12 11 10 38 3 71 7 14 hanine bel hadj mabrouk wifek saidani chiraz albouzidi fatma inched jemal siwar hamdi hanen bouattour wassim chaieb moussa samba malek abbes anfal benmessaoud tadjine youcef karima achour dilatations des bronches ruptures diaphragmatiques séquestration pulmonaire pleurodèse talc pneumothorax spontané chambre à cathéter implantable abord céphalique myasthénie grave thymectomie vats dakar chondrosarcomes iatrogenic hemothorax catheterization mediastinal mimicker ectopic thymoma perioperative management">
               <div class="session-card-header">
                 <div class="time-badge">17h00 - 18h00</div>
                 <div class="session-main-info">
@@ -536,11 +555,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-room" data-en="Hall 1: Salle Vizir" data-fr="Salle 1: Salle Vizir">Hall 1: Salle Vizir</span>
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(15)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">*7</span>
@@ -661,6 +692,13 @@
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Wifek Saidani</div>
                     </div>
                   </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -681,7 +719,7 @@
             </div>
 
             <!-- 18h00 - 19h00 (Card 1: Commented Posters 3) -->
-            <div class="session-card" data-day="day1" data-cat="posters" data-search="session posters commentés 3 commented posters session 3 grande salle hall 1 #61 #52 #49 #33 #25 #18 #36 #35 *15 *16 *17 *18 *19 *20 61 52 49 33 25 18 36 35 15 16 17 18 19 20 mohamed rebei selma madhi eya fourati ahmed bakhti ali ben salem fatma inched jemal wassim chaieb karima achour bensiali khadidja s chalal samir tchouar cancers bronchopulmonaires résections carène segmentectomie pancoast pulmonary metastasectomy paroi thoracique thymomes myasthénie intelligence artificielle nodules pulmonaires prehabilitation perioperative chu mustapha sleeve resections carcinoïdes vats thoracotomie mini-invasive urgences">
+            <div class="session-card collapsible-session" data-day="day1" data-cat="posters" data-search="session posters commentés 3 commented posters session 3 grande salle hall 1 #61 #52 #49 #33 #25 #18 #36 #35 *15 *16 *17 *18 *19 *20 61 52 49 33 25 18 36 35 15 16 17 18 19 20 mohamed rebei selma madhi eya fourati ahmed bakhti ali ben salem fatma inched jemal wassim chaieb karima achour bensiali khadidja s chalal samir tchouar cancers bronchopulmonaires résections carène segmentectomie pancoast pulmonary metastasectomy paroi thoracique thymomes myasthénie intelligence artificielle nodules pulmonaires prehabilitation perioperative chu mustapha sleeve resections carcinoïdes vats thoracotomie mini-invasive urgences">
               <div class="session-card-header">
                 <div class="time-badge">18h00 - 19h00</div>
                 <div class="session-main-info">
@@ -690,11 +728,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-room" data-en="Hall 1: Salle Vizir" data-fr="Salle 1: Salle Vizir">Hall 1: Salle Vizir</span>
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(14)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">#33</span>
@@ -807,6 +857,13 @@
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Wassim Chaieb</div>
                     </div>
                   </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -827,7 +884,7 @@
             </div>
 
             <!-- Posters affichés non commentés (J1 & J2) -->
-            <div class="session-card" data-day="day1" data-cat="posters" data-search="posters affichés non commentés displayed posters non-commented affichage durant les pauses communication j1 j2 day 1 day 2 *8 *9 *10 *12 *13 *21 *22 #75 #72 #67 #64 #62 #60 #54 #53 #51 #50 #47 #45 #41 #40 #28 #22 #21 #14 #13 #8 #39 #37 #4 #2 8 9 10 12 13 21 22 75 72 67 64 62 60 54 53 51 50 47 45 41 40 28 14 39 37 4 2 boughouaou siham benameur malek bounefla terchi soumia khelili hadji chaima mohammed smaili manel ben tahar safa boudabous mohamed rebei selma madhi chiraz albouzidi eya fourati ahmed bakhti yosr ben attig amina abdelkebir fatma inched jemal hanen bouattour wifek saidani wassim chaieb moussa samba penetrating thoracic trauma hydatid cyst kyste hydatique cancer left atrial injury hémothorax neurofibrome aspergillaires tuberculose hydatidose pleurésies mucormycose trachéales chylothorax œsophagienne amylose lymphangioma fistule œso-trachéale médiastinales léiomyosarcome dispositif accès veineux hiatus larrey lobe moyen carcinoide thymectomie myasthénie rupture bronche souche double lumière pneumonectomie">
+            <div class="session-card collapsible-session" data-day="day1" data-cat="posters" data-search="posters affichés non commentés displayed posters non-commented affichage durant les pauses communication j1 j2 day 1 day 2 *8 *9 *10 *12 *13 *21 *22 #75 #72 #67 #64 #62 #60 #54 #53 #51 #50 #47 #45 #41 #40 #28 #22 #21 #14 #13 #8 #39 #37 #4 #2 8 9 10 12 13 21 22 75 72 67 64 62 60 54 53 51 50 47 45 41 40 28 14 39 37 4 2 boughouaou siham benameur malek bounefla terchi soumia khelili hadji chaima mohammed smaili manel ben tahar safa boudabous mohamed rebei selma madhi chiraz albouzidi eya fourati ahmed bakhti yosr ben attig amina abdelkebir fatma inched jemal hanen bouattour wifek saidani wassim chaieb moussa samba penetrating thoracic trauma hydatid cyst kyste hydatique cancer left atrial injury hémothorax neurofibrome aspergillaires tuberculose hydatidose pleurésies mucormycose trachéales chylothorax œsophagienne amylose lymphangioma fistule œso-trachéale médiastinales léiomyosarcome dispositif accès veineux hiatus larrey lobe moyen carcinoide thymectomie myasthénie rupture bronche souche double lumière pneumonectomie">
               <div class="session-card-header">
                 <div class="time-badge" data-en="Display during breaks" data-fr="Affichage durant les pauses">Display during breaks</div>
                 <div class="session-main-info">
@@ -835,11 +892,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
                     <span class="tag-badge" style="background:#e0e7ff;color:#3730a3;font-weight:700;" data-en="Day 1 & Day 2" data-fr="J1 & J2">Day 1 & Day 2</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(31)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">*13</span>
@@ -1088,6 +1157,13 @@
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Yosr Ben Attig</div>
                     </div>
                   </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1133,7 +1209,7 @@
             </div>
 
             <!-- 08h30 - 09h30 -->
-            <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 1 free communications kyste hydatique du thorax thoracic hydatid cyst 66 58 48 27 *2 *3 *4 32 #32 mohamed rebei safa boudabous mariem hadj dahmane benhalilou sabrina azeddine simerabet karima achour ali ben salem machine learning predictive model hydatidosis hémoptysie videothoracoscopie morbidité embolie exérèses echinococcosis">
+            <div class="session-card collapsible-session" data-day="day2" data-cat="posters" data-search="communications libres 1 free communications kyste hydatique du thorax thoracic hydatid cyst 66 58 48 27 *2 *3 *4 32 #32 mohamed rebei safa boudabous mariem hadj dahmane benhalilou sabrina azeddine simerabet karima achour ali ben salem machine learning predictive model hydatidosis hémoptysie videothoracoscopie morbidité embolie exérèses echinococcosis">
               <div class="session-card-header">
                 <div class="time-badge">08h30 - 09h30</div>
                 <div class="session-main-info">
@@ -1142,11 +1218,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(8)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">#32</span>
@@ -1211,12 +1299,19 @@
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Safa Boudabous</div>
                     </div>
                   </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- 09h30 - 10h30 -->
-            <div class="session-card" data-day="day2" data-cat="posters" data-search="communications libres 2 free communications traumatisme thoracique thoracic trauma *1 #70 #57 #55 #17 #5 1 70 57 55 17 5 mansour fekkak youssef abbes mohamed rebei yosr ben attig siwar hamdi moussa samba stabilisation volets thoraciques ostéosynthèse plaies pénétrantes costale broches fermé militaire diaphragmatique chnu fann">
+            <div class="session-card collapsible-session" data-day="day2" data-cat="posters" data-search="communications libres 2 free communications traumatisme thoracique thoracic trauma *1 #70 #57 #55 #17 #5 1 70 57 55 17 5 mansour fekkak youssef abbes mohamed rebei yosr ben attig siwar hamdi moussa samba stabilisation volets thoraciques ostéosynthèse plaies pénétrantes costale broches fermé militaire diaphragmatique chnu fann">
               <div class="session-card-header">
                 <div class="time-badge">09h30 - 10h30</div>
                 <div class="session-main-info">
@@ -1225,11 +1320,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(6)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">*1</span>
@@ -1277,6 +1384,13 @@
                       <div class="presentation-title">Prise en charge du traumatisme thoracique dans un milieu chirurgical</div>
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Youssef ABBES</div>
                     </div>
+                  </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1538,7 +1652,7 @@
             </div>
 
             <!-- 18h00 - 19h00 -->
-            <div class="session-card" data-day="day2" data-cat="posters" data-search="session 5 video session séance vidéo imen bouacida majed khiari walid abid communication #31 #30 #29 #69 31 30 29 69 ali ben salem ahmed bakhti amina abdelkebir uniportal vats lobectomy parathyroid hypocalcemia tracheal stenosis séquestration pulmonaire">
+            <div class="session-card collapsible-session" data-day="day2" data-cat="posters" data-search="session 5 video session séance vidéo imen bouacida majed khiari walid abid communication #31 #30 #29 #69 31 30 29 69 ali ben salem ahmed bakhti amina abdelkebir uniportal vats lobectomy parathyroid hypocalcemia tracheal stenosis séquestration pulmonaire">
               <div class="session-card-header">
                 <div class="time-badge">18h00 - 19h00</div>
                 <div class="session-main-info">
@@ -1547,11 +1661,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(4)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">#31</span>
@@ -1584,12 +1710,19 @@
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Amina Abdelkebir</div>
                     </div>
                   </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
 
             <!-- Posters affichés non commentés -->
-            <div class="session-card" data-day="day2" data-cat="posters" data-search="posters affichés non commentés displayed posters non-commented affichage durant les pauses communication j1 j2 day 1 day 2 *8 *9 *10 *12 *13 *21 *22 #75 #72 #67 #64 #62 #60 #54 #53 #51 #50 #47 #45 #41 #40 #28 #22 #21 #14 #13 #8 #39 #37 #4 #2 8 9 10 12 13 21 22 75 72 67 64 62 60 54 53 51 50 47 45 41 40 28 14 39 37 4 2 boughouaou siham benameur malek bounefla terchi soumia khelili hadji chaima mohammed smaili manel ben tahar safa boudabous mohamed rebei selma madhi chiraz albouzidi eya fourati ahmed bakhti yosr ben attig amina abdelkebir fatma inched jemal hanen bouattour wifek saidani wassim chaieb moussa samba penetrating thoracic trauma hydatid cyst kyste hydatique cancer left atrial injury hémothorax neurofibrome aspergillaires tuberculose hydatidose pleurésies mucormycose trachéales chylothorax œsophagienne amylose lymphangioma fistule œso-trachéale médiastinales léiomyosarcome dispositif accès veineux hiatus larrey lobe moyen carcinoide thymectomie myasthénie rupture bronche souche double lumière pneumonectomie">
+            <div class="session-card collapsible-session" data-day="day2" data-cat="posters" data-search="posters affichés non commentés displayed posters non-commented affichage durant les pauses communication j1 j2 day 1 day 2 *8 *9 *10 *12 *13 *21 *22 #75 #72 #67 #64 #62 #60 #54 #53 #51 #50 #47 #45 #41 #40 #28 #22 #21 #14 #13 #8 #39 #37 #4 #2 8 9 10 12 13 21 22 75 72 67 64 62 60 54 53 51 50 47 45 41 40 28 14 39 37 4 2 boughouaou siham benameur malek bounefla terchi soumia khelili hadji chaima mohammed smaili manel ben tahar safa boudabous mohamed rebei selma madhi chiraz albouzidi eya fourati ahmed bakhti yosr ben attig amina abdelkebir fatma inched jemal hanen bouattour wifek saidani wassim chaieb moussa samba penetrating thoracic trauma hydatid cyst kyste hydatique cancer left atrial injury hémothorax neurofibrome aspergillaires tuberculose hydatidose pleurésies mucormycose trachéales chylothorax œsophagienne amylose lymphangioma fistule œso-trachéale médiastinales léiomyosarcome dispositif accès veineux hiatus larrey lobe moyen carcinoide thymectomie myasthénie rupture bronche souche double lumière pneumonectomie">
               <div class="session-card-header">
                 <div class="time-badge" data-en="Display during breaks" data-fr="Affichage durant les pauses">Display during breaks</div>
                 <div class="session-main-info">
@@ -1597,11 +1730,23 @@
                   <div class="session-tags-row">
                     <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
                     <span class="tag-badge" style="background:#e0e7ff;color:#3730a3;font-weight:700;" data-en="Day 1 & Day 2" data-fr="J1 & J2">Day 1 & Day 2</span>
+                    <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
+                      <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                      <span class="expand-label" data-en="Expand" data-fr="Déplier">Expand</span>
+                      <span class="expand-count">(31)</span>
+                    </button>
                   </div>
                 </div>
               </div>
               <div class="presentations-container">
                 <div class="presentations-list" id="displayed-posters-list">
+                  <!-- Top Collapse Button -->
+                  <div class="list-collapse-bar top">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
+                  </div>
                   <div class="presentation-item has-badge">
                     <span class="order-badge">1</span>
                     <span class="poster-badge">*13</span>
@@ -1849,6 +1994,13 @@
                       <div class="presentation-title">Fistule œso-trachéale pédiatrique : diagnostic et challenge de la réparation chirurgicale</div>
                       <div class="presentation-speaker"><svg class="mini-svg-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;vertical-align:-2px;margin-right:6px;color:var(--gray-500);display:inline-block;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Yosr Ben Attig</div>
                     </div>
+                  </div>
+                  <!-- Bottom Collapse Button -->
+                  <div class="list-collapse-bar bottom">
+                    <button type="button" class="btn-list-collapse" onclick="toggleCommunicationSession(this)">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                      <span data-en="Collapse" data-fr="Réduire">Collapse</span>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -2561,6 +2713,35 @@ let currentLang = 'en';
 let currentDay = 'all';
 let currentCategory = 'all';
 
+function toggleCommunicationSession(el) {
+  const card = el.closest('.session-card');
+  if (!card) return;
+  const isExpanded = card.classList.contains('is-expanded');
+  if (isExpanded) {
+    card.classList.remove('is-expanded');
+    updateExpandBtn(card, false);
+    if (el.closest('.list-collapse-bar.bottom')) {
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  } else {
+    card.classList.add('is-expanded');
+    updateExpandBtn(card, true);
+  }
+}
+
+function updateExpandBtn(card, isExpanded) {
+  const btn = card.querySelector('.session-expand-btn');
+  if (!btn) return;
+  const label = btn.querySelector('.expand-label');
+  if (!label) return;
+  const lang = (typeof currentLang !== 'undefined' ? currentLang : 'en');
+  if (isExpanded) {
+    label.textContent = (lang === 'fr' ? 'Réduire' : 'Collapse');
+  } else {
+    label.textContent = (lang === 'fr' ? 'Déplier' : 'Expand');
+  }
+}
+
 function setLanguage(lang) {
   currentLang = lang;
   localStorage.setItem('ttsa_program_lang', lang);
@@ -2573,6 +2754,10 @@ function setLanguage(lang) {
   document.querySelectorAll('[data-en][data-fr]').forEach(el => {
     const text = el.getAttribute('data-' + lang);
     if (text) el.textContent = text;
+  });
+
+  document.querySelectorAll('.session-card.collapsible-session').forEach(card => {
+    updateExpandBtn(card, card.classList.contains('is-expanded'));
   });
 
   document.querySelectorAll('[data-en-placeholder][data-fr-placeholder]').forEach(el => {
