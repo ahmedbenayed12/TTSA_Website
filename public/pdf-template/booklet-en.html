@@ -157,6 +157,234 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
+       PAGE 0p (PAGE 13) : BACK COVER WITH BLUE OVERLAY (A5)
+       ═══════════════════════════════════════════════════════════════════ */
+    .back-cover-page {
+      position: relative !important;
+      padding: 0 !important;
+      margin: 0 auto 15px auto;
+      width: 148mm;
+      height: 210mm;
+      max-height: 210mm;
+      overflow: hidden;
+      display: block !important;
+      border: none;
+      background: #071e3d;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+    @media print {
+      .back-cover-page {
+        margin: 0;
+        box-shadow: none;
+      }
+    }
+    .back-cover-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 148mm;
+      height: 210mm;
+      object-fit: cover;
+      z-index: 1;
+    }
+    .back-cover-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 148mm;
+      height: 210mm;
+      background: linear-gradient(180deg, rgba(7, 30, 61, 0.88) 0%, rgba(5, 20, 42, 0.91) 100%);
+      z-index: 2;
+    }
+    .back-cover-content {
+      position: relative;
+      z-index: 3;
+      width: 148mm;
+      height: 210mm;
+      padding: 10mm 10mm 8mm 10mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #ffffff;
+      box-sizing: border-box;
+    }
+    .back-cover-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 1.5mm;
+    }
+    .back-cover-logo-badge {
+      background: #ffffff;
+      padding: 2.2mm 5mm;
+      border-radius: 2.5mm;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+    }
+    .back-cover-logo {
+      height: 9.5mm;
+      width: auto;
+      display: block;
+    }
+    .back-cover-title {
+      font-size: 7.8pt;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #ffffff;
+      margin-top: 1mm;
+    }
+    .back-cover-subtitle {
+      font-size: 5.6pt;
+      font-weight: 600;
+      color: #93c5fd;
+      letter-spacing: 0.03em;
+    }
+    .back-cover-thanks {
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 2.5mm;
+      padding: 2.8mm 3.5mm;
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+    .back-cover-thanks-badge {
+      display: inline-block;
+      font-size: 5.2pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #fef08a;
+      background: rgba(234, 179, 8, 0.20);
+      border: 0.6px solid rgba(250, 204, 21, 0.40);
+      padding: 0.6mm 2.2mm;
+      border-radius: 1.5mm;
+      margin-bottom: 1.2mm;
+    }
+    .back-cover-thanks-text {
+      font-size: 5.4pt;
+      line-height: 1.35;
+      color: #f1f5f9;
+      text-align: center;
+    }
+    .back-cover-thanks-text strong {
+      color: #ffffff;
+    }
+    .back-cover-qr-card {
+      background: #ffffff;
+      border-radius: 3mm;
+      padding: 2.5mm 3.5mm;
+      display: flex;
+      align-items: center;
+      gap: 3.5mm;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.30);
+      color: #0f172a;
+    }
+    .back-cover-qr-img {
+      width: 22mm;
+      height: 22mm;
+      display: block;
+      border-radius: 1.5mm;
+      border: 0.8px solid #cbd5e1;
+      flex-shrink: 0;
+    }
+    .back-cover-qr-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8mm;
+      text-align: left;
+    }
+    .back-cover-qr-badge {
+      display: inline-flex;
+      align-items: center;
+      align-self: flex-start;
+      font-size: 4.8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #0369a1;
+      background: #e0f2fe;
+      border: 0.5px solid #bae6fd;
+      padding: 0.5mm 1.8mm;
+      border-radius: 1mm;
+    }
+    .back-cover-qr-title {
+      font-size: 7pt;
+      font-weight: 800;
+      color: #0c3b6d;
+      line-height: 1.15;
+    }
+    .back-cover-qr-desc {
+      font-size: 5pt;
+      line-height: 1.25;
+      color: #475569;
+    }
+    .back-cover-qr-link {
+      font-size: 5.6pt;
+      font-weight: 700;
+      color: #b82538;
+      display: inline-block;
+      margin-top: 0.4mm;
+    }
+    .back-cover-contacts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5mm;
+    }
+    .back-cover-contact-item {
+      background: rgba(255, 255, 255, 0.10);
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      border-radius: 2mm;
+      padding: 2.2mm 2.8mm;
+      display: flex;
+      flex-direction: column;
+      gap: 1mm;
+      backdrop-filter: blur(4px);
+      text-align: left;
+    }
+    .back-cover-contact-tag {
+      font-size: 4.8pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 1.2mm;
+    }
+    .back-cover-contact-val {
+      font-size: 5.3pt;
+      color: #ffffff;
+      font-weight: 700;
+      word-break: break-all;
+    }
+    .back-cover-contact-sub {
+      font-size: 4.6pt;
+      color: #cbd5e1;
+      line-height: 1.2;
+    }
+    .back-cover-footer {
+      border-top: 0.8px solid rgba(255, 255, 255, 0.20);
+      padding-top: 1.5mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 4.8pt;
+      color: #94a3b8;
+    }
+    .back-cover-footer-left {
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+    .back-cover-footer-right {
+      color: #94a3b8;
+    }
+
+    /* ═══════════════════════════════════════════════════════════════════
        PAGE 2: WORD FROM THE PRESIDENT & 4 THEMES (A5)
        ═══════════════════════════════════════════════════════════════════ */
     .section-headline {
@@ -2958,10 +3186,66 @@
 
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       PAGE 0p (PAGE 13) : BACK COVER - FULL BLEED (A5)
+       PAGE 0p (PAGE 13) : BACK COVER WITH BLUE OVERLAY (A5)
        ═══════════════════════════════════════════════════════════════════ -->
-  <div class="page cover-page">
-    <img src="/img/back-cover.png" alt="Back Cover - Sfax" class="cover-poster-full">
+  <div class="page back-cover-page">
+    <img src="/img/back-cover.png" alt="Sfax Ramparts" class="back-cover-bg">
+    <div class="back-cover-overlay"></div>
+    <div class="back-cover-content">
+      
+      <!-- TOP : LOGO & CONGRESS TITLE -->
+      <div class="back-cover-header">
+        <div class="back-cover-logo-badge">
+          <img src="/img/logo.svg" alt="TTSA" class="back-cover-logo">
+        </div>
+        <div class="back-cover-title">5<sup>th</sup> National Thoracic Surgery Congress</div>
+        <div class="back-cover-subtitle">November 06 - 07, 2026 · Borj Dhiafa Hotel, Sfax · Tunisia</div>
+      </div>
+
+      <!-- TTSA ACKNOWLEDGEMENTS -->
+      <div class="back-cover-thanks">
+        <div class="back-cover-thanks-badge">Acknowledgements</div>
+        <div class="back-cover-thanks-text">
+          The <strong>Tunisian Thoracic Surgery Association (TTSA)</strong> extends its deepest and warmest gratitude to all <strong>participants</strong>, national and international faculty speakers, session chairs, moderators, and industry partners for their dedicated commitment and invaluable contribution to the resounding success of this 5<sup>th</sup> National Congress.
+        </div>
+      </div>
+
+      <!-- QR CODE DYNAMIC PROGRAM -->
+      <div class="back-cover-qr-card">
+        <img src="/img/qr-program.png" alt="Dynamic Program QR Code" class="back-cover-qr-img">
+        <div class="back-cover-qr-body">
+          <span class="back-cover-qr-badge">Dynamic &amp; Bilingual Access</span>
+          <div class="back-cover-qr-title">Interactive Scientific Program</div>
+          <div class="back-cover-qr-desc">Scan this QR code to access the dynamic online schedule (EN / FR), complete abstract details, and real-time session updates.</div>
+          <div class="back-cover-qr-link">www.ttsa.tn/program.html</div>
+        </div>
+      </div>
+
+      <!-- CONTACTS & HELPDESK -->
+      <div class="back-cover-contacts-grid">
+        <div class="back-cover-contact-item">
+          <div class="back-cover-contact-tag">
+            <span>TTSA General Secretariat</span>
+          </div>
+          <div class="back-cover-contact-val">ttsa.contact@gmail.com</div>
+          <div class="back-cover-contact-sub">Official website: <strong>www.ttsa.tn</strong></div>
+        </div>
+        <div class="back-cover-contact-item">
+          <div class="back-cover-contact-tag">
+            <span>Submissions &amp; Certificates</span>
+          </div>
+          <div class="back-cover-contact-val">ttsa.sbmission@gmail.com</div>
+          <div class="back-cover-contact-sub">Abstract submissions &amp; attendance certificates helpdesk</div>
+        </div>
+      </div>
+
+      <!-- BOTTOM : FOOTER -->
+      <div class="back-cover-footer">
+        <span class="back-cover-footer-left">Tunisian Thoracic Surgery Association (TTSA)</span>
+        <span class="back-cover-footer-right">www.ttsa.tn · Sfax 2026</span>
+      </div>
+
+    </div>
   </div>
 
 </body>
