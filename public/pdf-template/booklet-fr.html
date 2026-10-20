@@ -914,21 +914,21 @@
     }
 
     .sponsor-tier-block {
-      margin-bottom: 2mm;
-      background: #f8fafc;
-      border: 0.8px solid #e2e8f0;
-      border-radius: 1.8mm;
-      padding: 1.5mm 2.2mm;
+      margin-bottom: 3.5mm;
+      background: transparent;
+      border: none;
+      padding: 0;
+      text-align: center;
     }
     .tier-header {
       display: inline-block;
-      font-size: 5.5pt;
+      font-size: 5.6pt;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.06em;
-      padding: 0.5mm 2mm;
+      padding: 0.6mm 2.8mm;
       border-radius: 8px;
-      margin-bottom: 1.2mm;
+      margin: 0 auto 1.8mm auto;
     }
     .tier-platinum-label {
       background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
@@ -956,7 +956,11 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 1.8mm;
+      gap: 2mm;
+    }
+    .sponsors-logos-flex.bronze-balanced {
+      max-width: 78mm;
+      margin: 0 auto;
     }
     .sponsor-logo-box {
       background: #ffffff;
@@ -965,17 +969,32 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1.2mm 2mm;
+      padding: 0.8mm 1.5mm;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    .sponsor-logo-box.plat { min-width: 34mm; height: 11mm; border: 1.2px solid #94a3b8; }
-    .sponsor-logo-box.gold { min-width: 24mm; height: 9mm; border: 1px solid #f59e0b; }
-    .sponsor-logo-box.silver { min-width: 18mm; height: 7.5mm; }
-    .sponsor-logo-box.bronze { min-width: 14mm; height: 6.5mm; }
+    .sponsor-logo-box.plat { min-width: 36mm; height: 11.5mm; border: 1.2px solid #94a3b8; }
+    .sponsor-logo-box.gold { min-width: 25mm; height: 9.5mm; border: 1px solid #f59e0b; }
+    .sponsor-logo-box.silver { min-width: 19mm; height: 8mm; }
+    .sponsor-logo-box.bronze { min-width: 15mm; height: 7mm; }
     .sponsor-logo-box img {
       max-height: 100%;
       max-width: 100%;
       object-fit: contain;
     }
+    .scale-medtronic { transform: scale(1.75); }
+    .scale-bluesail { transform: scale(1.85); }
+    .scale-mdid { transform: scale(1.3); }
+    .scale-miama { transform: scale(1.23); }
+    .scale-dar-essaydali { transform: scale(1.45); }
+    .scale-sofemed { transform: scale(1.04); }
+    .scale-syphax { transform: scale(0.98); }
+    .scale-co-access { transform: scale(1.12); }
+    .scale-ghmiha { transform: scale(1.23); }
+    .scale-medis { transform: scale(1.75); }
+    .scale-galpharma { transform: scale(1.75); }
+    .scale-teriak { transform: scale(1.58); }
+    .scale-ethicon { transform: scale(1.6); }
 
     .contacts-footer-card {
       margin-top: auto;
@@ -1552,70 +1571,60 @@
     <div class="sponsors-intro">
       <div class="section-headline" style="text-align:center;">Remerciements aux Partenaires</div>
       <p>
-        La Société Tunisienne de Chirurgie Thoracique (TTSA) remercie chaleureusement ses partenaires industriels pour leur soutien au progrès de la chirurgie thoracique.
+        La TTSA remercie chaleureusement ses partenaires industriels pour leur soutien au progrès de la chirurgie thoracique.
       </p>
     </div>
 
     <!-- PLATINUM -->
     <div class="sponsor-tier-block">
-      <span class="tier-header tier-platinum-label">Sponsor Platine</span>
+      <span class="tier-header tier-platinum-label">Pack Platine</span>
       <div class="sponsors-logos-flex">
         <div class="sponsor-logo-box plat">
-          <img src="/img/sponsors/medtronic.png" alt="Medtronic">
+          <img src="/img/sponsors/medtronic.png" alt="Medtronic" class="scale-medtronic">
         </div>
       </div>
     </div>
 
     <!-- GOLD -->
     <div class="sponsor-tier-block">
-      <span class="tier-header tier-gold-label">Sponsors Or</span>
+      <span class="tier-header tier-gold-label">Pack Or</span>
       <div class="sponsors-logos-flex">
         <div class="sponsor-logo-box gold"><img src="/img/sponsors/touchstone.png" alt="Touchstone"></div>
-        <div class="sponsor-logo-box gold"><img src="/img/sponsors/bluesail.jpg" alt="Bluesail"></div>
+        <div class="sponsor-logo-box gold"><img src="/img/sponsors/bluesail.jpg" alt="Bluesail" class="scale-bluesail"></div>
       </div>
     </div>
 
     <!-- SILVER -->
     <div class="sponsor-tier-block">
-      <span class="tier-header tier-silver-label">Sponsors Argent</span>
+      <span class="tier-header tier-silver-label">Pack Argent</span>
       <div class="sponsors-logos-flex">
-        <div class="sponsor-logo-box silver"><img src="/img/sponsors/mdid.jpg" alt="MDID"></div>
-        <div class="sponsor-logo-box silver"><img src="/img/sponsors/miama.png" alt="MIAMA"></div>
-        <div class="sponsor-logo-box silver"><img src="/img/sponsors/dar-essaydali.png" alt="Dar Essaydali"></div>
+        <div class="sponsor-logo-box silver"><img src="/img/sponsors/mdid.jpg" alt="MDID" class="scale-mdid"></div>
+        <div class="sponsor-logo-box silver"><img src="/img/sponsors/miama.png" alt="MIAMA" class="scale-miama"></div>
+        <div class="sponsor-logo-box silver"><img src="/img/sponsors/dar-essaydali.png" alt="Dar Essaydali" class="scale-dar-essaydali"></div>
       </div>
     </div>
 
     <!-- BRONZE -->
     <div class="sponsor-tier-block">
-      <span class="tier-header tier-bronze-label">Sponsors Bronze</span>
-      <div class="sponsors-logos-flex">
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/gmiha-houria.png" alt="Gmiha Houria"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/medis.jpg" alt="MEDIS"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/sofemed.jpg" alt="SOFEMED"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/galpharma.jpg" alt="Galpharma"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/syphax.png" alt="Syphax"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/teriak.jpg" alt="Teriak"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/co-access.png" alt="CO ACCESS"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/ethicon.png" alt="ETHICON"></div>
+      <span class="tier-header tier-bronze-label">Pack Bronze</span>
+      <div class="sponsors-logos-flex bronze-balanced">
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/gmiha-houria.png" alt="Gmiha Houria" class="scale-ghmiha"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/medis.jpg" alt="MEDIS" class="scale-medis"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/sofemed.jpg" alt="SOFEMED" class="scale-sofemed"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/galpharma.jpg" alt="Galpharma" class="scale-galpharma"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/syphax.png" alt="Syphax" class="scale-syphax"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/teriak.jpg" alt="Teriak" class="scale-teriak"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/co-access.png" alt="CO ACCESS" class="scale-co-access"></div>
+        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/ethicon.png" alt="ETHICON" class="scale-ethicon"></div>
       </div>
     </div>
 
-    <!-- CONTACTS & LIEU -->
-    <div class="contacts-footer-card">
-      <div>
-        <div class="contacts-title">Secrétariat Général</div>
-        <div class="contacts-text">
-          <span class="contacts-highlight">TTSA</span> · CHU H. Bourguiba, Sfax<br>
-          Email : <span class="contacts-highlight">contact@ttsa.tn</span><br>
-          Site Web : <span class="contacts-highlight">www.ttsa.tn</span>
-        </div>
-      </div>
-      <div>
-        <div class="contacts-title">Lieu du Congrès</div>
-        <div class="contacts-text">
-          <span class="contacts-highlight">Hôtel Borj Dhiafa</span><br>
-          Route Soukra Km 3, Sfax 3052<br>
-          Dates : <span class="contacts-highlight">06 &amp; 07 Novembre 2026</span>
+    <!-- PATRIMOINE HISTORIQUE : SOUK ER-RBAA -->
+    <div class="heritage-free-wrap">
+      <div class="heritage-inner">
+        <img src="/img/souk-er-rbaa.jpg" alt="Souk Er-Rbaa - Médina de Sfax" class="heritage-free-img">
+        <div class="heritage-free-caption">
+          Les allées voûtées du Souk Er-Rbaa dans la médina de Sfax. Porté par le savoir-faire minutieux des maîtres artisans et un fort esprit d'initiative, ce lieu emblématique témoigne de la légendaire culture du travail sfaxienne, un culte de la discipline et de l'excellence illustré chaque année par la première place nationale de la région au classement du baccalauréat.
         </div>
       </div>
     </div>
