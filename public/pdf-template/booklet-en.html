@@ -166,7 +166,7 @@
       max-height: 210mm;
       background: #ffffff !important;
       margin: 0 auto 15px auto;
-      padding: 14mm 12mm 11mm 12mm;
+      padding: 10mm 11mm 8mm 11mm;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -182,113 +182,112 @@
         box-shadow: none;
       }
     }
-    .back-cover-top {
+    /* CENTRAL COLUMN ALIGNED TO TTSA LOGO (65mm) */
+    .back-cover-central-col {
+      width: 65mm;
+      max-width: 65mm;
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 100%;
+      text-align: center;
+      margin: 0 auto;
     }
     .back-cover-logo-standalone {
-      height: 16mm;
-      width: auto;
+      width: 65mm;
+      height: auto;
       display: block;
-      margin: 0 auto 8mm auto;
-    }
-    .back-cover-thanks-wrap {
-      width: 100%;
-      text-align: center;
-      margin-bottom: 8mm;
+      margin: 0 auto 3.5mm auto;
     }
     .back-cover-thanks-title {
-      font-size: 8.8pt;
+      font-size: 8.5pt;
       font-weight: 800;
       color: #0c3b6d;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-bottom: 2.5mm;
+      margin-bottom: 2mm;
     }
     .back-cover-thanks-desc {
-      font-size: 5.6pt;
-      line-height: 1.5;
+      width: 65mm;
+      font-size: 5.2pt;
+      line-height: 1.45;
       color: #0f172a;
       text-align: justify;
-      max-width: 124mm;
       margin: 0 auto;
     }
     .back-cover-thanks-desc strong {
       color: #000000;
       font-weight: 700;
     }
-    .back-cover-qr-free {
-      width: 100%;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      justify-content: center;
-      gap: 5mm;
-      margin-bottom: 6mm;
-      max-width: 124mm;
-    }
-    .back-cover-qr-img-free {
-      width: 25mm;
-      height: 25mm;
-      display: block;
-      border: 1px solid #cbd5e1;
-      border-radius: 2mm;
-      padding: 1mm;
-      background: #ffffff;
-      flex-shrink: 0;
-    }
-    .back-cover-qr-body-free {
-      flex: 1;
+    /* 4-LINE SPACING (~7mm) */
+    .back-cover-dynamic-section {
+      margin-top: 6.5mm;
+      width: 65mm;
       display: flex;
       flex-direction: column;
-      gap: 1.2mm;
-      text-align: left;
+      align-items: center;
+      text-align: center;
     }
-    .back-cover-qr-badge-free {
+    .back-cover-plaque {
       display: inline-flex;
       align-items: center;
-      align-self: flex-start;
-      font-size: 4.8pt;
+      justify-content: center;
+      font-size: 5pt;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: #0369a1;
       background: #e0f2fe;
-      border: 0.5px solid #bae6fd;
-      padding: 0.6mm 2mm;
-      border-radius: 1mm;
+      border: 0.8px solid #bae6fd;
+      padding: 0.8mm 3mm;
+      border-radius: 1.2mm;
+      margin-bottom: 2mm;
     }
-    .back-cover-qr-title-free {
+    .back-cover-dynamic-title {
       font-size: 7.6pt;
       font-weight: 800;
       color: #0c3b6d;
       line-height: 1.2;
+      margin-bottom: 1.5mm;
+      width: 65mm;
     }
-    .back-cover-qr-desc-free {
-      font-size: 5.2pt;
+    .back-cover-dynamic-desc {
+      width: 65mm;
+      font-size: 5.1pt;
       line-height: 1.35;
       color: #334155;
+      text-align: center;
+      margin-bottom: 1.5mm;
     }
-    .back-cover-qr-link-free {
+    .back-cover-dynamic-link {
       font-size: 6pt;
       font-weight: 700;
       color: #b82538;
-      margin-top: 0.4mm;
+      margin-bottom: 3.5mm;
+    }
+    .back-cover-qr-centered {
+      width: 65mm;
+      height: 65mm;
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #cbd5e1;
+      border-radius: 2.5mm;
+      padding: 1.2mm;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
     .back-cover-bottom-cards {
       width: 100%;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 3.5mm;
+      margin-top: auto;
     }
     .back-cover-bottom-card {
       border-radius: 2.2mm;
-      padding: 3mm 3.5mm;
+      padding: 2.8mm 3.2mm;
       display: flex;
       flex-direction: column;
-      gap: 1.2mm;
+      gap: 1mm;
       text-align: left;
     }
     .back-cover-bottom-card.sec {
@@ -3135,27 +3134,29 @@
        ═══════════════════════════════════════════════════════════════════ -->
   <div class="page back-cover-page">
     
-    <div class="back-cover-top">
-      <!-- STANDALONE TTSA LOGO -->
+    <div class="back-cover-central-col">
+      <!-- 1. TTSA LOGO POSITION REFERENCE (65mm) -->
       <img src="/img/logo.svg" alt="TTSA" class="back-cover-logo-standalone">
 
-      <!-- ACKNOWLEDGEMENTS : FREE TITLE & BLACK TEXT -->
-      <div class="back-cover-thanks-wrap">
-        <div class="back-cover-thanks-title">Acknowledgements</div>
-        <div class="back-cover-thanks-desc">
-          The <strong>Tunisian Thoracic Surgery Association (TTSA)</strong> extends its deepest and warmest gratitude to all <strong>participants</strong>, national and international faculty speakers, session chairs, moderators, and industry partners for their dedicated commitment and invaluable contribution to the resounding success of this 5<sup>th</sup> National Congress.
-        </div>
+      <!-- 2. ACKNOWLEDGEMENTS : FREE TITLE & TEXT NOT EXCEEDING LOGO WIDTH -->
+      <div class="back-cover-thanks-title">Acknowledgements</div>
+      <div class="back-cover-thanks-desc">
+        The <strong>Tunisian Thoracic Surgery Association (TTSA)</strong> extends its deepest and warmest gratitude to all <strong>participants</strong>, national and international faculty speakers, session chairs, moderators, and industry partners for their dedicated commitment and invaluable contribution to the resounding success of this 5<sup>th</sup> National Congress.
       </div>
 
-      <!-- DYNAMIC PROGRAM QR CODE WITHOUT CARD -->
-      <div class="back-cover-qr-free">
-        <img src="/img/qr-program.png" alt="Dynamic Program QR Code" class="back-cover-qr-img-free">
-        <div class="back-cover-qr-body-free">
-          <span class="back-cover-qr-badge-free">Dynamic &amp; Bilingual Access</span>
-          <div class="back-cover-qr-title-free">Interactive Scientific Program</div>
-          <div class="back-cover-qr-desc-free">Scan this QR code to access the dynamic online schedule (EN / FR), complete abstract details, and real-time session updates.</div>
-          <div class="back-cover-qr-link-free">www.ttsa.tn/program.html</div>
+      <!-- 3. 4-LINE SPACING + DYNAMIC PROGRAM BADGE CENTERED -->
+      <div class="back-cover-dynamic-section">
+        <div class="back-cover-plaque">Dynamic &amp; Bilingual Access</div>
+        
+        <!-- 4. TEXT NOT EXCEEDING LOGO WIDTH -->
+        <div class="back-cover-dynamic-title">Interactive Scientific Program</div>
+        <div class="back-cover-dynamic-desc">
+          Scan this QR code to access the dynamic online schedule (EN / FR), complete abstract details, and real-time session updates.
         </div>
+        <div class="back-cover-dynamic-link">www.ttsa.tn/program.html</div>
+
+        <!-- 5. QR CODE CENTERED WITH EXACT MATCHING WIDTH TO LOGO (65mm) -->
+        <img src="/img/qr-program.png" alt="Dynamic Program QR Code" class="back-cover-qr-centered">
       </div>
     </div>
 
