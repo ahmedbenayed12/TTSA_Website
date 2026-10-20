@@ -609,26 +609,42 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 1.8mm;
-      align-items: center;
+      align-items: start;
       text-align: center;
     }
     .society-card {
-      border: 0.8px solid #e2e8f0;
-      border-radius: 1.5mm;
-      padding: 1.2mm 1mm;
-      background: #f8fafc;
+      border: none;
+      background: transparent;
+      padding: 0.5mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+    }
+    .society-img-wrap {
+      height: 10.5mm;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.2mm;
+      width: 100%;
     }
     .society-img {
-      height: 6.5mm;
+      height: 7mm;
       max-width: 100%;
       object-fit: contain;
-      margin-bottom: 1mm;
+    }
+    .society-img-lg {
+      height: 10mm;
+      max-width: 100%;
+      object-fit: contain;
     }
     .society-name {
-      font-size: 5.5pt;
+      font-size: 4.8pt;
       font-weight: 700;
-      color: #1e293b;
-      line-height: 1.15;
+      color: #0c3b6d;
+      line-height: 1.25;
+      text-align: center;
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -1201,20 +1217,20 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 82mm;
+      width: 66mm;
     }
     .heritage-free-img {
-      width: 82mm;
+      width: 66mm;
       height: auto;
       display: block;
       border-radius: 1.5mm;
       box-shadow: 0 1.5px 5px rgba(0,0,0,0.12);
     }
     .heritage-free-caption {
-      width: 82mm;
+      width: 66mm;
       margin-top: 1.8mm;
-      font-size: 5.2pt;
-      line-height: 1.35;
+      font-size: 5pt;
+      line-height: 1.3;
       color: #475569;
       font-style: italic;
       text-align: justify;
@@ -1413,9 +1429,9 @@
     
     <!-- HISTORICAL HERITAGE : FORTIFIED RAMPARTS OF SFAX -->
     <div class="heritage-free-wrap">
-      <div class="heritage-inner" style="width: 66mm;">
-        <img src="/img/sfax-remparts.jpg" alt="Fortified ramparts of Sfax" class="heritage-free-img" style="width: 66mm; height: auto;">
-        <div class="heritage-free-caption" style="width: 66mm; font-size: 5pt; line-height: 1.3;">
+      <div class="heritage-inner">
+        <img src="/img/sfax-remparts.jpg" alt="Fortified ramparts of Sfax" class="heritage-free-img">
+        <div class="heritage-free-caption">
           View of the fortified ramparts of Sfax, founded in the 9<sup>th</sup> century under the Aghlabid Emir Abul Abbas Mohamed and overseen by the city cadi, Ali Ibn Aslam Al-Bakri. A symbol of the defensive might of Aghlabid Ifriqiya, this rampart has encircled the entire medina over two kilometers for more than eleven centuries.
         </div>
       </div>
@@ -1476,14 +1492,6 @@
           <li class="committee-member-item"><span>Dr Marc FILAIRE</span> <span style="color:#b82538;font-weight:700;">SFCTCV (FR)</span></li>
           <li class="committee-member-item"><span>Dr Lobna MAALEJ</span> <span style="color:#0284c7;font-weight:700;">STN (TN)</span></li>
           <li class="committee-member-item"><span>Dr Walid FEKI</span> <span style="color:#0284c7;font-weight:700;">APACS (TN)</span></li>
-        </ul>
-
-        <div style="margin-top: 2mm; padding: 1.5mm; background:#ffffff; border:0.8px dashed #cbd5e1; border-radius:1.5mm;">
-          <div style="font-size:5.6pt; font-weight:700; color:#0c3b6d; text-transform:uppercase;">Peer Review:</div>
-          <div style="font-size:5.4pt; color:#475569; line-height:1.2;">
-            Coordination and review of 75+ national and international abstracts.
-          </div>
-        </div>
       </div>
     </div>
 
@@ -1492,24 +1500,38 @@
       <div class="societies-title">Partner Learned Societies</div>
       <div class="societies-grid">
         <div class="society-card">
-          <img src="/img/logo.svg" alt="TTSA" class="society-img">
-          <div class="society-name">TTSA</div>
-          <div style="font-size:5pt; color:#64748b;">Thoracic Surgery</div>
+          <div class="society-img-wrap">
+            <img src="/img/logo.svg" alt="TTSA" class="society-img">
+          </div>
+          <div class="society-name">Tunisian Thoracic Surgery Association</div>
         </div>
         <div class="society-card">
-          <img src="/img/sfctcv-logo.png" alt="SFCTCV" class="society-img">
-          <div class="society-name">SFCTCV</div>
-          <div style="font-size:5pt; color:#64748b;">Thoracic &amp; CV Surgery</div>
+          <div class="society-img-wrap">
+            <img src="/img/sfctcv-logo.png" alt="SFCTCV" class="society-img-lg">
+          </div>
+          <div class="society-name">French Society of Thoracic and Cardiovascular Surgery</div>
         </div>
         <div class="society-card">
-          <img src="/img/stn-logo.png" alt="STN" class="society-img">
-          <div class="society-name">STN</div>
-          <div style="font-size:5pt; color:#64748b;">Neurology</div>
+          <div class="society-img-wrap">
+            <img src="/img/stn-logo.png" alt="STN" class="society-img-lg">
+          </div>
+          <div class="society-name">Tunisian Society of Neurology</div>
         </div>
         <div class="society-card">
-          <img src="/img/apacs-logo.jpg" alt="APACS" class="society-img">
-          <div class="society-name">APACS</div>
-          <div style="font-size:5pt; color:#64748b;">Pulmonology &amp; Allergy</div>
+          <div class="society-img-wrap">
+            <img src="/img/apacs-logo.jpg" alt="APACS" class="society-img-lg" style="mix-blend-mode: multiply;">
+          </div>
+          <div class="society-name">Association of Pulmonologists and Allergists of Central and Southern Tunisia</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATRIMOINE HISTORIQUE : DAR JALLOULI -->
+    <div class="heritage-free-wrap">
+      <div class="heritage-inner">
+        <img src="/img/dar-jallouli.jpg" alt="Dar Jallouli Palace - Sfax" class="heritage-free-img">
+        <div class="heritage-free-caption">
+          Dar Jallouli, a jewel of Sfaxian heritage in the heart of the medina. A 17<sup>th</sup>-century patrician mansion now housing the Museum of Popular Arts and Traditions, it reveals around its sunlit courtyard the full refinement of traditional architecture — sculpted stone, antique ceramics, and green woodwork — while preserving Sfax's centuries-old costumes, jewelry, and artisanal craftsmanship.
         </div>
       </div>
     </div>
