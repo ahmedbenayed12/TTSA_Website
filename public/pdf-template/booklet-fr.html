@@ -265,67 +265,73 @@
       margin-bottom: 3.5mm;
     }
     .back-cover-qr-centered {
-      width: 65mm;
-      height: 65mm;
+      width: 58mm;
+      height: 58mm;
       display: block;
       margin: 0 auto;
       border: 1px solid #cbd5e1;
-      border-radius: 2.5mm;
+      border-radius: 2mm;
       padding: 1.2mm;
       background: #ffffff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    .back-cover-bottom-cards {
-      width: 100%;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3.5mm;
-      margin-top: auto;
-    }
-    .back-cover-bottom-card {
-      border-radius: 2.2mm;
-      padding: 2.8mm 3.2mm;
+    /* CONTACTS AU PIED : MÊME DESIGN QUE LE PROGRAMME DYNAMIQUE, LIBRE SANS CARTE, DE HAUT EN BAS */
+    .back-cover-contacts-col {
+      width: 65mm;
+      max-width: 65mm;
       display: flex;
       flex-direction: column;
-      gap: 1mm;
-      text-align: left;
+      align-items: center;
+      text-align: center;
+      margin-top: 5mm;
+      gap: 3.5mm;
     }
-    .back-cover-bottom-card.sec {
-      background: #f0f7ff;
-      border: 1.2px solid #0284c7;
-      border-left: 3.5px solid #0284c7;
+    .back-cover-contact-group {
+      width: 65mm;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 0.8mm;
     }
-    .back-cover-bottom-card.ast {
-      background: #fdf2f4;
-      border: 1.2px solid #b82538;
-      border-left: 3.5px solid #b82538;
-    }
-    .back-cover-card-tag {
-      font-size: 5.2pt;
+    .back-cover-contact-plaque {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.8pt;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
+      padding: 0.6mm 2.6mm;
+      border-radius: 1.2mm;
     }
-    .back-cover-bottom-card.sec .back-cover-card-tag {
+    .back-cover-contact-plaque.sec {
       color: #0369a1;
+      background: #e0f2fe;
+      border: 0.8px solid #bae6fd;
     }
-    .back-cover-bottom-card.ast .back-cover-card-tag {
+    .back-cover-contact-plaque.ast {
       color: #b82538;
+      background: #fdf2f4;
+      border: 0.8px solid #fecdd3;
     }
-    .back-cover-card-email {
-      font-size: 5.8pt;
+    .back-cover-contact-email {
+      font-size: 5.6pt;
       font-weight: 700;
     }
-    .back-cover-bottom-card.sec .back-cover-card-email {
+    .back-cover-contact-group.sec .back-cover-contact-email {
       color: #0c3b6d;
     }
-    .back-cover-bottom-card.ast .back-cover-card-email {
+    .back-cover-contact-group.ast .back-cover-contact-email {
       color: #881337;
     }
-    .back-cover-card-sub {
-      font-size: 4.8pt;
+    .back-cover-contact-sub {
+      font-size: 4.6pt;
       color: #475569;
       line-height: 1.25;
+    }
+    .nowrap {
+      white-space: nowrap;
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -3148,26 +3154,29 @@
         <!-- 4. TEXTE NE DÉBORDANT PAS DE LA LARGEUR DU LOGO -->
         <div class="back-cover-dynamic-title">Programme Scientifique Interactif</div>
         <div class="back-cover-dynamic-desc">
-          Scannez ce QR code pour accéder à la version dynamique du programme (FR / EN), aux résumés complets des communications et aux actualisations en direct.
+          Scannez ce QR code pour accéder à la version dynamique du programme <span class="nowrap">(FR / EN)</span>, aux résumés complets des communications et aux actualisations en direct.
         </div>
         <div class="back-cover-dynamic-link">www.ttsa.tn/program.html</div>
 
-        <!-- 5. QR CODE AU MILIEU AVEC COTE HARMONIEUSE À LA LARGEUR DU LOGO (65mm) -->
+        <!-- 5. QR CODE AU MILIEU AVEC COTE HARMONIEUSE À LA LARGEUR DU LOGO -->
         <img src="/img/qr-program.png" alt="QR Code Programme Dynamique" class="back-cover-qr-centered">
       </div>
-    </div>
 
-    <!-- 2 CARTES EN PIED DE PAGE : COULEURS VISIBLES -->
-    <div class="back-cover-bottom-cards">
-      <div class="back-cover-bottom-card sec">
-        <div class="back-cover-card-tag">Secrétariat Général TTSA</div>
-        <div class="back-cover-card-email">ttsa.contact@gmail.com</div>
-        <div class="back-cover-card-sub">Site web officiel : <strong>www.ttsa.tn</strong></div>
-      </div>
-      <div class="back-cover-bottom-card ast">
-        <div class="back-cover-card-tag">Assistance &amp; Attestations</div>
-        <div class="back-cover-card-email">ttsa.sbmission@gmail.com</div>
-        <div class="back-cover-card-sub">Soumission des communications &amp; récupération des attestations</div>
+      <!-- 6. CONTACTS SECRÉTAIRE & ASSISTANCE : MÊME DESIGN, LIBRE SANS CARTE, DE HAUT EN BAS -->
+      <div class="back-cover-contacts-col">
+        <!-- SECRÉTARIAT GÉNÉRAL -->
+        <div class="back-cover-contact-group sec">
+          <div class="back-cover-contact-plaque sec">Secrétariat Général TTSA</div>
+          <div class="back-cover-contact-email">ttsa.contact@gmail.com</div>
+          <div class="back-cover-contact-sub">Site web officiel : <strong>www.ttsa.tn</strong></div>
+        </div>
+
+        <!-- ASSISTANCE & ATTESTATIONS -->
+        <div class="back-cover-contact-group ast">
+          <div class="back-cover-contact-plaque ast">Assistance &amp; Attestations</div>
+          <div class="back-cover-contact-email">ttsa.sbmission@gmail.com</div>
+          <div class="back-cover-contact-sub">Soumission des communications &amp; récupération des attestations</div>
+        </div>
       </div>
     </div>
 
