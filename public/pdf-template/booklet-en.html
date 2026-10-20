@@ -159,25 +159,26 @@
     /* ═══════════════════════════════════════════════════════════════════
        PAGE 0p (PAGE 13) : CLEAN WHITE BACK COVER (A5)
        ═══════════════════════════════════════════════════════════════════ */
-    .back-cover-page {
+    .page.back-cover-page {
       position: relative;
       width: 148mm;
       height: 210mm;
+      min-height: 210mm;
       max-height: 210mm;
       background: #ffffff !important;
       margin: 0 auto 15px auto;
-      padding: 10mm 11mm 8mm 11mm;
+      padding: 0 !important;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
+      justify-content: center !important;
+      align-items: center !important;
       box-sizing: border-box;
       overflow: hidden;
       page-break-after: always;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
     @media print {
-      .back-cover-page {
+      .page.back-cover-page {
         margin: 0;
         box-shadow: none;
       }
@@ -196,20 +197,20 @@
       width: 65mm;
       height: auto;
       display: block;
-      margin: 0 auto 3.5mm auto;
+      margin: 0 auto 2.5mm auto;
     }
     .back-cover-thanks-title {
-      font-size: 8.5pt;
+      font-size: 7.6pt;
       font-weight: 800;
       color: #0c3b6d;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      margin-bottom: 2mm;
+      margin-bottom: 1.5mm;
     }
     .back-cover-thanks-desc {
       width: 65mm;
-      font-size: 5.2pt;
-      line-height: 1.45;
+      font-size: 5.1pt;
+      line-height: 1.42;
       color: #0f172a;
       text-align: justify;
       margin: 0 auto;
@@ -218,7 +219,7 @@
       color: #000000;
       font-weight: 700;
     }
-    /* 4-LINE SPACING (~7mm) */
+    /* 4-LINE SPACING (~6.5mm) BEFORE DYNAMIC PROGRAM */
     .back-cover-dynamic-section {
       margin-top: 6.5mm;
       width: 65mm;
@@ -227,46 +228,66 @@
       align-items: center;
       text-align: center;
     }
+    /* ALL 3 PLAQUES AT EXACT SAME SIZE (5.2pt) */
     .back-cover-plaque {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      font-size: 5pt;
-      font-weight: 700;
+      font-size: 5.2pt;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
+      padding: 0.7mm 3mm;
+      border-radius: 1.2mm;
+      margin-bottom: 1.3mm;
+    }
+    .back-cover-plaque.dyn {
       color: #0369a1;
       background: #e0f2fe;
       border: 0.8px solid #bae6fd;
-      padding: 0.8mm 3mm;
-      border-radius: 1.2mm;
-      margin-bottom: 2mm;
     }
-    .back-cover-dynamic-title {
-      font-size: 7.6pt;
-      font-weight: 800;
-      color: #0c3b6d;
-      line-height: 1.2;
-      margin-bottom: 1.5mm;
-      width: 65mm;
+    .back-cover-plaque.sec {
+      color: #0369a1;
+      background: #e0f2fe;
+      border: 0.8px solid #bae6fd;
     }
-    .back-cover-dynamic-desc {
+    .back-cover-plaque.ast {
+      color: #b82538;
+      background: #fdf2f4;
+      border: 0.8px solid #fecdd3;
+    }
+    /* ALL TEXT IN THE 3 SECTIONS AT EXACT SAME SIZE (5.2pt) */
+    .back-cover-block-text {
       width: 65mm;
-      font-size: 5.1pt;
-      line-height: 1.35;
-      color: #334155;
+      font-size: 5.2pt;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 0.5mm;
       text-align: center;
-      margin-bottom: 1.5mm;
+    }
+    .back-cover-block-text.sec {
+      color: #0c3b6d;
+    }
+    .back-cover-block-text.ast {
+      color: #881337;
+    }
+    .back-cover-block-desc {
+      width: 65mm;
+      font-size: 5.2pt;
+      line-height: 1.35;
+      color: #475569;
+      text-align: center;
+      margin-bottom: 0.8mm;
     }
     .back-cover-dynamic-link {
-      font-size: 6pt;
+      font-size: 5.2pt;
       font-weight: 700;
       color: #b82538;
-      margin-bottom: 3.5mm;
+      margin-bottom: 2mm;
     }
     .back-cover-qr-centered {
-      width: 58mm;
-      height: 58mm;
+      width: 52mm;
+      height: 52mm;
       display: block;
       margin: 0 auto;
       border: 1px solid #cbd5e1;
@@ -275,7 +296,7 @@
       background: #ffffff;
       box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-    /* CONTACTS AT BOTTOM : SAME DESIGN AS DYNAMIC PROGRAM, FREE WITHOUT CARD, TOP TO BOTTOM */
+    /* CONTACTS SECTION AT BOTTOM */
     .back-cover-contacts-col {
       width: 65mm;
       max-width: 65mm;
@@ -283,8 +304,8 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      margin-top: 5mm;
-      gap: 3.5mm;
+      margin-top: 4.5mm;
+      gap: 3.2mm;
     }
     .back-cover-contact-group {
       width: 65mm;
@@ -292,43 +313,6 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      gap: 0.8mm;
-    }
-    .back-cover-contact-plaque {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 4.8pt;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.6mm 2.6mm;
-      border-radius: 1.2mm;
-    }
-    .back-cover-contact-plaque.sec {
-      color: #0369a1;
-      background: #e0f2fe;
-      border: 0.8px solid #bae6fd;
-    }
-    .back-cover-contact-plaque.ast {
-      color: #b82538;
-      background: #fdf2f4;
-      border: 0.8px solid #fecdd3;
-    }
-    .back-cover-contact-email {
-      font-size: 5.6pt;
-      font-weight: 700;
-    }
-    .back-cover-contact-group.sec .back-cover-contact-email {
-      color: #0c3b6d;
-    }
-    .back-cover-contact-group.ast .back-cover-contact-email {
-      color: #881337;
-    }
-    .back-cover-contact-sub {
-      font-size: 4.6pt;
-      color: #475569;
-      line-height: 1.25;
     }
     .nowrap {
       white-space: nowrap;
@@ -3152,33 +3136,32 @@
 
       <!-- 3. 4-LINE SPACING + DYNAMIC PROGRAM BADGE CENTERED -->
       <div class="back-cover-dynamic-section">
-        <div class="back-cover-plaque">Dynamic &amp; Bilingual Access</div>
+        <div class="back-cover-plaque dyn">Dynamic &amp; Bilingual Program</div>
         
         <!-- 4. TEXT NOT EXCEEDING LOGO WIDTH -->
-        <div class="back-cover-dynamic-title">Interactive Scientific Program</div>
-        <div class="back-cover-dynamic-desc">
+        <div class="back-cover-block-desc">
           Scan this QR code to access the dynamic online schedule <span class="nowrap">(EN / FR)</span>, complete abstract details, and real-time session updates.
         </div>
         <div class="back-cover-dynamic-link">www.ttsa.tn/program.html</div>
 
-        <!-- 5. QR CODE CENTERED WITH EXACT MATCHING WIDTH TO LOGO -->
+        <!-- 5. QR CODE CENTERED -->
         <img src="/img/qr-program.png" alt="Dynamic Program QR Code" class="back-cover-qr-centered">
       </div>
 
       <!-- 6. CONTACTS SECRETARIAT & HELPDESK : SAME DESIGN, FREE WITHOUT CARD, TOP TO BOTTOM -->
       <div class="back-cover-contacts-col">
         <!-- GENERAL SECRETARIAT -->
-        <div class="back-cover-contact-group sec">
-          <div class="back-cover-contact-plaque sec">TTSA General Secretariat</div>
-          <div class="back-cover-contact-email">ttsa.contact@gmail.com</div>
-          <div class="back-cover-contact-sub">Official website: <strong>www.ttsa.tn</strong></div>
+        <div class="back-cover-contact-group">
+          <div class="back-cover-plaque sec">TTSA General Secretariat</div>
+          <div class="back-cover-block-text sec">ttsa.contact@gmail.com</div>
+          <div class="back-cover-block-desc">Official website: <strong>www.ttsa.tn</strong></div>
         </div>
 
         <!-- SUBMISSIONS & CERTIFICATES -->
-        <div class="back-cover-contact-group ast">
-          <div class="back-cover-contact-plaque ast">Submissions &amp; Certificates</div>
-          <div class="back-cover-contact-email">ttsa.sbmission@gmail.com</div>
-          <div class="back-cover-contact-sub">Abstract submissions &amp; attendance certificates helpdesk</div>
+        <div class="back-cover-contact-group">
+          <div class="back-cover-plaque ast">Assistance &amp; Certificates</div>
+          <div class="back-cover-block-text ast">ttsa.sbmission@gmail.com</div>
+          <div class="back-cover-block-desc">Abstract submissions &amp; attendance certificates helpdesk</div>
         </div>
       </div>
     </div>
