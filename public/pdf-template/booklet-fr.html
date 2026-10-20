@@ -183,8 +183,22 @@
         box-shadow: none;
       }
     }
+    /* PHOTO D'ARRIÈRE-PLAN À 50% DE TRANSPARENCE */
+    .back-cover-bg-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 148mm;
+      height: 210mm;
+      object-fit: cover;
+      opacity: 0.5;
+      z-index: 1;
+      pointer-events: none;
+    }
     /* COLONNE CENTRALE DONT LA LARGEUR EST FIXÉE PAR LE LOGO (65mm) */
     .back-cover-central-col {
+      position: relative;
+      z-index: 2;
       width: 65mm;
       max-width: 65mm;
       display: flex;
@@ -209,9 +223,9 @@
     }
     .back-cover-thanks-desc {
       width: 65mm;
-      font-size: 5.1pt;
+      font-size: 5.2pt;
       line-height: 1.42;
-      color: #0f172a;
+      color: #000000;
       text-align: justify;
       margin: 0 auto;
     }
@@ -271,11 +285,12 @@
     .back-cover-block-text.ast {
       color: #881337;
     }
+    /* TOUT TEXTE GRIS DEVIENT NOIR PUR #000000 */
     .back-cover-block-desc {
       width: 65mm;
       font-size: 5.2pt;
       line-height: 1.35;
-      color: #475569;
+      color: #000000;
       text-align: center;
       margin-bottom: 0.8mm;
     }
@@ -3120,6 +3135,8 @@
        PAGE 0p (PAGE 13) : DOS DE COUVERTURE BLANCHE ÉPURÉE (A5)
        ═══════════════════════════════════════════════════════════════════ -->
   <div class="page back-cover-page">
+    <!-- PHOTO D'ARRIÈRE-PLAN À 50% DE TRANSPARENCE -->
+    <img src="/img/back-cover-pattern.jpg" alt="" class="back-cover-bg-pattern">
     
     <div class="back-cover-central-col">
       <!-- 1. LOGO RÉFÉRENCE DE POSITION (65mm) -->
@@ -3135,9 +3152,9 @@
       <div class="back-cover-dynamic-section">
         <div class="back-cover-plaque dyn">Programme Dynamique &amp; Bilingue</div>
         
-        <!-- 4. TEXTE NE DÉBORDANT PAS DE LA LARGEUR DU LOGO -->
+        <!-- 4. TEXTE NE DÉBORDANT PAS DE LA LARGEUR DU LOGO (SANS "RÉSUMÉS COMPLETS") -->
         <div class="back-cover-block-desc">
-          Scannez ce QR code pour accéder à la version dynamique du programme <span class="nowrap">(FR / EN)</span>, aux résumés complets des communications et aux actualisations en direct.
+          Scannez ce QR code pour accéder à la version dynamique du programme <span class="nowrap">(FR / EN)</span> et aux actualisations en direct.
         </div>
         <div class="back-cover-dynamic-link">www.ttsa.tn/program.html</div>
 
