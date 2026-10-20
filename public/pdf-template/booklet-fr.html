@@ -157,19 +157,23 @@
     }
 
     /* ═══════════════════════════════════════════════════════════════════
-       PAGE 0p (PAGE 13) : DOS DE COUVERTURE AVEC CALQUE BLEU (A5)
+       PAGE 0p (PAGE 13) : DOS DE COUVERTURE BLANCHE ÉPURÉE (A5)
        ═══════════════════════════════════════════════════════════════════ */
     .back-cover-page {
-      position: relative !important;
-      padding: 0 !important;
-      margin: 0 auto 15px auto;
+      position: relative;
       width: 148mm;
       height: 210mm;
       max-height: 210mm;
+      background: #ffffff !important;
+      margin: 0 auto 15px auto;
+      padding: 14mm 12mm 11mm 12mm;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      box-sizing: border-box;
       overflow: hidden;
-      display: block !important;
-      border: none;
-      background: #071e3d;
+      page-break-after: always;
       box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
     @media print {
@@ -178,127 +182,71 @@
         box-shadow: none;
       }
     }
-    .back-cover-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 148mm;
-      height: 210mm;
-      object-fit: cover;
-      z-index: 1;
-    }
-    .back-cover-overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 148mm;
-      height: 210mm;
-      background: linear-gradient(180deg, rgba(7, 30, 61, 0.88) 0%, rgba(5, 20, 42, 0.91) 100%);
-      z-index: 2;
-    }
-    .back-cover-content {
-      position: relative;
-      z-index: 3;
-      width: 148mm;
-      height: 210mm;
-      padding: 10mm 10mm 8mm 10mm;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      color: #ffffff;
-      box-sizing: border-box;
-    }
-    .back-cover-header {
+    .back-cover-top {
       display: flex;
       flex-direction: column;
       align-items: center;
-      text-align: center;
-      gap: 1.5mm;
+      width: 100%;
     }
-    .back-cover-logo-badge {
-      background: #ffffff;
-      padding: 2.2mm 5mm;
-      border-radius: 2.5mm;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.25);
-    }
-    .back-cover-logo {
-      height: 9.5mm;
+    .back-cover-logo-standalone {
+      height: 16mm;
       width: auto;
       display: block;
+      margin: 0 auto 8mm auto;
     }
-    .back-cover-title {
-      font-size: 7.8pt;
+    .back-cover-thanks-wrap {
+      width: 100%;
+      text-align: center;
+      margin-bottom: 8mm;
+    }
+    .back-cover-thanks-title {
+      font-size: 8.8pt;
       font-weight: 800;
-      letter-spacing: 0.05em;
+      color: #0c3b6d;
       text-transform: uppercase;
-      color: #ffffff;
-      margin-top: 1mm;
+      letter-spacing: 0.08em;
+      margin-bottom: 2.5mm;
     }
-    .back-cover-subtitle {
+    .back-cover-thanks-desc {
       font-size: 5.6pt;
-      font-weight: 600;
-      color: #93c5fd;
-      letter-spacing: 0.03em;
-    }
-    .back-cover-thanks {
-      background: rgba(255, 255, 255, 0.10);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      border-radius: 2.5mm;
-      padding: 2.8mm 3.5mm;
-      text-align: center;
-      backdrop-filter: blur(4px);
-    }
-    .back-cover-thanks-badge {
-      display: inline-block;
-      font-size: 5.2pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      color: #fef08a;
-      background: rgba(234, 179, 8, 0.20);
-      border: 0.6px solid rgba(250, 204, 21, 0.40);
-      padding: 0.6mm 2.2mm;
-      border-radius: 1.5mm;
-      margin-bottom: 1.2mm;
-    }
-    .back-cover-thanks-text {
-      font-size: 5.4pt;
-      line-height: 1.35;
-      color: #f1f5f9;
-      text-align: center;
-    }
-    .back-cover-thanks-text strong {
-      color: #ffffff;
-    }
-    .back-cover-qr-card {
-      background: #ffffff;
-      border-radius: 3mm;
-      padding: 2.5mm 3.5mm;
-      display: flex;
-      align-items: center;
-      gap: 3.5mm;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.30);
+      line-height: 1.5;
       color: #0f172a;
+      text-align: justify;
+      max-width: 124mm;
+      margin: 0 auto;
     }
-    .back-cover-qr-img {
-      width: 22mm;
-      height: 22mm;
+    .back-cover-thanks-desc strong {
+      color: #000000;
+      font-weight: 700;
+    }
+    .back-cover-qr-free {
+      width: 100%;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 5mm;
+      margin-bottom: 6mm;
+      max-width: 124mm;
+    }
+    .back-cover-qr-img-free {
+      width: 25mm;
+      height: 25mm;
       display: block;
-      border-radius: 1.5mm;
-      border: 0.8px solid #cbd5e1;
+      border: 1px solid #cbd5e1;
+      border-radius: 2mm;
+      padding: 1mm;
+      background: #ffffff;
       flex-shrink: 0;
     }
-    .back-cover-qr-body {
+    .back-cover-qr-body-free {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 0.8mm;
+      gap: 1.2mm;
       text-align: left;
     }
-    .back-cover-qr-badge {
+    .back-cover-qr-badge-free {
       display: inline-flex;
       align-items: center;
       align-self: flex-start;
@@ -309,79 +257,76 @@
       color: #0369a1;
       background: #e0f2fe;
       border: 0.5px solid #bae6fd;
-      padding: 0.5mm 1.8mm;
+      padding: 0.6mm 2mm;
       border-radius: 1mm;
     }
-    .back-cover-qr-title {
-      font-size: 7pt;
+    .back-cover-qr-title-free {
+      font-size: 7.6pt;
       font-weight: 800;
       color: #0c3b6d;
-      line-height: 1.15;
-    }
-    .back-cover-qr-desc {
-      font-size: 5pt;
-      line-height: 1.25;
-      color: #475569;
-    }
-    .back-cover-qr-link {
-      font-size: 5.6pt;
-      font-weight: 700;
-      color: #b82538;
-      display: inline-block;
-      margin-top: 0.4mm;
-    }
-    .back-cover-contacts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2.5mm;
-    }
-    .back-cover-contact-item {
-      background: rgba(255, 255, 255, 0.10);
-      border: 1px solid rgba(255, 255, 255, 0.20);
-      border-radius: 2mm;
-      padding: 2.2mm 2.8mm;
-      display: flex;
-      flex-direction: column;
-      gap: 1mm;
-      backdrop-filter: blur(4px);
-      text-align: left;
-    }
-    .back-cover-contact-tag {
-      font-size: 4.8pt;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #38bdf8;
-      display: flex;
-      align-items: center;
-      gap: 1.2mm;
-    }
-    .back-cover-contact-val {
-      font-size: 5.3pt;
-      color: #ffffff;
-      font-weight: 700;
-      word-break: break-all;
-    }
-    .back-cover-contact-sub {
-      font-size: 4.6pt;
-      color: #cbd5e1;
       line-height: 1.2;
     }
-    .back-cover-footer {
-      border-top: 0.8px solid rgba(255, 255, 255, 0.20);
-      padding-top: 1.5mm;
+    .back-cover-qr-desc-free {
+      font-size: 5.2pt;
+      line-height: 1.35;
+      color: #334155;
+    }
+    .back-cover-qr-link-free {
+      font-size: 6pt;
+      font-weight: 700;
+      color: #b82538;
+      margin-top: 0.4mm;
+    }
+    .back-cover-bottom-cards {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5mm;
+    }
+    .back-cover-bottom-card {
+      border-radius: 2.2mm;
+      padding: 3mm 3.5mm;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 1.2mm;
+      text-align: left;
+    }
+    .back-cover-bottom-card.sec {
+      background: #f0f7ff;
+      border: 1.2px solid #0284c7;
+      border-left: 3.5px solid #0284c7;
+    }
+    .back-cover-bottom-card.ast {
+      background: #fdf2f4;
+      border: 1.2px solid #b82538;
+      border-left: 3.5px solid #b82538;
+    }
+    .back-cover-card-tag {
+      font-size: 5.2pt;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .back-cover-bottom-card.sec .back-cover-card-tag {
+      color: #0369a1;
+    }
+    .back-cover-bottom-card.ast .back-cover-card-tag {
+      color: #b82538;
+    }
+    .back-cover-card-email {
+      font-size: 5.8pt;
+      font-weight: 700;
+    }
+    .back-cover-bottom-card.sec .back-cover-card-email {
+      color: #0c3b6d;
+    }
+    .back-cover-bottom-card.ast .back-cover-card-email {
+      color: #881337;
+    }
+    .back-cover-card-sub {
       font-size: 4.8pt;
-      color: #94a3b8;
-    }
-    .back-cover-footer-left {
-      font-weight: 600;
-      color: #cbd5e1;
-    }
-    .back-cover-footer-right {
-      color: #94a3b8;
+      color: #475569;
+      line-height: 1.25;
     }
 
     /* ═══════════════════════════════════════════════════════════════════
@@ -3183,66 +3128,48 @@
 
 
   <!-- ═══════════════════════════════════════════════════════════════════
-       PAGE 0p (PAGE 13) : DOS DE COUVERTURE AVEC CALQUE BLEU (A5)
+       PAGE 0p (PAGE 13) : DOS DE COUVERTURE BLANCHE ÉPURÉE (A5)
        ═══════════════════════════════════════════════════════════════════ -->
   <div class="page back-cover-page">
-    <img src="/img/back-cover.png" alt="Remparts de Sfax" class="back-cover-bg">
-    <div class="back-cover-overlay"></div>
-    <div class="back-cover-content">
-      
-      <!-- HAUT : LOGO & TITRE CONGRÈS -->
-      <div class="back-cover-header">
-        <div class="back-cover-logo-badge">
-          <img src="/img/logo.svg" alt="TTSA" class="back-cover-logo">
-        </div>
-        <div class="back-cover-title">5<sup>ème</sup> Congrès National de Chirurgie Thoracique</div>
-        <div class="back-cover-subtitle">06 - 07 Novembre 2026 · Hôtel Borj Dhiafa, Sfax · Tunisie</div>
-      </div>
+    
+    <div class="back-cover-top">
+      <!-- LOGO TTSA SEUL -->
+      <img src="/img/logo.svg" alt="TTSA" class="back-cover-logo-standalone">
 
-      <!-- REMERCIEMENTS TTSA -->
-      <div class="back-cover-thanks">
-        <div class="back-cover-thanks-badge">Remerciements</div>
-        <div class="back-cover-thanks-text">
+      <!-- REMERCIEMENTS : TITRE LIBRE & TEXTE NOIR -->
+      <div class="back-cover-thanks-wrap">
+        <div class="back-cover-thanks-title">Remerciements</div>
+        <div class="back-cover-thanks-desc">
           La <strong>Société Tunisienne de Chirurgie Thoracique (TTSA)</strong> adresse ses plus vifs et chaleureux remerciements à l'ensemble des <strong>participants</strong>, orateurs nationaux et internationaux, présidents de séance, modérateurs et partenaires industriels pour leur engagement et leur contribution précieuse au plein succès et au rayonnement de cette 5<sup>ème</sup> édition.
         </div>
       </div>
 
-      <!-- QR CODE PROGRAMME DYNAMIQUE -->
-      <div class="back-cover-qr-card">
-        <img src="/img/qr-program.png" alt="QR Code Programme Dynamique" class="back-cover-qr-img">
-        <div class="back-cover-qr-body">
-          <span class="back-cover-qr-badge">Programme Dynamique &amp; Bilingue</span>
-          <div class="back-cover-qr-title">Programme Scientifique Interactif</div>
-          <div class="back-cover-qr-desc">Scannez ce QR code pour accéder à la version dynamique du programme (FR / EN), aux résumés complets des communications et aux actualisations en direct.</div>
-          <div class="back-cover-qr-link">www.ttsa.tn/program.html</div>
+      <!-- QR CODE PROGRAMME DYNAMIQUE SANS CARTE -->
+      <div class="back-cover-qr-free">
+        <img src="/img/qr-program.png" alt="QR Code Programme Dynamique" class="back-cover-qr-img-free">
+        <div class="back-cover-qr-body-free">
+          <span class="back-cover-qr-badge-free">Programme Dynamique &amp; Bilingue</span>
+          <div class="back-cover-qr-title-free">Programme Scientifique Interactif</div>
+          <div class="back-cover-qr-desc-free">Scannez ce QR code pour accéder à la version dynamique du programme (FR / EN), aux résumés complets des communications et aux actualisations en direct.</div>
+          <div class="back-cover-qr-link-free">www.ttsa.tn/program.html</div>
         </div>
       </div>
-
-      <!-- CONTACTS & ASSISTANCE -->
-      <div class="back-cover-contacts-grid">
-        <div class="back-cover-contact-item">
-          <div class="back-cover-contact-tag">
-            <span>Secrétariat Général TTSA</span>
-          </div>
-          <div class="back-cover-contact-val">ttsa.contact@gmail.com</div>
-          <div class="back-cover-contact-sub">Site web officiel : <strong>www.ttsa.tn</strong></div>
-        </div>
-        <div class="back-cover-contact-item">
-          <div class="back-cover-contact-tag">
-            <span>Assistance &amp; Attestations</span>
-          </div>
-          <div class="back-cover-contact-val">ttsa.sbmission@gmail.com</div>
-          <div class="back-cover-contact-sub">Soumission des communications &amp; récupération des attestations</div>
-        </div>
-      </div>
-
-      <!-- BAS : MENTION FINALE -->
-      <div class="back-cover-footer">
-        <span class="back-cover-footer-left">Société Tunisienne de Chirurgie Thoracique (TTSA)</span>
-        <span class="back-cover-footer-right">www.ttsa.tn · Sfax 2026</span>
-      </div>
-
     </div>
+
+    <!-- 2 CARTES EN PIED DE PAGE : COULEURS VISIBLES -->
+    <div class="back-cover-bottom-cards">
+      <div class="back-cover-bottom-card sec">
+        <div class="back-cover-card-tag">Secrétariat Général TTSA</div>
+        <div class="back-cover-card-email">ttsa.contact@gmail.com</div>
+        <div class="back-cover-card-sub">Site web officiel : <strong>www.ttsa.tn</strong></div>
+      </div>
+      <div class="back-cover-bottom-card ast">
+        <div class="back-cover-card-tag">Assistance &amp; Attestations</div>
+        <div class="back-cover-card-email">ttsa.sbmission@gmail.com</div>
+        <div class="back-cover-card-sub">Soumission des communications &amp; récupération des attestations</div>
+      </div>
+    </div>
+
   </div>
 
 </body>
