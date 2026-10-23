@@ -1171,8 +1171,17 @@
       object-fit: contain;
     }
     .sponsor-logo-box.bronze img {
-      max-height: 7mm;
-      max-width: 15mm;
+      max-height: 100%;
+      max-width: 100%;
+    }
+    .bronze-img-wrap {
+      height: 7mm;
+      width: 15mm;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
     .scale-medtronic { transform: scale(1.75); }
     .scale-bluesail { transform: scale(1.05); }
@@ -1796,15 +1805,15 @@
     <div class="sponsor-tier-block">
       <span class="tier-header tier-bronze-label">Bronze Pack</span>
       <div class="sponsors-logos-flex bronze-balanced">
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/gmiha-houria.png" alt="Gmiha Houria" class="scale-ghmiha"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/medis.jpg" alt="MEDIS" class="scale-medis"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/sofemed.jpg" alt="SOFEMED" class="scale-sofemed"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/galpharma.jpg" alt="Galpharma" class="scale-galpharma"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/syphax.png" alt="Syphax" class="scale-syphax"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/teriak.jpg" alt="Teriak" class="scale-teriak"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/co-access.png" alt="CO ACCESS" class="scale-co-access"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/dar-essaydali.png" alt="Dar Essaydali" class="scale-dar-essaydali"></div>
-        <div class="sponsor-logo-box bronze"><img src="/img/sponsors/baya.png" alt="Baya Huile d'Olive" class="scale-baya"></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/gmiha-houria.png" alt="Gmiha Houria" class="scale-ghmiha"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/medis.jpg" alt="MEDIS" class="scale-medis"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/sofemed.jpg" alt="SOFEMED" class="scale-sofemed"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/galpharma.jpg" alt="Galpharma" class="scale-galpharma"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/syphax.png" alt="Syphax" class="scale-syphax"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/teriak.jpg" alt="Teriak" class="scale-teriak"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/co-access.png" alt="CO ACCESS" class="scale-co-access"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/dar-essaydali.png" alt="Dar Essaydali" class="scale-dar-essaydali"></div></div>
+        <div class="sponsor-logo-box bronze"><div class="bronze-img-wrap"><img src="/img/sponsors/baya.png" alt="Baya Huile d'Olive" class="scale-baya"></div></div>
       </div>
     </div>
 
