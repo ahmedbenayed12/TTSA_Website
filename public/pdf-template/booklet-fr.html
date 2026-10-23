@@ -1000,20 +1000,26 @@
       flex-shrink: 0;
     }
     .badge-room {
-      font-size: 5.2pt;
+      font-size: 4.8pt;
       font-weight: 700;
       color: #0369a1;
       background: #e0f2fe;
-      padding: 0.3mm 1.4mm;
+      border: 0.5px solid #bae6fd;
+      padding: 0.3mm 1.2mm;
       border-radius: 0.8mm;
+      display: inline-block;
+      white-space: nowrap;
     }
     .badge-room-alt {
-      font-size: 5.2pt;
+      font-size: 4.8pt;
       font-weight: 700;
       color: #6b21a8;
       background: #f3e8ff;
-      padding: 0.3mm 1.4mm;
+      border: 0.5px solid #e9d5ff;
+      padding: 0.3mm 1.2mm;
       border-radius: 0.8mm;
+      display: inline-block;
+      white-space: nowrap;
     }
     .badge-chair {
       font-size: 5.2pt;
@@ -2430,22 +2436,28 @@
     <table class="program-table">
       <!-- 08h00 - 08h30 -->
       <tr class="prog-row pause">
-        <td class="prog-time">08h00<br>08h30</td>
+        <td class="prog-time">
+          <div>08h00<br>08h30</div>
+          <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+        </td>
         <td class="prog-content pause">
           <div class="prog-title-row">
             <div class="prog-title" style="color:#065f46;">Accueil et inscription</div>
-            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type pause">Accueil</span></div>
+            <div class="prog-badges"><span class="badge-type pause">Accueil</span></div>
           </div>
         </td>
       </tr>
 
       <!-- 08h30 - 09h30 -->
       <tr class="prog-row posters">
-        <td class="prog-time comm-time">08h30<br>09h30</td>
+        <td class="prog-time comm-time">
+          <div>08h30<br>09h30</div>
+          <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+        </td>
         <td class="prog-content posters">
           <div class="prog-title-row">
             <div class="prog-title">Communications libres 1: Kyste Hydatique du thorax (8 Communications)</div>
-            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type posters">Communication</span></div>
+            <div class="prog-badges"><span class="badge-type posters">Communication</span></div>
           </div>
           <div class="prog-moderators">Modérateurs : Dr Sabeur Hachicha, Dr Sadok Hammemi, Dr Ahmed Lasmar</div>
           <div class="comms-list">
@@ -2503,11 +2515,14 @@
 
       <!-- 09h30 - 10h30 -->
       <tr class="prog-row posters">
-        <td class="prog-time comm-time">09h30<br>10h30</td>
+        <td class="prog-time comm-time">
+          <div>09h30<br>10h30</div>
+          <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+        </td>
         <td class="prog-content posters">
           <div class="prog-title-row">
             <div class="prog-title">Communications libres 2: Traumatisme thoracique (6 Communications)</div>
-            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type posters">Communication</span></div>
+            <div class="prog-badges"><span class="badge-type posters">Communication</span></div>
           </div>
           <div class="prog-moderators">Modérateurs : Dr Jalel Mohamed, Dr Bechir Ben Radhia, Dr Yosr Ben Attig</div>
           <div class="comms-list">
@@ -2566,9 +2581,12 @@
       <tr class="prog-row session">
         <td class="prog-time" style="height: 100%;">
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; min-height: 27mm;">
-            <div>11h00<br>12h30</div>
-            <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 2mm;">
-              <img src="/img/sfctcv-logo.png" alt="SFCTCV" style="max-width: 15mm; max-height: 14mm; object-fit: contain;">
+            <div>
+              <div>11h00<br>12h30</div>
+              <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+            </div>
+            <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 1.5mm;">
+              <img src="/img/sfctcv-logo.png" alt="SFCTCV" style="max-width: 14mm; max-height: 13mm; object-fit: contain;">
             </div>
           </div>
         </td>
@@ -2576,7 +2594,6 @@
           <div class="prog-title-row">
             <div class="prog-title" style="color:#991b1b;">Session 1: Chirurgie robotique (SFCTCV)</div>
             <div class="prog-badges">
-              <span class="badge-room">Salle Vizir</span>
               <span class="badge-chair">SFCTCV</span>
               <span class="badge-type session">Plénière</span>
             </div>
@@ -2609,11 +2626,14 @@
 
       <!-- 12h30 - 13h00 -->
       <tr class="prog-row symposium">
-        <td class="prog-time">12h30<br>13h00</td>
+        <td class="prog-time">
+          <div>12h30<br>13h00</div>
+          <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+        </td>
         <td class="prog-content symposium">
           <div class="prog-title-row">
             <div class="prog-title" style="color:#6d28d9;">Symposium</div>
-            <div class="prog-badges"><span class="badge-room">Salle Vizir</span><span class="badge-type symposium">Symposium</span></div>
+            <div class="prog-badges"><span class="badge-type symposium">Symposium</span></div>
           </div>
         </td>
       </tr>
@@ -2658,9 +2678,12 @@
       <tr class="prog-row session">
         <td class="prog-time" style="height: 100%;">
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; min-height: 25mm;">
-            <div>14h00<br>15h30</div>
+            <div>
+              <div>14h00<br>15h30</div>
+              <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+            </div>
             <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 1.2mm;">
-              <img src="/img/stn-logo.png" alt="STN" style="max-width: 13.5mm; max-height: 12.5mm; object-fit: contain;">
+              <img src="/img/stn-logo.png" alt="STN" style="max-width: 13mm; max-height: 12mm; object-fit: contain;">
             </div>
           </div>
         </td>
@@ -2668,7 +2691,6 @@
           <div class="prog-title-row">
             <div class="prog-title" style="color:#991b1b;">Session 2: Pathologie thymique</div>
             <div class="prog-badges">
-              <span class="badge-room">Salle Vizir</span>
               <span class="badge-chair">STN</span>
               <span class="badge-type session">Plénière</span>
             </div>
@@ -2705,9 +2727,12 @@
       <tr class="prog-row session">
         <td class="prog-time" style="height: 100%;">
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; min-height: 20mm;">
-            <div>15h30<br>16h30</div>
+            <div>
+              <div>15h30<br>16h30</div>
+              <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+            </div>
             <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 1.2mm;">
-              <img src="/img/sfctcv-logo.png" alt="SFCTCV" style="max-width: 13mm; max-height: 12mm; object-fit: contain;">
+              <img src="/img/sfctcv-logo.png" alt="SFCTCV" style="max-width: 12.5mm; max-height: 11.5mm; object-fit: contain;">
             </div>
           </div>
         </td>
@@ -2715,7 +2740,6 @@
           <div class="prog-title-row">
             <div class="prog-title" style="color:#991b1b;">Session 3: Approche Endobronchique</div>
             <div class="prog-badges">
-              <span class="badge-room">Salle Vizir</span>
               <span class="badge-chair">SFCTCV</span>
               <span class="badge-type session">Plénière</span>
             </div>
@@ -2761,9 +2785,12 @@
       <tr class="prog-row session">
         <td class="prog-time" style="height: 100%;">
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 100%; min-height: 20mm;">
-            <div>17h00<br>18h00</div>
+            <div>
+              <div>17h00<br>18h00</div>
+              <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+            </div>
             <div style="flex: 1; display: flex; align-items: center; justify-content: center; padding-top: 1.2mm;">
-              <img src="/img/apacs-logo.png" alt="APACS" style="max-width: 13mm; max-height: 12mm; object-fit: contain;">
+              <img src="/img/apacs-logo.png" alt="APACS" style="max-width: 12.5mm; max-height: 11.5mm; object-fit: contain;">
             </div>
           </div>
         </td>
@@ -2771,7 +2798,6 @@
           <div class="prog-title-row">
             <div class="prog-title" style="color:#991b1b;">Session 4: La gestion périopératoire</div>
             <div class="prog-badges">
-              <span class="badge-room">Salle Vizir</span>
               <span class="badge-chair">APACS</span>
               <span class="badge-type session">Plénière</span>
             </div>
@@ -2802,12 +2828,14 @@
 
       <!-- 18h00 - 19h00 -->
       <tr class="prog-row posters">
-        <td class="prog-time comm-time">18h00<br>19h00</td>
+        <td class="prog-time comm-time">
+          <div>18h00<br>19h00</div>
+          <div style="margin-top: 0.8mm;"><span class="badge-room">Salle Vizir</span></div>
+        </td>
         <td class="prog-content posters">
           <div class="prog-title-row">
             <div class="prog-title">Session 5: Séance vidéo (4 Communications)</div>
             <div class="prog-badges">
-              <span class="badge-room">Salle Vizir</span>
               <span class="badge-type posters">Vidéo</span>
             </div>
           </div>
