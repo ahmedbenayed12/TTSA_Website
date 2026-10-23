@@ -21,7 +21,7 @@ if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 const coverPdfPath = path.join(outDir, 'p0-A5.pdf');
 
 // Configurable version suffix: update here on every scientific program revision
-const PDF_VERSION = 'v1.4';
+const PDF_VERSION = 'v1.5';
 
 const targets = [
   {
