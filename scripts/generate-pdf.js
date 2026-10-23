@@ -20,26 +20,35 @@ if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
 const coverPdfPath = path.join(outDir, 'p0-A5.pdf');
 
+// Configurable version suffix: update here on every scientific program revision
+const PDF_VERSION = 'v1.1';
+
 const targets = [
   {
     template: 'http://localhost:3000/pdf-template/booklet-fr.html',
-    out: path.join(outDir, 'TTSA_Programme_Scientifique_2026_FR.pdf'),
+    baseName: 'TTSA_Programme_Scientifique_2026_FR.pdf',
+    versionedName: `TTSA_Programme_Scientifique_2026_FR_${PDF_VERSION}.pdf`,
     lang: 'FR'
   },
   {
     template: 'http://localhost:3000/pdf-template/booklet-en.html',
-    out: path.join(outDir, 'TTSA_Scientific_Program_2026_EN.pdf'),
+    baseName: 'TTSA_Scientific_Program_2026_EN.pdf',
+    versionedName: `TTSA_Scientific_Program_2026_EN_${PDF_VERSION}.pdf`,
     lang: 'EN'
   }
 ];
 
 async function generateAll() {
-  console.log('Generating Official Congress Program PDFs...');
+  console.log(`Generating Official Congress Program PDFs (${PDF_VERSION})...`);
 
-  for (const { template, out, lang } of targets) {
-    const rawOut = out + '.tmp.pdf';
+  for (const target of targets) {
+    const { template, baseName, versionedName, lang } = target;
+    const versionedOut = path.join(outDir, versionedName);
+    const baseOut = path.join(outDir, baseName);
+    const rawOut = path.join(outDir, `${versionedName}.tmp.pdf`);
+
     const cmd = `"${browserExe}" --headless --disable-gpu --user-data-dir="%TEMP%\\chrome-temp" --no-pdf-header-footer --print-to-pdf="${rawOut}" "${template}"`;
-    console.log(`Rendering [${lang}] -> ${out}`);
+    console.log(`Rendering [${lang}] -> ${versionedName}`);
     try {
       execSync(cmd, { stdio: 'inherit' });
 
@@ -63,15 +72,17 @@ async function generateAll() {
         mainPages.forEach(p => finalDoc.addPage(p));
 
         const finalBytes = await finalDoc.save();
-        fs.writeFileSync(out, finalBytes);
+        fs.writeFileSync(versionedOut, finalBytes);
+        fs.writeFileSync(baseOut, finalBytes);
         try { fs.unlinkSync(rawOut); } catch (e) {}
 
-        const size = (fs.statSync(out).size / 1024).toFixed(0);
-        console.log(`✓ [${lang}] Generated successfully with vector Page 0 (${size} KB, ${finalDoc.getPageCount()} pages)`);
+        const size = (fs.statSync(versionedOut).size / 1024).toFixed(0);
+        console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB, ${finalDoc.getPageCount()} pages)`);
       } else {
-        fs.renameSync(rawOut, out);
-        const size = (fs.statSync(out).size / 1024).toFixed(0);
-        console.log(`✓ [${lang}] Generated successfully (${size} KB)`);
+        fs.copyFileSync(rawOut, versionedOut);
+        fs.renameSync(rawOut, baseOut);
+        const size = (fs.statSync(versionedOut).size / 1024).toFixed(0);
+        console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB)`);
       }
     } catch (err) {
       console.error(`✗ Error generating [${lang}]:`, err.message);
