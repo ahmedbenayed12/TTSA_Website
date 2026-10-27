@@ -233,9 +233,26 @@
       color: #000000;
       font-weight: 700;
     }
-    /* DÉCALAGE DE 4 LIGNES (~6.5mm) AVANT LE PROGRAMME DYNAMIQUE */
+    .back-cover-logos-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 3.5mm;
+      width: 65mm;
+      max-width: 65mm;
+      margin: 2.5mm auto 0 auto;
+    }
+    .back-cover-inst-logo {
+      height: 12.8mm;
+      width: auto;
+      max-height: 12.8mm;
+      object-fit: contain;
+      display: block;
+    }
+    /* DÉCALAGE AVANT LE PROGRAMME DYNAMIQUE */
     .back-cover-dynamic-section {
-      margin-top: 6.5mm;
+      margin-top: 3.5mm;
       width: 65mm;
       display: flex;
       flex-direction: column;
@@ -3175,7 +3192,14 @@
       <!-- 2. REMERCIEMENTS : TITRE LIBRE & TEXTE NE DÉBORDANT PAS DU LOGO -->
       <div class="back-cover-thanks-title">Remerciements</div>
       <div class="back-cover-thanks-desc">
-        L'<strong>Association de Chirurgie Thoracique Tunisienne (TTSA)</strong> adresse ses plus vifs et chaleureux remerciements à l'ensemble des <strong>participants</strong>, orateurs nationaux et internationaux, présidents de séance, modérateurs et partenaires industriels pour leur engagement et leur contribution précieuse au plein succès et au rayonnement de cette 5<sup>ème</sup> édition.
+        L'<strong>Association de Chirurgie Thoracique Tunisienne (TTSA)</strong> adresse ses vifs remerciements à la <strong>Direction régionale de la Santé de Sfax</strong>, au <strong>Gouvernorat de Sfax</strong> ainsi qu'à la <strong>Municipalité de Sfax</strong> pour leur précieuse contribution à l'organisation du 5<sup>ème</sup>  Congrès National de Chirurgie Thoracique.
+      </div>
+
+      <!-- 3 LOGOS INSTITUTIONNELS SUR LA MÊME LIGNE -->
+      <div class="back-cover-logos-row">
+        <img src="/img/logo-sante-sfax.png" alt="Direction Régionale de la Santé de Sfax" class="back-cover-inst-logo" style="border-radius: 0.8mm;">
+        <img src="/img/logo-gouvernorat-sfax.jpg" alt="Gouvernorat de Sfax" class="back-cover-inst-logo" style="border-radius: 0.6mm;">
+        <img src="/img/logo-municipalite-sfax.png" alt="Municipalité de Sfax" class="back-cover-inst-logo">
       </div>
 
       <!-- 3. DÉCALAGE DE 4 LIGNES + PLAQUE PROGRAMME DYNAMIQUE AU MILIEU -->

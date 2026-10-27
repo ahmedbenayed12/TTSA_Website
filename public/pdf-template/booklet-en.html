@@ -233,9 +233,26 @@
       color: #000000;
       font-weight: 700;
     }
-    /* 4-LINE SPACING (~6.5mm) BEFORE DYNAMIC PROGRAM */
+    .back-cover-logos-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      gap: 3.5mm;
+      width: 65mm;
+      max-width: 65mm;
+      margin: 2.5mm auto 0 auto;
+    }
+    .back-cover-inst-logo {
+      height: 12.8mm;
+      width: auto;
+      max-height: 12.8mm;
+      object-fit: contain;
+      display: block;
+    }
+    /* SPACING BEFORE DYNAMIC PROGRAM */
     .back-cover-dynamic-section {
-      margin-top: 6.5mm;
+      margin-top: 3.5mm;
       width: 65mm;
       display: flex;
       flex-direction: column;
@@ -3176,7 +3193,14 @@
       <!-- 2. ACKNOWLEDGEMENTS : FREE TITLE & TEXT NOT EXCEEDING LOGO WIDTH -->
       <div class="back-cover-thanks-title">Acknowledgements</div>
       <div class="back-cover-thanks-desc">
-        The <strong>Tunisian Thoracic Surgery Association (TTSA)</strong> extends its deepest and warmest gratitude to all <strong>participants</strong>, national and international faculty speakers, session chairs, moderators, and industry partners for their dedicated commitment and invaluable contribution to the resounding success of this 5<sup>th</sup> National Congress.
+        The <strong>Tunisian Thoracic Surgery Association (TTSA)</strong> extends its warmest thanks to the <strong>Regional Directorate of Health of Sfax</strong>, the <strong>Governorate of Sfax</strong>, and the <strong>Municipality of Sfax</strong> for their invaluable contribution to the organization of the 5<sup>th</sup> National Congress of Thoracic Surgery.
+      </div>
+
+      <!-- 3 INSTITUTIONAL LOGOS ON THE SAME LINE -->
+      <div class="back-cover-logos-row">
+        <img src="/img/logo-sante-sfax.png" alt="Regional Directorate of Health of Sfax" class="back-cover-inst-logo" style="border-radius: 0.8mm;">
+        <img src="/img/logo-gouvernorat-sfax.jpg" alt="Governorate of Sfax" class="back-cover-inst-logo" style="border-radius: 0.6mm;">
+        <img src="/img/logo-municipalite-sfax.png" alt="Municipality of Sfax" class="back-cover-inst-logo">
       </div>
 
       <!-- 3. 4-LINE SPACING + DYNAMIC PROGRAM BADGE CENTERED -->
