@@ -53,19 +53,29 @@
               <div class="form-group">
                 <label class="form-label">Submission Opening Date</label>
                 <input type="datetime-local" id="submission_start" class="form-control" />
+                <div id="submission_start_preview" style="margin-top:6px;font-size:0.85rem;color:#0C589A;font-weight:600;min-height:20px;"></div>
                 <div class="form-hint">Portal opens for new submissions from this date.</div>
               </div>
               <div class="form-group">
                 <label class="form-label">Stage 1: Abstract Submission Deadline</label>
                 <input type="datetime-local" id="submission_deadline" class="form-control" />
-                <div class="form-hint">Participants cannot submit or edit texts after this date.</div>
+                <div id="submission_deadline_preview" style="margin-top:6px;font-size:0.85rem;color:#0C589A;font-weight:600;min-height:20px;"></div>
+                <div style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="setDeadlineTime('submission_deadline','23:59')" style="padding:2px 8px;font-size:12px;">⏰ Set to 23:59 (End of Day / Fin de journée)</button>
+                </div>
+                <div class="form-hint" style="margin-top:4px;">Participants cannot submit or edit texts after this date.</div>
               </div>
             </div>
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">Stage 2: File Upload Deadline</label>
                 <input type="datetime-local" id="upload_deadline" class="form-control" />
-                <div class="form-hint">Accepted authors cannot upload PPT/Posters after this date.</div>
+                <div id="upload_deadline_preview" style="margin-top:6px;font-size:0.85rem;color:#0C589A;font-weight:600;min-height:20px;"></div>
+                <div style="margin-top:4px;display:flex;gap:8px;flex-wrap:wrap;">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="setDeadlineTime('upload_deadline','23:59')" style="padding:2px 8px;font-size:12px;">⏰ Set to 23:59 (End of Day / Fin de journée)</button>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="setDeadlineTime('upload_deadline','12:00')" style="padding:2px 8px;font-size:12px;">☀️ Set to 12:00 (Midday / Midi)</button>
+                </div>
+                <div class="form-hint" style="margin-top:4px;">Accepted authors cannot upload PPT/Posters after this date. (Système 24h : 23:59 = fin de journée).</div>
               </div>
             </div>
           </div>
@@ -211,6 +221,16 @@ async function init() {
   if (settings.submission_start)    document.getElementById('submission_start').value    = settings.submission_start.substring(0,16);
   if (settings.submission_deadline) document.getElementById('submission_deadline').value = settings.submission_deadline.substring(0,16);
   if (settings.upload_deadline)     document.getElementById('upload_deadline').value     = settings.upload_deadline.substring(0,16);
+
+  ['submission_start', 'submission_deadline', 'upload_deadline'].forEach(id => {
+    updateDatePreview(id, id + '_preview');
+    const el = document.getElementById(id);
+    if (el && !el._hasDatePreviewListener) {
+      el._hasDatePreviewListener = true;
+      el.addEventListener('input', () => updateDatePreview(id, id + '_preview'));
+      el.addEventListener('change', () => updateDatePreview(id, id + '_preview'));
+    }
+  });
 
   if (settings.ppt_template_file) {
     document.getElementById('currentTemplateBox').style.display = 'block';
@@ -372,6 +392,37 @@ document.getElementById('settingsForm').addEventListener('submit', async e => {
   }
   btn.disabled=false; btn.textContent='💾 Save Settings';
 });
+
+
+function updateDatePreview(inputId, previewId) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (!input || !preview) return;
+  const val = input.value;
+  if (!val) {
+    preview.innerHTML = '';
+    return;
+  }
+  const d = new Date(val);
+  if (isNaN(d.getTime())) {
+    preview.innerHTML = '';
+    return;
+  }
+  const formatted = formatDateTime(d);
+  const h = d.getHours();
+  const m = d.getMinutes();
+  const periodHint = (h === 23 && m === 59) ? ' — Fin de journée' : (h === 12 && m === 0 || h === 11 && m === 59) ? ' — Midi' : '';
+  preview.innerHTML = '⏰ Affichage participants (24h) : <strong style="color:#0C589A">' + formatted + '</strong><span style="color:#666;font-weight:normal;font-size:0.8rem;">' + periodHint + '</span>';
+}
+
+function setDeadlineTime(inputId, timeStr) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const cur = input.value;
+  const datePart = (cur && cur.includes('T')) ? cur.split('T')[0] : (cur || new Date().toISOString().split('T')[0]);
+  input.value = datePart + 'T' + timeStr;
+  updateDatePreview(inputId, inputId + '_preview');
+}
 
 init();
 </script>

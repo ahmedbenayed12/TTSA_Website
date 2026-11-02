@@ -80,6 +80,34 @@ function formatDate(iso) {
   return new Date(iso).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+function formatDateTime(val) {
+  if (!val) return '—';
+  let d = null;
+  if (val instanceof Date) {
+    d = val;
+  } else if (typeof val === 'number') {
+    d = new Date(val < 1e11 ? val * 1000 : val);
+  } else if (typeof val === 'string') {
+    const trimmed = val.trim();
+    if (/^\d+$/.test(trimmed)) {
+      const num = parseInt(trimmed, 10);
+      d = new Date(num < 1e11 ? num * 1000 : num);
+    } else {
+      d = new Date(trimmed);
+    }
+  }
+  if (!d || isNaN(d.getTime())) return '—';
+
+  const datePart = d.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${datePart} at ${hours}:${minutes}`;
+}
+
 function countWords(text) {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }

@@ -2437,13 +2437,7 @@ async function loadDashboard() {
         uploadDeadlineDate = new Date(settings.upload_deadline);
         if (!isNaN(uploadDeadlineDate.getTime())) {
           uploadPassed = now > uploadDeadlineDate;
-          uploadDeadlineFormatted = uploadDeadlineDate.toLocaleDateString('en-GB', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          });
+          uploadDeadlineFormatted = formatDateTime(uploadDeadlineDate);
         }
       }
 
@@ -2495,14 +2489,14 @@ async function loadDashboard() {
       const d = new Date(settings.submission_deadline);
       if (notStarted) {
         const start = new Date(settings.submission_start);
-        document.getElementById('deadlineText').innerHTML = `⏳ Submission has not started yet. Opens on: <strong>${start.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}</strong>`;
+        document.getElementById('deadlineText').innerHTML = `⏳ Submission has not started yet. Opens on: <strong>${formatDateTime(start)}</strong>`;
         document.getElementById('deadlineAlert').className = 'alert alert-info';
         document.getElementById('deadlineBadge').textContent = 'Submission Not Started';
         document.getElementById('deadlineBadge').className = 'badge badge-gray';
       } else {
         document.getElementById('deadlineText').innerHTML = passed
           ? '⚠️ Submission deadline has <strong>passed</strong>.'
-          : `Submission deadline: <strong>${d.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'})}</strong>`;
+          : `Submission deadline: <strong>${formatDateTime(d)}</strong>`;
         if (passed) document.getElementById('deadlineAlert').className = 'alert alert-warning';
         document.getElementById('deadlineBadge').textContent = passed ? 'Deadline Passed' : 'Submissions Open';
         document.getElementById('deadlineBadge').className = passed ? 'badge badge-red' : 'badge badge-green';

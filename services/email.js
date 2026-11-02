@@ -129,9 +129,37 @@ async function sendVerdict(toEmail, firstName, abstractTitle, verdict, presentat
   });
 }
 
+function formatEmailDeadline(val) {
+  if (!val) return 'soon';
+  let d = null;
+  if (val instanceof Date) {
+    d = val;
+  } else if (typeof val === 'number') {
+    d = new Date(val < 1e11 ? val * 1000 : val);
+  } else if (typeof val === 'string') {
+    const trimmed = val.trim();
+    if (/^\d+$/.test(trimmed)) {
+      const num = parseInt(trimmed, 10);
+      d = new Date(num < 1e11 ? num * 1000 : num);
+    } else {
+      d = new Date(trimmed);
+    }
+  }
+  if (!d || isNaN(d.getTime())) return 'soon';
+
+  const datePart = d.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+  const hours = String(d.getHours()).padStart(2, '0');
+  const minutes = String(d.getMinutes()).padStart(2, '0');
+  return `${datePart} at ${hours}:${minutes}`;
+}
+
 async function sendFileUploadReminder(toEmail, firstName, abstractTitle, uploadDeadline) {
   const transporter = createTransporter();
-  const deadlineStr = uploadDeadline ? new Date(uploadDeadline * 1000).toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' }) : 'soon';
+  const deadlineStr = formatEmailDeadline(uploadDeadline);
   await transporter.sendMail({
     from: FROM,
     to: toEmail,

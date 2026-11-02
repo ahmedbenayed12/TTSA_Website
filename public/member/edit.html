@@ -295,7 +295,7 @@ async function init() {
     document.getElementById('lockedBanner').style.display='flex';
     if(notStartedTime) {
       const start = new Date(settings.submission_start);
-      document.getElementById('lockedBanner').innerHTML=`<span>⏳</span> Submission has not started yet. Opens on: ${start.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})}`;
+      document.getElementById('lockedBanner').innerHTML=`<span>⏳</span> Submission has not started yet. Opens on: ${formatDateTime(start)}`;
     } else if(deadlinePassed) {
       document.getElementById('lockedBanner').innerHTML='<span>⏰</span> Submission deadline has passed.';
     }
