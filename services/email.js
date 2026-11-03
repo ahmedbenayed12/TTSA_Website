@@ -163,26 +163,54 @@ async function sendFileUploadReminder(toEmail, firstName, abstractTitle, uploadD
   await transporter.sendMail({
     from: FROM,
     to: toEmail,
-    subject: 'TTSA – Reminder: Please Upload Your Presentation File',
+    subject: 'TTSA – Final Reminder: Please Upload Your Presentation File',
     html: `
-      <div style="font-family:Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden">
+      <div style="font-family:Arial,sans-serif;max-width:580px;margin:auto;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;background:#ffffff">
         <div style="background:#0C589A;padding:24px;text-align:center">
           <h1 style="color:#fff;margin:0;font-size:22px">TTSA</h1>
           <p style="color:#cfe2ff;margin:4px 0 0">Tunisian Thoracic Surgery Association</p>
         </div>
-        <div style="padding:32px">
-          <p>Dear <strong>${firstName}</strong>,</p>
-          <p>This is a friendly reminder that your abstract has been <strong style="color:#166534">accepted</strong> by the scientific committee, but we have not yet received your final presentation file.</p>
-          <div style="background:#f0f7ff;border-left:4px solid #0C589A;padding:16px;border-radius:4px;margin:16px 0">
+        <div style="padding:28px 32px">
+          <p style="font-size:15px;margin-top:0">Dear <strong>${firstName}</strong>,</p>
+          <p style="font-size:14px;color:#334155;line-height:1.5">
+            This is a friendly reminder that your abstract has been <strong style="color:#166534">accepted</strong> by the scientific committee, but we have not yet received your final presentation file.
+          </p>
+
+          <div style="background:#f0f7ff;border-left:4px solid #0C589A;padding:14px 16px;border-radius:4px;margin:16px 0;font-size:14px">
             <strong>Abstract:</strong> ${abstractTitle}
           </div>
-          <div style="background:#fff7ed;border-left:4px solid #f97316;padding:16px;border-radius:4px;margin:16px 0">
-            ⏰ <strong>Upload deadline:</strong> ${deadlineStr}
+
+          <div style="background:#fff7ed;border-left:4px solid #f97316;padding:14px 16px;border-radius:4px;margin:16px 0;font-size:14px">
+            ⏰ <strong>Upload deadline (24h):</strong> <span style="color:#c2410c;font-weight:700">${deadlineStr}</span>
           </div>
-          <p>Please log in to your participant portal and upload your presentation file (PowerPoint or PDF) before the deadline.</p>
+
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #B82538;border-radius:6px;padding:16px;margin:20px 0;font-size:13px;line-height:1.6;color:#1e293b">
+            <strong style="color:#B82538;font-size:14px;display:block;margin-bottom:10px">⚠️ Important Guidelines:</strong>
+            <ul style="margin:0;padding-left:18px">
+              <li style="margin-bottom:8px">
+                <strong>Final Deadline Extension:</strong> This is the <u>final extension</u> of the upload deadline. No further extensions will be granted.
+              </li>
+              <li style="margin-bottom:8px">
+                <strong>No On-Site File Submissions:</strong> For organizational and technical reasons, <u>no presentation files will be accepted on-site on the day of the congress</u>.
+              </li>
+              <li style="margin-bottom:8px">
+                <strong>Upload Exclusively via the Platform:</strong> Your presentation file must be uploaded <u>exclusively through the online portal</u> in order to guarantee the issuance and delivery of your <strong>presentation certificate</strong>.
+              </li>
+              <li>
+                <strong>Technical Support:</strong> In case of any technical difficulty during upload, please contact support directly via WhatsApp:<br/>
+                <a href="https://wa.me/21623935354" style="display:inline-block;margin-top:6px;color:#166534;font-weight:700;text-decoration:none;background:#dcfce7;padding:5px 12px;border-radius:4px;border:1px solid #86efac;font-size:13px">
+                  📱 WhatsApp: +216 23 935 354
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <p style="font-size:14px;color:#334155">Please log in to your participant portal and upload your presentation file (PowerPoint or PDF) before the deadline.</p>
+
           <div style="text-align:center;margin:24px 0">
-            <a href="${process.env.APP_URL || 'http://localhost:3000'}/member/dashboard.html" style="display:inline-block;background:#0C589A;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:700">Go to My Portal →</a>
+            <a href="${process.env.APP_URL || 'http://localhost:3000'}/member/dashboard.html" style="display:inline-block;background:#0C589A;color:#fff;padding:12px 28px;border-radius:6px;text-decoration:none;font-weight:700;font-size:14px">Go to My Portal →</a>
           </div>
+
           <p style="color:#aaa;font-size:12px;text-align:center;margin-top:32px">Tunisian Thoracic Surgery Association &copy; 2026</p>
         </div>
       </div>

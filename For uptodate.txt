@@ -4,3 +4,10 @@
 -Edit name and participant information
 -Admin can view as participant or reviwer
 -Many reviewer score ?
+-file uploaded with "!" give error : fetch error
+-user should have a copy of received email
+-admin should have : act as function
+
+
+https://lite.ego.app/
+for ai browser
