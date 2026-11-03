@@ -4,12 +4,16 @@
  * public/pdf/TTSA_Programme_Scientifique_2026_FR.pdf and
  * public/pdf/TTSA_Scientific_Program_2026_EN.pdf
  *
- * Page 0 is replaced losslessly with public/pdf/p0-A5.pdf to preserve its vector data without modification.
- * Uses file:// URLs so the browser can load local assets without a server timeout.
+ * Page 0 is replaced losslessly with public/pdf/p0-A5.pdf to preserve its vector data.
+ *
+ * Strategy: creates a temporary patched HTML file with all root-relative asset paths
+ * (/img/, /fonts/, /js/, /css/) rewritten to absolute file:// URLs so the browser
+ * can load local assets without needing a running HTTP server (avoids timeout issues).
  */
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const { PDFDocument } = require('pdf-lib');
 
 const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -19,7 +23,8 @@ const browserExe = fs.existsSync(EDGE_PATH) ? EDGE_PATH : CHROME_PATH;
 const outDir = path.join(__dirname, '..', 'public', 'pdf');
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
-const templateDir = path.join(__dirname, '..', 'public', 'pdf-template');
+const publicDir = path.join(__dirname, '..', 'public');
+const templateDir = path.join(publicDir, 'pdf-template');
 const coverPdfPath = path.join(outDir, 'p0-A5.pdf');
 
 // Configurable version suffix: update here on every scientific program revision
@@ -28,6 +33,19 @@ const PDF_VERSION = 'v2.16';
 // Convert an absolute Windows path to a file:// URL
 function toFileUrl(absPath) {
   return 'file:///' + absPath.replace(/\\/g, '/');
+}
+
+/**
+ * Rewrites all root-relative asset paths in an HTML string to absolute file:// URLs.
+ * e.g. src="/img/logo.svg" -> src="file:///C:/Users/.../public/img/logo.svg"
+ */
+function patchAssetPaths(html, publicDirAbs) {
+  const base = toFileUrl(publicDirAbs);
+  // Match src="/ and href="/ and url('/ patterns
+  return html
+    .replace(/(src=["'])\/(?!\/)/g, `$1${base}/`)
+    .replace(/(href=["'])\/(?!\/)/g, `$1${base}/`)
+    .replace(/url\(['"]?\//g, `url('${base}/`);
 }
 
 async function generateAll() {
@@ -54,11 +72,20 @@ async function generateAll() {
     const baseOut = path.join(outDir, baseName);
     const rawOut = path.join(outDir, `${versionedName}.tmp.pdf`);
 
-    const templateUrl = toFileUrl(templateFile);
+    // Create a patched temp HTML with absolute file:// asset paths
+    const originalHtml = fs.readFileSync(templateFile, 'utf8');
+    const patchedHtml = patchAssetPaths(originalHtml, publicDir);
+    const tmpHtml = path.join(os.tmpdir(), `ttsa-${lang}-${Date.now()}.html`);
+    fs.writeFileSync(tmpHtml, patchedHtml, 'utf8');
+
+    const templateUrl = toFileUrl(tmpHtml);
     const cmd = `"${browserExe}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="${rawOut}" "${templateUrl}"`;
     console.log(`Rendering [${lang}] -> ${versionedName}`);
     try {
       execSync(cmd, { stdio: 'inherit', timeout: 120000 });
+
+      // Clean up temp file
+      try { fs.unlinkSync(tmpHtml); } catch (e) {}
 
       if (fs.existsSync(coverPdfPath)) {
         console.log(`  Applying vector cover (p0-A5.pdf) as Page 0 for [${lang}]...`);
@@ -93,6 +120,7 @@ async function generateAll() {
         console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB)`);
       }
     } catch (err) {
+      try { fs.unlinkSync(tmpHtml); } catch (e) {}
       console.error(`✗ Error generating [${lang}]:`, err.message);
     }
   }
