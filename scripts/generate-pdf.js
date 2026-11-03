@@ -5,111 +5,96 @@
  * public/pdf/TTSA_Scientific_Program_2026_EN.pdf
  *
  * Page 0 is replaced losslessly with public/pdf/p0-A5.pdf to preserve its vector data without modification.
+ * Uses file:// URLs so the browser can load local assets without a server timeout.
  */
 const { execSync } = require('child_process');
 const path = require('path');
 const fs = require('fs');
-const http = require('http');
-const express = require('express');
 const { PDFDocument } = require('pdf-lib');
 
 const CHROME_PATH = process.env.CHROME_PATH || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const EDGE_PATH = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
 
-const browserExe = fs.existsSync(CHROME_PATH) ? CHROME_PATH : EDGE_PATH;
+const browserExe = fs.existsSync(EDGE_PATH) ? EDGE_PATH : CHROME_PATH;
 const outDir = path.join(__dirname, '..', 'public', 'pdf');
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
+const templateDir = path.join(__dirname, '..', 'public', 'pdf-template');
 const coverPdfPath = path.join(outDir, 'p0-A5.pdf');
 
 // Configurable version suffix: update here on every scientific program revision
-const PDF_VERSION = 'v2.15';
+const PDF_VERSION = 'v2.16';
 
-async function startStaticServer() {
-  const app = express();
-  app.use(express.static(path.join(__dirname, '..', 'public')));
-  return new Promise((resolve, reject) => {
-    const server = http.createServer(app);
-    server.listen(0, '127.0.0.1', () => {
-      const port = server.address().port;
-      resolve({ server, port });
-    });
-    server.on('error', reject);
-  });
+// Convert an absolute Windows path to a file:// URL
+function toFileUrl(absPath) {
+  return 'file:///' + absPath.replace(/\\/g, '/');
 }
 
 async function generateAll() {
   console.log(`Generating Official Congress Program PDFs (${PDF_VERSION})...`);
 
-  // Start internal static server to serve HTML, CSS, fonts, and images to Chrome
-  const { server, port } = await startStaticServer();
-  console.log(`Static server running on port ${port}`);
-
   const targets = [
     {
-      template: `http://127.0.0.1:${port}/pdf-template/booklet-fr.html`,
+      templateFile: path.join(templateDir, 'booklet-fr.html'),
       baseName: 'TTSA_Programme_Scientifique_2026_FR.pdf',
       versionedName: `TTSA_Programme_Scientifique_2026_FR_${PDF_VERSION}.pdf`,
       lang: 'FR'
     },
     {
-      template: `http://127.0.0.1:${port}/pdf-template/booklet-en.html`,
+      templateFile: path.join(templateDir, 'booklet-en.html'),
       baseName: 'TTSA_Scientific_Program_2026_EN.pdf',
       versionedName: `TTSA_Scientific_Program_2026_EN_${PDF_VERSION}.pdf`,
       lang: 'EN'
     }
   ];
 
-  try {
-    for (const target of targets) {
-      const { template, baseName, versionedName, lang } = target;
-      const versionedOut = path.join(outDir, versionedName);
-      const baseOut = path.join(outDir, baseName);
-      const rawOut = path.join(outDir, `${versionedName}.tmp.pdf`);
+  for (const target of targets) {
+    const { templateFile, baseName, versionedName, lang } = target;
+    const versionedOut = path.join(outDir, versionedName);
+    const baseOut = path.join(outDir, baseName);
+    const rawOut = path.join(outDir, `${versionedName}.tmp.pdf`);
 
-      const cmd = `"${browserExe}" --headless --disable-gpu --user-data-dir="%TEMP%\\chrome-temp" --no-pdf-header-footer --print-to-pdf="${rawOut}" "${template}"`;
-      console.log(`Rendering [${lang}] -> ${versionedName}`);
-      try {
-        execSync(cmd, { stdio: 'inherit' });
+    const templateUrl = toFileUrl(templateFile);
+    const cmd = `"${browserExe}" --headless --disable-gpu --no-pdf-header-footer --print-to-pdf="${rawOut}" "${templateUrl}"`;
+    console.log(`Rendering [${lang}] -> ${versionedName}`);
+    try {
+      execSync(cmd, { stdio: 'inherit', timeout: 120000 });
 
-        if (fs.existsSync(coverPdfPath)) {
-          console.log(`  Applying vector cover (p0-A5.pdf) as Page 0 for [${lang}]...`);
-          const coverBytes = fs.readFileSync(coverPdfPath);
-          const coverDoc = await PDFDocument.load(coverBytes);
+      if (fs.existsSync(coverPdfPath)) {
+        console.log(`  Applying vector cover (p0-A5.pdf) as Page 0 for [${lang}]...`);
+        const coverBytes = fs.readFileSync(coverPdfPath);
+        const coverDoc = await PDFDocument.load(coverBytes);
 
-          const rawBytes = fs.readFileSync(rawOut);
-          const rawDoc = await PDFDocument.load(rawBytes);
+        const rawBytes = fs.readFileSync(rawOut);
+        const rawDoc = await PDFDocument.load(rawBytes);
 
-          const finalDoc = await PDFDocument.create();
+        const finalDoc = await PDFDocument.create();
 
-          // 1. Exact vector page 0 from p0-A5.pdf
-          const [coverPage] = await finalDoc.copyPages(coverDoc, [0]);
-          finalDoc.addPage(coverPage);
+        // 1. Exact vector page 0 from p0-A5.pdf
+        const [coverPage] = await finalDoc.copyPages(coverDoc, [0]);
+        finalDoc.addPage(coverPage);
 
-          // 2. Exact pages 1..end from rawDoc
-          const pageIndices = Array.from({ length: rawDoc.getPageCount() - 1 }, (_, i) => i + 1);
-          const mainPages = await finalDoc.copyPages(rawDoc, pageIndices);
-          mainPages.forEach(p => finalDoc.addPage(p));
+        // 2. Exact pages 1..end from rawDoc
+        const pageIndices = Array.from({ length: rawDoc.getPageCount() - 1 }, (_, i) => i + 1);
+        const mainPages = await finalDoc.copyPages(rawDoc, pageIndices);
+        mainPages.forEach(p => finalDoc.addPage(p));
 
-          const finalBytes = await finalDoc.save();
-          fs.writeFileSync(versionedOut, finalBytes);
-          fs.writeFileSync(baseOut, finalBytes);
-          try { fs.unlinkSync(rawOut); } catch (e) {}
+        const finalBytes = await finalDoc.save();
+        fs.writeFileSync(versionedOut, finalBytes);
+        fs.writeFileSync(baseOut, finalBytes);
+        try { fs.unlinkSync(rawOut); } catch (e) {}
 
-          const size = (fs.statSync(versionedOut).size / 1024).toFixed(0);
-          console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB, ${finalDoc.getPageCount()} pages)`);
-        } else {
-          fs.copyFileSync(rawOut, versionedOut);
-          fs.renameSync(rawOut, baseOut);
-          const size = (fs.statSync(versionedOut).size / 1024).toFixed(0);
-          console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB)`);
-        }
-      } catch (err) {
-        console.error(`✗ Error generating [${lang}]:`, err.message);
+        const size = (fs.statSync(versionedOut).size / 1024).toFixed(0);
+        console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB, ${finalDoc.getPageCount()} pages)`);
+      } else {
+        fs.copyFileSync(rawOut, versionedOut);
+        fs.renameSync(rawOut, baseOut);
+        const size = (fs.statSync(versionedOut).size / 1024).toFixed(0);
+        console.log(`✓ [${lang}] Generated successfully: ${versionedName} (${size} KB)`);
       }
+    } catch (err) {
+      console.error(`✗ Error generating [${lang}]:`, err.message);
     }
-  } finally {
-    server.close();
   }
 
   console.log('Done.');
