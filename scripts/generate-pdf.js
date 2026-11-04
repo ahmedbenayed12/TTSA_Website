@@ -28,7 +28,7 @@ const templateDir = path.join(publicDir, 'pdf-template');
 const coverPdfPath = path.join(outDir, 'p0-A5.pdf');
 
 // Configurable version suffix: update here on every scientific program revision
-const PDF_VERSION = 'v2.16';
+const PDF_VERSION = 'v2.17';
 
 // Convert an absolute Windows path to a file:// URL
 function toFileUrl(absPath) {
