@@ -561,7 +561,12 @@ router.get('/export', requireAdmin, async (req, res) => {
 
 // GET /api/admin/export/files — bulk download uploaded presentation files as ZIP
 router.get('/export/files', requireAdmin, (req, res) => {
-  const abstracts = db.prepare('SELECT id, title, file_path, file_name FROM abstracts WHERE file_path IS NOT NULL').all();
+  const abstracts = db.prepare(`
+    SELECT id, submission_number, title, file_path, file_name 
+    FROM abstracts 
+    WHERE file_path IS NOT NULL
+    ORDER BY COALESCE(submission_number, id) ASC
+  `).all();
   if (abstracts.length === 0) return res.status(404).json({ error: 'No uploaded files found' });
 
   res.setHeader('Content-Type', 'application/zip');
@@ -571,15 +576,40 @@ router.get('/export/files', requireAdmin, (req, res) => {
   archive.on('error', err => { console.error('Archive error:', err); res.destroy(err); });
   archive.pipe(res);
 
+  const usedNames = new Set();
+
   for (const abs of abstracts) {
+    const subNum = abs.submission_number != null ? abs.submission_number : abs.id;
+    const ext = (abs.file_name ? path.extname(abs.file_name) : '') || (abs.file_path ? path.extname(abs.file_path) : '') || '.pptx';
+    const rawTitle = (abs.title || abs.file_name || 'presentation')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const safeTitle = rawTitle
+      .replace(/[^a-zA-Z0-9_-]/g, '_')
+      .replace(/_+/g, '_')
+      .replace(/^_|_$/g, '')
+      .substring(0, 60) || 'presentation';
+
+    const baseName = `${subNum}_${safeTitle}`;
+
     if (fs.existsSync(abs.file_path)) {
-      const ext = path.extname(abs.file_name);
-      const safeTitle = abs.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
-      archive.file(abs.file_path, { name: `abstract_${abs.id}_${safeTitle}${ext}` });
+      let finalName = `${baseName}${ext}`;
+      let counter = 1;
+      while (usedNames.has(finalName.toLowerCase())) {
+        finalName = `${baseName}_(${counter})${ext}`;
+        counter++;
+      }
+      usedNames.add(finalName.toLowerCase());
+      archive.file(abs.file_path, { name: finalName });
     } else if (abs.file_path && (abs.file_path.startsWith('http://') || abs.file_path.startsWith('https://'))) {
-      const safeTitle = abs.title.replace(/[^a-zA-Z0-9]/g, '_').substring(0, 50);
-      archive.append(`Video Presentation Link for Abstract #${abs.id} (${abs.title}):\r\n${abs.file_path}\r\n`, {
-        name: `abstract_${abs.id}_${safeTitle}_link.txt`
+      let finalLinkName = `${baseName}_link.txt`;
+      let counter = 1;
+      while (usedNames.has(finalLinkName.toLowerCase())) {
+        finalLinkName = `${baseName}_link_(${counter}).txt`;
+        counter++;
+      }
+      usedNames.add(finalLinkName.toLowerCase());
+      archive.append(`Video Presentation Link for Abstract #${subNum} (${abs.title || 'Untitled'}):\r\n${abs.file_path}\r\n`, {
+        name: finalLinkName
       });
     }
   }

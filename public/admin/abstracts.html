@@ -1191,10 +1191,14 @@ function renderPanel(a, detail) {
 
   // ── 5. Uploaded File ──────────────────────────────
   if (a.file_name) {
+    const isLink = a.file_path && (a.file_path.startsWith('http://') || a.file_path.startsWith('https://'));
+    const fileAction = isLink
+      ? `<a href="${esc(a.file_path)}" target="_blank" rel="noopener noreferrer" style="color:var(--blue);font-weight:600;text-decoration:underline;">🔗 Open Video Link</a>`
+      : `<a href="/api/abstracts/${a.id}/file?token=${encodeURIComponent(getToken())}" target="_blank" style="color:var(--blue);font-weight:600;text-decoration:underline;">📥 Download File (📎 ${esc(a.file_name)})</a>`;
     html += `<div class="dp-section">
       <div class="dp-section-title">Uploaded Presentation File</div>
       <div class="dp-grid">
-        <div class="dp-item" style="grid-column:span 2"><span class="dp-label">File Name</span><span class="dp-value">📎 ${esc(a.file_name)}</span></div>
+        <div class="dp-item" style="grid-column:span 2"><span class="dp-label">File</span><span class="dp-value">${fileAction}</span></div>
         <div class="dp-item"><span class="dp-label">Uploaded On</span><span class="dp-value">${fmtDate(a.file_uploaded_at)}</span></div>
       </div>
     </div>`;

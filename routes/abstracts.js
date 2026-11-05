@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const db = require('../db/database');
-const { requireMember } = require('../middleware/auth');
+const { requireMember, verifyToken } = require('../middleware/auth');
 const { sendAbstractConfirmation } = require('../services/email');
 
 // Multer config for presentation files
@@ -366,11 +366,20 @@ router.delete('/:id', requireMember, (req, res) => {
 
 
 // GET /api/abstracts/:id/file
-router.get('/:id/file', requireMember, (req, res) => {
+router.get('/:id/file', (req, res, next) => {
+  verifyToken(req, res, () => {
+    if (req.user.role !== 'member' && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
+    next();
+  });
+}, (req, res) => {
   try {
     const abstract = db.prepare('SELECT * FROM abstracts WHERE id = ?').get(req.params.id);
     if (!abstract) return res.status(404).json({ error: 'Abstract not found' });
-    if (abstract.user_id !== req.user.id) return res.status(403).json({ error: 'Access denied' });
+    if (abstract.user_id !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Access denied' });
+    }
     if (!abstract.file_path) {
       return res.status(404).json({ error: 'File not found' });
     }
@@ -380,7 +389,11 @@ router.get('/:id/file', requireMember, (req, res) => {
     if (!fs.existsSync(abstract.file_path)) {
       return res.status(404).json({ error: 'File not found' });
     }
-    const downloadName = abstract.file_name || (`presentation_${abstract.id}${path.extname(abstract.file_path)}`);
+    const subNum = abstract.submission_number != null ? abstract.submission_number : abstract.id;
+    const ext = path.extname(abstract.file_name || abstract.file_path) || '.pptx';
+    const rawTitle = (abstract.title || abstract.file_name || 'presentation').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const safeTitle = rawTitle.replace(/[^a-zA-Z0-9_-]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '').substring(0, 60) || 'presentation';
+    const downloadName = `${subNum}_${safeTitle}${ext}`;
     res.download(abstract.file_path, downloadName);
   } catch (err) {
     console.error(err);
