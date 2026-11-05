@@ -262,6 +262,80 @@
 }
 
 /* Color Category Filters */
+/* Room Filters */
+.room-filters-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-200);
+}
+
+.filter-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+.room-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--gray-300);
+  background: var(--white);
+  color: var(--gray-700);
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.room-btn:hover {
+  border-color: var(--gray-400);
+  transform: translateY(-1px);
+}
+
+.room-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.room-dot.dot-all { background: var(--gray-600); }
+.room-dot.dot-vizir { background: #0284c7; }
+.room-dot.dot-diwan { background: #9333ea; }
+
+.room-btn.active {
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  background: var(--gray-800);
+  color: var(--white);
+  border-color: var(--gray-800);
+}
+
+.room-btn.active .dot-all {
+  background: var(--white);
+}
+
+.room-btn.active.btn-vizir, .room-btn.btn-vizir:hover {
+  background: #e0f2fe;
+  border-color: #0284c7;
+  color: #0369a1;
+}
+
+.room-btn.active.btn-diwan, .room-btn.btn-diwan:hover {
+  background: #f3e8ff;
+  border-color: #9333ea;
+  color: #6b21a8;
+}
+
 .cat-filters-container {
   display: flex;
   align-items: center;
