@@ -1019,9 +1019,9 @@
           <button class="lang-btn" id="lang-btn-fr" onclick="setLanguage('fr')"><svg class="flag-icon-svg" viewBox="0 0 3 2" width="18" height="12" style="border-radius:2px;vertical-align:middle;margin-right:5px;display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg> FR</button>
         </div>
 
-        <button class="btn-action" onclick="downloadProgramPDF()" title="Télécharger le Livret Officiel du Congrès (PDF v2.18)">
+        <button class="btn-action" onclick="downloadProgramPDF()" title="Télécharger le Livret Officiel du Congrès (PDF v2.19)">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          <span data-en="Program PDF (v2.18)" data-fr="Programme PDF (v2.18)">Program PDF (v2.18)</span>
+          <span data-en="Program PDF (v2.19)" data-fr="Programme PDF (v2.19)">Program PDF (v2.19)</span>
         </button>
       </div>
     </div>
@@ -1035,7 +1035,7 @@
       </button>
       <button class="room-btn btn-vizir" onclick="filterRoom('vizir', this)">
         <span class="room-dot dot-vizir"></span>
-        <span data-en="Hall 1: Salle Vizir" data-fr="Salle 1 : Salle Vizir">Hall 1: Salle Vizir</span>
+        <span id="btn-room-vizir-label" data-en="Hall 1: Salle Vizir / Plenary" data-fr="Salle 1 : Salle Vizir / Plénière">Hall 1: Salle Vizir / Plenary</span>
       </button>
       <button class="room-btn btn-diwan" onclick="filterRoom('diwan', this)">
         <span class="room-dot dot-diwan"></span>
@@ -1987,27 +1987,27 @@
     <div class="timeline-list">
 
       <!-- 08h00 - 08h30 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="accueil inscription welcome registration">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="accueil inscription welcome registration salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge break">08h00 - 08h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Welcome & Registration" data-fr="Accueil et inscription">Welcome & Registration</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
             </div>
           </div>
         </div>
       </div>
 
       <!-- 08h30 - 09h30 -->
-      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="communications libres 1 free communications kyste hydatique du thorax thoracic hydatid cyst 66 58 48 27 *2 *3 *4 32 #32 mohamed rebei wassim chaieb safa boudabous mariem hadj dahmane benhalilou sabrina azeddine simerabet karima achour ali ben salem machine learning predictive model hydatidosis hémoptysie videothoracoscopie morbidité embolie exérèses echinococcosis">
+      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="communications libres 1 free communications kyste hydatique du thorax thoracic hydatid cyst 66 58 48 27 *2 *3 *4 32 #32 mohamed rebei wassim chaieb safa boudabous mariem hadj dahmane benhalilou sabrina azeddine simerabet karima achour ali ben salem machine learning predictive model hydatidosis hémoptysie videothoracoscopie morbidité embolie exérèses echinococcosis salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge">08h30 - 09h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Free Communications 1: Thoracic Hydatid Cyst" data-fr="Communications libres 1: Kyste Hydatique du thorax">Free Communications 1: Thoracic Hydatid Cyst</div>
             <div class="session-moderators" data-en="Chairs: Dr Sabeur Hachicha, Dr Sadok Hammemi, Dr Ahmed Lasmar" data-fr="Modérateurs : Dr Sabeur Hachicha, Dr Sadok Hammemi, Dr Ahmed Lasmar">Modérateurs : Dr Sabeur Hachicha, Dr Sadok Hammemi, Dr Ahmed Lasmar</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
               <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
                 <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -2102,14 +2102,14 @@
       </div>
 
       <!-- 09h30 - 10h30 -->
-      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="communications libres 2 free communications traumatisme thoracique thoracic trauma *1 #70 #57 #55 #17 #5 1 70 57 55 17 5 mansour fekkak youssef abbes malek abbes yosr ben attig siwar hamdi moussa samba stabilisation volets thoraciques ostéosynthèse plaies pénétrantes costale broches fermé militaire diaphragmatique chnu fann">
+      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="communications libres 2 free communications traumatisme thoracique thoracic trauma *1 #70 #57 #55 #17 #5 1 70 57 55 17 5 mansour fekkak youssef abbes malek abbes yosr ben attig siwar hamdi moussa samba stabilisation volets thoraciques ostéosynthèse plaies pénétrantes costale broches fermé militaire diaphragmatique chnu fann salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge">09h30 - 10h30</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Free Communications 2: Thoracic Trauma" data-fr="Communications libres 2: Traumatisme thoracique">Free Communications 2: Thoracic Trauma</div>
             <div class="session-moderators" data-en="Chairs: Dr Jalel Mohamed, Dr Bechir Ben Radhia, Dr Yosr Ben Attig" data-fr="Modérateurs : Dr Jalel Mohamed, Dr Bechir Ben Radhia, Dr Yosr Ben Attig">Modérateurs : Dr Jalel Mohamed, Dr Bechir Ben Radhia, Dr Yosr Ben Attig</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
               <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
                 <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -2188,7 +2188,7 @@
       </div>
 
       <!-- 10h30 - 11h00 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="pause café coffee break">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="pause café coffee break salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge break">10h30 - 11h00</div>
           <div class="session-main-info">
@@ -2198,7 +2198,7 @@
       </div>
 
       <!-- 11h00 - 12h30 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 1 robotic surgery chirurgie robotique sfctcv stephane renaud ludovic fournel joseph seitlinger">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 1 robotic surgery chirurgie robotique sfctcv stephane renaud ludovic fournel joseph seitlinger salle plénière plenary hall">
         <div class="session-card-header">
           <div class="session-time-col">
             <div class="time-badge">11h00 - 12h30</div>
@@ -2209,7 +2209,7 @@
             <div class="session-subtitle-text" data-en="Chaired by Dr Stephane RENAUD" data-fr="Présidé par Dr Stephane RENAUD">Chaired by Dr Stephane RENAUD <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
             <div class="session-moderators" data-en="Chairs: Dr Hazem Zribi, Dr Manel Chtourou, Dr Alessio Mariolo" data-fr="Modérateurs : Dr Hazem Zribi, Dr Manel Chtourou, Dr Alessio Mariolo">Modérateurs : Dr Hazem Zribi, Dr Manel Chtourou, Dr Alessio Mariolo</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-chair">SFCTCV</span>
               <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
@@ -2249,7 +2249,7 @@
       </div>
 
       <!-- 12h30 - 13h00 -->
-      <div class="session-card" data-room="vizir" purple" data-day="day2" data-cat="symposium" data-search="symposium fundamentals of stapling sherif naguib bluesail">
+      <div class="session-card" data-room="vizir" purple" data-day="day2" data-cat="symposium" data-search="symposium fundamentals of stapling sherif naguib bluesail salle plénière plenary hall">
         <div class="session-card-header">
           <div class="session-time-col">
             <div class="time-badge">12h30 - 13h00</div>
@@ -2258,7 +2258,7 @@
           <div class="session-main-info">
             <div class="session-title-text">Symposium</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-type">Symposium</span>
             </div>
           </div>
@@ -2277,7 +2277,7 @@
       </div>
 
       <!-- 13h00 - 14h00 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="déjeuner lunch break lunch time">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="déjeuner lunch break lunch time salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge break">13h00 - 14h00</div>
           <div class="session-main-info">
@@ -2287,7 +2287,7 @@
       </div>
 
       <!-- 14h00 - 15h30 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 2 pathologie thymique thymic pathology société tunisienne de neurologie tunisian society of neurology stn chokri mhiri lobna maalej adel marghli imed frikha mariem ben amor amina gargouri imen bouassida mohammed sadok boudaya afef khanfir myasthénie myasthenia thymome thymoma">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 2 pathologie thymique thymic pathology société tunisienne de neurologie tunisian society of neurology stn chokri mhiri lobna maalej adel marghli imed frikha mariem ben amor amina gargouri imen bouassida mohammed sadok boudaya afef khanfir myasthénie myasthenia thymome thymoma salle plénière plenary hall">
         <div class="session-card-header">
           <div class="session-time-col">
             <div class="time-badge">14h00 - 15h30</div>
@@ -2298,7 +2298,7 @@
             <div class="session-subtitle-text" data-en="Tunisian Society of Neurology" data-fr="Société Tunisienne de Neurologie">Tunisian Society of Neurology</div>
             <div class="session-moderators" data-en="Chairs: Dr Chokri Mhiri, Dr Lobna Maalej, Dr Adel Marghli, Dr Imed Frikha, Dr Mariem Ben Amor" data-fr="Modérateurs : Dr Chokri Mhiri, Dr Lobna Maalej, Dr Adel Marghli, Dr Imed Frikha, Dr Mariem Ben Amor">Modérateurs : Dr Chokri Mhiri, Dr Lobna Maalej, Dr Adel Marghli, Dr Imed Frikha, Dr Mariem Ben Amor</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-chair">STN</span>
               <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
@@ -2345,7 +2345,7 @@
       </div>
 
       <!-- 15h30 - 16h30 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 3 endobronchial approach approche endobronchique tarek kilani belhassen smati rami elleuch marc filaire sfctcv laura filaire géraud galvaing ebus tracheal stenosis sténoses trachéales">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 3 endobronchial approach approche endobronchique tarek kilani belhassen smati rami elleuch marc filaire sfctcv laura filaire géraud galvaing ebus tracheal stenosis sténoses trachéales salle plénière plenary hall">
         <div class="session-card-header">
           <div class="session-time-col">
             <div class="time-badge">15h30 - 16h30</div>
@@ -2356,7 +2356,7 @@
             <div class="session-subtitle-text" data-en="Chaired by Pr Marc FILAIRE (SFCTCV)" data-fr="Présidé par Pr Marc FILAIRE (SFCTCV)">Chaired by Pr Marc FILAIRE (SFCTCV) <svg class="flag-icon-svg" viewBox="0 0 3 2" width="20" height="14" style="border-radius:3px;vertical-align:middle;margin-left:6px;box-shadow:0 1px 3px rgba(0,0,0,0.2);display:inline-block;"><rect width="1" height="2" x="0" fill="#002395"/><rect width="1" height="2" x="1" fill="#fff"/><rect width="1" height="2" x="2" fill="#ed2939"/></svg></div>
             <div class="session-moderators" data-en="Chairs: Dr Tarek Kilani, Dr Belhassen Smati, Dr Rami Elleuch" data-fr="Modérateurs : Dr Tarek Kilani, Dr Belhassen Smati, Dr Rami Elleuch">Modérateurs : Dr Tarek Kilani, Dr Belhassen Smati, Dr Rami Elleuch</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-chair">SFCTCV</span>
               <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
@@ -2396,7 +2396,7 @@
       </div>
 
       <!-- 16h30 - 17h00 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="pause café coffee break">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="pause café coffee break salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge break">16h30 - 17h00</div>
           <div class="session-main-info">
@@ -2406,7 +2406,7 @@
       </div>
 
       <!-- 17h00 - 18h00 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 4 apacs perioperative management gestion périopératoire sami kammoun sadok hammami wajdi ketata nessrine kallel abdessalem hentati walid feki rim kammoun rym zaimi air leak bullage réhabilitation douleur pain">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="session" data-search="session 4 apacs perioperative management gestion périopératoire sami kammoun sadok hammami wajdi ketata nessrine kallel abdessalem hentati walid feki rim kammoun rym zaimi air leak bullage réhabilitation douleur pain salle plénière plenary hall">
         <div class="session-card-header">
           <div class="session-time-col">
             <div class="time-badge">17h00 - 18h00</div>
@@ -2417,7 +2417,7 @@
             <div class="session-subtitle-text">APACS</div>
             <div class="session-moderators" data-en="Chairs: Dr Sami Kammoun, Dr Sadok Hammami, Dr Wajdi Ketata, Dr Nessrine Kallel" data-fr="Modérateurs : Dr Sami Kammoun, Dr Sadok Hammami, Dr Wajdi Ketata, Dr Nessrine Kallel">Modérateurs : Dr Sami Kammoun, Dr Sadok Hammami, Dr Wajdi Ketata, Dr Nessrine Kallel</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-chair">APACS</span>
               <span class="tag-badge tag-type" data-en="Thematic Session" data-fr="Session Thématique">Thematic Session</span>
             </div>
@@ -2457,14 +2457,14 @@
       </div>
 
       <!-- 18h00 - 19h00 -->
-      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="session 5 video session séance vidéo imen bouacida majed khiari walid abid communication #31 #30 #29 #69 31 30 29 69 ali ben salem ahmed ben ayed ahmed bakhti amina abdelkebir uniportal vats lobectomy parathyroid hypocalcemia tracheal stenosis séquestration pulmonaire">
+      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="session 5 video session séance vidéo imen bouacida majed khiari walid abid communication #31 #30 #29 #69 31 30 29 69 ali ben salem ahmed ben ayed ahmed bakhti amina abdelkebir uniportal vats lobectomy parathyroid hypocalcemia tracheal stenosis séquestration pulmonaire salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge">18h00 - 19h00</div>
           <div class="session-main-info">
             <div class="session-title-text" data-en="Session 5: Video Session" data-fr="Session 5: Séance vidéo">Session 5: Video Session</div>
             <div class="session-moderators" data-en="Chairs: Dr Imen Bouacida, Dr Majed Khiari, Dr Walid Abid" data-fr="Modérateurs : Dr Imen Bouacida, Dr Majed Khiari, Dr Walid Abid">Modérateurs : Dr Imen Bouacida, Dr Majed Khiari, Dr Walid Abid</div>
             <div class="session-tags-row">
-              <span class="tag-badge tag-room" data-en="Salle Vizir" data-fr="Salle Vizir">Salle Vizir</span>
+              <span class="tag-badge tag-room" data-en="Plenary Hall" data-fr="Salle Plénière">Plenary Hall</span>
               <span class="tag-badge tag-type" data-en="Communication" data-fr="Communication">Communication</span>
               <button type="button" class="session-expand-btn" onclick="toggleCommunicationSession(this)">
                 <svg class="expand-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
@@ -2527,7 +2527,7 @@
       </div>
 
       <!-- Posters affichés non commentés -->
-      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="posters affichés non commentés displayed posters non-commented #9 9 textilome thoracique complication infectieuse postopératoire affichage durant les pauses communication j1 j2 day 1 day 2 *8 *9 *10 *12 *13 *21 *22 #75 #72 #67 #64 #62 #60 #54 #53 #51 #50 #47 #45 #41 #40 #28 #22 #21 #14 #13 #8 #39 #37 #4 #2 8 9 10 12 13 21 22 75 72 67 64 62 60 54 53 51 50 47 45 41 40 28 14 39 37 4 2 boughouaou siham benameur malek bounefla terchi soumia khelili hadji chaima mohammed smaili manel ben tahar safa boudabous mohamed rebei selma madhi chiraz albouzidi eya fourati ahmed bakhti yosr ben attig amina abdelkebir fatma inched jemal hanen bouattour wifek saidani wassim chaieb moussa samba penetrating thoracic trauma hydatid cyst kyste hydatique cancer left atrial injury hémothorax neurofibrome aspergillaires tuberculose hydatidose pleurésies mucormycose trachéales chylothorax œsophagienne amylose lymphangioma fistule œso-trachéale médiastinales léiomyosarcome dispositif accès veineux hiatus larrey lobe moyen carcinoide thymectomie myasthénie rupture bronche souche double lumière pneumonectomie">
+      <div class="session-card" data-room="vizir" collapsible-session" data-day="day2" data-cat="posters" data-search="posters affichés non commentés displayed posters non-commented #9 9 textilome thoracique complication infectieuse postopératoire affichage durant les pauses communication j1 j2 day 1 day 2 *8 *9 *10 *12 *13 *21 *22 #75 #72 #67 #64 #62 #60 #54 #53 #51 #50 #47 #45 #41 #40 #28 #22 #21 #14 #13 #8 #39 #37 #4 #2 8 9 10 12 13 21 22 75 72 67 64 62 60 54 53 51 50 47 45 41 40 28 14 39 37 4 2 boughouaou siham benameur malek bounefla terchi soumia khelili hadji chaima mohammed smaili manel ben tahar safa boudabous mohamed rebei selma madhi chiraz albouzidi eya fourati ahmed bakhti yosr ben attig amina abdelkebir fatma inched jemal hanen bouattour wifek saidani wassim chaieb moussa samba penetrating thoracic trauma hydatid cyst kyste hydatique cancer left atrial injury hémothorax neurofibrome aspergillaires tuberculose hydatidose pleurésies mucormycose trachéales chylothorax œsophagienne amylose lymphangioma fistule œso-trachéale médiastinales léiomyosarcome dispositif accès veineux hiatus larrey lobe moyen carcinoide thymectomie myasthénie rupture bronche souche double lumière pneumonectomie salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge" data-en="Display during breaks" data-fr="Affichage durant les pauses">Display during breaks</div>
           <div class="session-main-info">
@@ -2820,7 +2820,7 @@
       </div>
 
       <!-- 19h00 -->
-      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="clôture du congrès closing of the congress soirée closing evening">
+      <div class="session-card" data-room="vizir"" data-day="day2" data-cat="pause" data-search="clôture du congrès closing of the congress soirée closing evening salle plénière plenary hall">
         <div class="session-card-header">
           <div class="time-badge">19h00</div>
           <div class="session-main-info">
@@ -2950,6 +2950,23 @@ function filterDay(day) {
     day1.style.display = 'block';
     day2.style.display = 'block';
   }
+
+  // Update room button label based on selected day
+  const vizirLabel = document.getElementById('btn-room-vizir-label');
+  if (vizirLabel) {
+    if (day === 'day1') {
+      vizirLabel.setAttribute('data-en', 'Hall 1: Salle Vizir');
+      vizirLabel.setAttribute('data-fr', 'Salle 1 : Salle Vizir');
+    } else if (day === 'day2') {
+      vizirLabel.setAttribute('data-en', 'Plenary Hall');
+      vizirLabel.setAttribute('data-fr', 'Salle Plénière');
+    } else {
+      vizirLabel.setAttribute('data-en', 'Hall 1: Salle Vizir / Plenary');
+      vizirLabel.setAttribute('data-fr', 'Salle 1 : Salle Vizir / Plénière');
+    }
+    const curLang = (typeof currentLang !== 'undefined' ? currentLang : 'en');
+    vizirLabel.textContent = vizirLabel.getAttribute('data-' + curLang) || vizirLabel.getAttribute('data-fr');
+  }
   
   applyFilters();
 }
@@ -3014,8 +3031,8 @@ function applyFilters() {
 function downloadProgramPDF() {
   const lang = (typeof currentLang !== 'undefined' ? currentLang : localStorage.getItem('ttsa_program_lang')) || 'en';
   const pdfFile = (lang === 'fr') 
-    ? '/pdf/TTSA_Programme_Scientifique_2026_FR_v2.18.pdf' 
-    : '/pdf/TTSA_Scientific_Program_2026_EN_v2.18.pdf';
+    ? '/pdf/TTSA_Programme_Scientifique_2026_FR_v2.19.pdf' 
+    : '/pdf/TTSA_Scientific_Program_2026_EN_v2.19.pdf';
   window.open(pdfFile, '_blank');
 }
 
