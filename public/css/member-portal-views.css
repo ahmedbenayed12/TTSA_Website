@@ -311,6 +311,7 @@
 .room-dot.dot-all { background: var(--gray-600); }
 .room-dot.dot-vizir { background: #0284c7; }
 .room-dot.dot-diwan { background: #9333ea; }
+.room-dot.dot-pleniere { background: #0d9488; }
 
 .room-btn.active {
   font-weight: 700;
@@ -334,6 +335,12 @@
   background: #f3e8ff;
   border-color: #9333ea;
   color: #6b21a8;
+}
+
+.room-btn.active.btn-pleniere, .room-btn.btn-pleniere:hover {
+  background: #f0fdfa;
+  border-color: #0d9488;
+  color: #0f766e;
 }
 
 .cat-filters-container {
