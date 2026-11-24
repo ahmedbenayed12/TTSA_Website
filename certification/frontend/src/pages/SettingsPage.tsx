@@ -12,6 +12,19 @@ import {
 } from 'lucide-react'
 import { settingsApi } from '../api/client'
 
+const getErrorMessage = (err: any, fallback: string): string => {
+  const data = err?.response?.data
+  if (!data) return err?.message || fallback
+  if (typeof data === 'string') return data
+  if (typeof data.detail === 'string') return data.detail
+  if (Array.isArray(data.detail)) {
+    return data.detail.map((d: any) => d.msg || JSON.stringify(d)).join(', ')
+  }
+  if (typeof data.error === 'string') return data.error
+  if (typeof data.message === 'string') return data.message
+  return fallback
+}
+
 export const SettingsPage: React.FC = () => {
   const [configStatus, setConfigStatus] = useState<any>(null)
   const [activeTab, setActiveTab] = useState<'smtp' | 'oauth2'>('smtp')
@@ -82,7 +95,7 @@ export const SettingsPage: React.FC = () => {
       setSuccess('SMTP credentials encrypted and saved successfully!')
       await loadStatus()
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to save SMTP configuration.')
+      setError(getErrorMessage(err, 'Failed to save SMTP configuration.'))
     } finally {
       setSaving(false)
     }
@@ -98,7 +111,7 @@ export const SettingsPage: React.FC = () => {
       })
       setAuthUrl(res.auth_url)
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to generate OAuth URL.')
+      setError(getErrorMessage(err, 'Failed to generate OAuth URL.'))
     }
   }
 
@@ -119,7 +132,7 @@ export const SettingsPage: React.FC = () => {
       setSuccess('Google OAuth authorization successful!')
       await loadStatus()
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'Failed to exchange authorization code.')
+      setError(getErrorMessage(err, 'Failed to exchange authorization code.'))
     } finally {
       setSaving(false)
     }
@@ -139,7 +152,7 @@ export const SettingsPage: React.FC = () => {
         message: res.message || `Test email sent to ${testEmail}!`,
       })
     } catch (err: any) {
-      const msg = err.response?.data?.detail || 'Failed to send test email.'
+      const msg = getErrorMessage(err, 'Failed to send test email.')
       setTestResult({
         success: false,
         message: msg,

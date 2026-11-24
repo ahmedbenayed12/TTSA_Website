@@ -156,7 +156,7 @@ class GmailConfigSMTP(BaseModel):
     smtp_port: int = 587
     smtp_user: str
     smtp_password: str
-    sender_email: str
+    sender_email: Optional[str] = ""
 
 
 class GmailConfigOut(BaseModel):

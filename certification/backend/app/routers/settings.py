@@ -91,7 +91,7 @@ async def save_smtp_settings(
         "smtp_port": payload.smtp_port,
         "smtp_user": payload.smtp_user.strip(),
         "smtp_password": payload.smtp_password.strip(),
-        "sender_email": payload.sender_email.strip() or payload.smtp_user.strip(),
+        "sender_email": (payload.sender_email or "").strip() or payload.smtp_user.strip(),
     }
 
     encrypted = crypto_service.encrypt(json.dumps(credentials), settings.secret_key)

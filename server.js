@@ -32,10 +32,23 @@ app.use(helmet({
   referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
 }));
 
-// ─── CORS — restrict to your domain in production ─────────────────────────────
-const allowedOrigin = process.env.APP_URL || 'http://localhost:3000';
+// ─── CORS ────────────────────────────────────────────────────────────────────
+const allowedOrigins = [
+  process.env.APP_URL,
+  'https://ttsa.tn',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+].filter(Boolean);
+
 app.use(cors({
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
@@ -43,7 +56,10 @@ app.use(cors({
 
 // ─── Certification API Proxy (Super Admin Only) ──────────────────────────────
 // Must be registered BEFORE express.json() to allow clean multipart/streaming proxying
-app.use('/api/cert', requireAdmin, createProxyMiddleware({
+app.use('/api/cert', (req, res, next) => {
+  if (req.method === 'OPTIONS') return next();
+  return requireAdmin(req, res, next);
+}, createProxyMiddleware({
   target: 'http://127.0.0.1:8000',
   pathRewrite: (path) => (path.startsWith('/api') ? path : '/api' + path),
   changeOrigin: true,
