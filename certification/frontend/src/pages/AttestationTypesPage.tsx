@@ -185,7 +185,7 @@ export const AttestationTypesPage: React.FC<AttestationTypesPageProps> = ({ onNa
 
       {/* Types Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {types.map((t) => (
+        {types.map((t, index) => (
           <div
             key={t.id}
             className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow p-5 flex flex-col justify-between"
@@ -193,9 +193,16 @@ export const AttestationTypesPage: React.FC<AttestationTypesPageProps> = ({ onNa
             <div>
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-[11px] font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                    Type #{t.id}
-                  </span>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-[11px] font-bold text-sky-600 bg-sky-50 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                      Type #{index}
+                    </span>
+                    {index === 0 && (
+                      <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        Default
+                      </span>
+                    )}
+                  </div>
                   <h3 className="font-bold text-base text-slate-800 mt-1.5">{t.name}</h3>
                 </div>
                 <div className="flex items-center space-x-1">
@@ -246,6 +253,24 @@ export const AttestationTypesPage: React.FC<AttestationTypesPageProps> = ({ onNa
                   <span className="font-medium text-slate-700 truncate max-w-[150px]">
                     {t.template?.name || (t.template_id ? `ID #${t.template_id}` : 'Default TTSA')}
                   </span>
+                </div>
+                {/* Dynamic Fields */}
+                <div className="pt-2">
+                  <span className="text-slate-400 block mb-1">Configured Fields:</span>
+                  <div className="flex flex-wrap gap-1">
+                    {(() => {
+                      try {
+                        const m = JSON.parse(t.field_mappings || '[]');
+                        return m.map((f: any, idx: number) => (
+                          <span key={idx} className="inline-block px-1.5 py-0.5 bg-slate-100 text-slate-700 rounded text-[10px] font-medium border border-slate-200">
+                            {f.label || f.field_name}
+                          </span>
+                        ));
+                      } catch (_) {
+                        return <span className="text-[10px] text-slate-400">None</span>;
+                      }
+                    })()}
+                  </div>
                 </div>
               </div>
             </div>

@@ -253,9 +253,9 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
             onChange={(e) => setSelectedTypeId(Number(e.target.value))}
             className="px-3 py-1.5 text-xs font-semibold border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500"
           >
-            {types.map((t) => (
+            {types.map((t, idx) => (
               <option key={t.id} value={t.id}>
-                {t.name}
+                Type #{idx} — {t.name}
               </option>
             ))}
           </select>

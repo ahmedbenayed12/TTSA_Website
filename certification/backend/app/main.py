@@ -71,69 +71,71 @@ async def seed_initial_data() -> None:
             tpl_id = existing_tpl.id
 
         # Check if attestation types already exist
-        res_types = await db.execute(select(AttestationType).limit(1))
-        if not res_types.scalars().first():
-            # Seed recommended TTSA types
-            default_mappings = [
-                {
-                    "field_name": "participant_name",
-                    "label": "Participant Name",
-                    "x": 430.0,
-                    "y": 285.0,
-                    "page": 0,
-                    "font": "Helvetica-Bold",
-                    "font_size": 22.0,
-                    "color": 0x1A2B4C,
-                    "alignment": "center",
-                    "max_width": 450.0,
-                    "is_bold": True,
-                    "is_italic": False,
-                },
-                {
-                    "field_name": "role_description",
-                    "label": "Role Description",
-                    "x": 430.0,
-                    "y": 320.0,
-                    "page": 0,
-                    "font": "Helvetica-Oblique",
-                    "font_size": 14.0,
-                    "color": 0x333333,
-                    "alignment": "center",
-                    "max_width": 500.0,
-                    "is_bold": False,
-                    "is_italic": True,
-                },
-                {
-                    "field_name": "presentation_title",
-                    "label": "Presentation Title",
-                    "x": 430.0,
-                    "y": 345.0,
-                    "page": 0,
-                    "font": "Helvetica-Oblique",
-                    "font_size": 12.0,
-                    "color": 0x444444,
-                    "alignment": "center",
-                    "max_width": 520.0,
-                    "is_bold": False,
-                    "is_italic": True,
-                },
-            ]
+        res_types = await db.execute(select(AttestationType).order_by(AttestationType.id.asc()))
+        existing_types = res_types.scalars().all()
 
+        default_mappings = [
+            {
+                "field_name": "participant_name",
+                "label": "Participant Name",
+                "x": 430.0,
+                "y": 285.0,
+                "page": 0,
+                "font": "Helvetica-Bold",
+                "font_size": 22.0,
+                "color": 0x1A2B4C,
+                "alignment": "center",
+                "max_width": 450.0,
+                "is_bold": True,
+                "is_italic": False,
+            },
+            {
+                "field_name": "role_description",
+                "label": "Role Description",
+                "x": 430.0,
+                "y": 320.0,
+                "page": 0,
+                "font": "Helvetica-Oblique",
+                "font_size": 14.0,
+                "color": 0x333333,
+                "alignment": "center",
+                "max_width": 500.0,
+                "is_bold": False,
+                "is_italic": True,
+            },
+            {
+                "field_name": "presentation_title",
+                "label": "Presentation Title",
+                "x": 430.0,
+                "y": 345.0,
+                "page": 0,
+                "font": "Helvetica-Oblique",
+                "font_size": 12.0,
+                "color": 0x444444,
+                "alignment": "center",
+                "max_width": 520.0,
+                "is_bold": False,
+                "is_italic": True,
+            },
+        ]
+
+        if not existing_types:
+            # Seed recommended TTSA types with Conference as default (#0)
             types_to_create = [
                 AttestationType(
-                    name="Oral Communication",
+                    name="Conference",
                     template_id=tpl_id,
                     field_mappings=json.dumps(default_mappings),
-                    email_subject="Your Certificate of Oral Presentation — 5th TTSA Congress",
+                    email_subject="Your Certificate of Conference — 5th TTSA Congress",
                     email_body=(
                         "Dear Dr. {{name}},\n\n"
-                        "Thank you for your oral communication at the 5th National Tunisian Thoracic Surgery Congress.\n"
+                        "Thank you for your presentation at the 5th National Tunisian Thoracic Surgery Congress.\n"
                         "Please find your certificate attached.\n\n"
                         "Best regards,\n"
                         "The TTSA Organizing Committee"
                     ),
-                    filename_pattern="Certificate_Oral_{{name}}.pdf",
-                    description="Certificate for oral communication presenters",
+                    filename_pattern="Certificate_Conference_{{name}}.pdf",
+                    description="Certificate for conference presentations",
                     email_column="email",
                     name_column="participant_name",
                     sheet_name="Conference",
@@ -181,6 +183,16 @@ async def seed_initial_data() -> None:
 
             await db.commit()
             logger.info("Seeded initial attestation types.")
+        else:
+            # Ensure first default type is named Conference
+            conf = next((t for t in existing_types if t.name in ["Conference", "Oral Communication"]), None)
+            if conf and conf.name != "Conference":
+                conf.name = "Conference"
+                conf.sheet_name = "Conference"
+                conf.filename_pattern = "Certificate_Conference_{{name}}.pdf"
+                conf.email_subject = "Your Certificate of Conference — 5th TTSA Congress"
+                await db.commit()
+                logger.info("Updated existing type #%s to Conference", conf.id)
 
 
 @asynccontextmanager
