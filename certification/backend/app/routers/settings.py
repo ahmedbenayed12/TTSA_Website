@@ -48,20 +48,67 @@ class TestEmailRequest(BaseModel):
 async def get_email_settings(
     db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
-    """Return currently active email config metadata (no secrets exposed)."""
+    """Return currently active email config metadata (no secrets exposed) with form prefill."""
+    import os
     settings = get_settings()
     res = await db.execute(
         select(GmailConfig).where(GmailConfig.is_active == True).order_by(GmailConfig.id.desc())
     )
     cfg = res.scalars().first()
+
+    # If no config in DB, check if environment variables provide SMTP fallback
+    if not cfg:
+        env_host = os.environ.get("SMTP_HOST") or os.environ.get("MAIL_HOST")
+        env_user = os.environ.get("SMTP_USER") or os.environ.get("MAIL_USER")
+        env_pass = os.environ.get("SMTP_PASSWORD") or os.environ.get("SMTP_PASS") or os.environ.get("MAIL_PASS")
+        env_port = int(os.environ.get("SMTP_PORT") or os.environ.get("MAIL_PORT") or 587)
+        env_sender = os.environ.get("SMTP_SENDER") or os.environ.get("MAIL_FROM") or env_user
+
+        if env_host and env_user and env_pass:
+            credentials = {
+                "auth_type": "smtp",
+                "smtp_host": env_host.strip(),
+                "smtp_port": env_port,
+                "smtp_user": env_user.strip(),
+                "smtp_password": env_pass.strip(),
+                "sender_email": env_sender.strip(),
+            }
+            encrypted = crypto_service.encrypt(json.dumps(credentials), settings.secret_key)
+            cfg = GmailConfig(
+                auth_type="smtp",
+                encrypted_credentials=encrypted,
+                sender_email=credentials["sender_email"],
+                is_active=True,
+            )
+            db.add(cfg)
+            await db.commit()
+            await db.refresh(cfg)
+
     if not cfg:
         return {
             "configured": False,
             "auth_type": "none",
             "sender_email": "",
             "is_active": False,
+            "smtp_host": "smtp.gmail.com",
+            "smtp_port": 587,
+            "smtp_user": "",
             "oauth_client_id_configured": bool(settings.gmail_client_id),
         }
+
+    smtp_details = {
+        "smtp_host": "smtp.gmail.com",
+        "smtp_port": 587,
+        "smtp_user": "",
+    }
+    if cfg.auth_type == "smtp" and cfg.encrypted_credentials:
+        try:
+            creds = json.loads(crypto_service.decrypt(cfg.encrypted_credentials, settings.secret_key))
+            smtp_details["smtp_host"] = creds.get("smtp_host", "smtp.gmail.com")
+            smtp_details["smtp_port"] = creds.get("smtp_port", 587)
+            smtp_details["smtp_user"] = creds.get("smtp_user", "")
+        except Exception:
+            pass
 
     return {
         "configured": True,
@@ -69,6 +116,9 @@ async def get_email_settings(
         "auth_type": cfg.auth_type,
         "sender_email": cfg.sender_email,
         "is_active": cfg.is_active,
+        "smtp_host": smtp_details["smtp_host"],
+        "smtp_port": smtp_details["smtp_port"],
+        "smtp_user": smtp_details["smtp_user"],
         "created_at": cfg.created_at.isoformat() if cfg.created_at else None,
         "oauth_client_id_configured": bool(settings.gmail_client_id),
     }

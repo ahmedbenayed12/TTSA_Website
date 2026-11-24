@@ -200,3 +200,23 @@ class GmailConfig(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=_utcnow
     )
+
+
+# ---------------------------------------------------------------------------
+# ExcelFile
+# ---------------------------------------------------------------------------
+
+class ExcelFile(Base):
+    """Uploaded Excel participant file registry."""
+
+    __tablename__ = "excel_files"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    filename: Mapped[str] = mapped_column(String(512), nullable=False)
+    file_path: Mapped[str] = mapped_column(String(1024), nullable=False)
+    sheet_names: Mapped[str] = mapped_column(Text, default="[]")  # JSON list of sheet names
+    total_rows: Mapped[int] = mapped_column(Integer, default=0)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow
+    )
+

@@ -209,6 +209,7 @@ app.get('/api/diag/cert', (req, res) => {
     certDistIndexExists: fs.existsSync(path.join(certDistDir, 'index.html')),
     certBackendDir: path.join(__dirname, 'certification', 'backend'),
     certBackendExists: fs.existsSync(path.join(__dirname, 'certification', 'backend')),
+    dataDirExists: fs.existsSync('/data'),
     pythonInfo,
     lastBackendError: certBackendLastError,
     env: { NODE_ENV: process.env.NODE_ENV, RENDER: process.env.RENDER, PORT: process.env.PORT },
@@ -272,10 +273,22 @@ async function ensureCertBackendRunning() {
     : (fs.existsSync(venvPy) ? venvPy : (process.env.PYTHON3_PATH || 'python3'));
   const pyPath = process.env.PYTHON_PATH || defaultPyPath;
 
+  const certDataDir = (process.env.RENDER === 'true' || fs.existsSync('/data')) && fs.existsSync('/data') ? '/data' : null;
+  const childEnv = { ...process.env };
+  if (certDataDir) {
+    childEnv.DATABASE_URL = `sqlite+aiosqlite:///${path.join(certDataDir, 'attestation.db')}`;
+    childEnv.UPLOAD_DIR = path.join(certDataDir, 'cert_uploads');
+    childEnv.GENERATED_DIR = path.join(certDataDir, 'cert_generated');
+    if (!fs.existsSync(childEnv.UPLOAD_DIR)) {
+      try { fs.mkdirSync(childEnv.UPLOAD_DIR, { recursive: true }); } catch (_) {}
+    }
+  }
+
   console.log(`🚀 Spawning Certification service (${pyPath}) on port 8000...`);
   try {
     certBackendProcess = spawn(pyPath, ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8000'], {
       cwd: certBackendDir,
+      env: childEnv,
       stdio: ['ignore', 'pipe', 'pipe'],
       detached: false,
     });

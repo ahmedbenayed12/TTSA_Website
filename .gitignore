@@ -28,9 +28,9 @@ env/
 # Certification backend generated / upload directories
 certification/backend/generated/*
 !certification/backend/generated/.gitkeep
-certification/backend/uploads/*
-!certification/backend/uploads/.gitkeep
-certification/backend/attestation.db
+!certification/backend/uploads/*.pdf
+!certification/backend/uploads/*.xlsx
+!certification/backend/attestation.db
 
 # Editor
 .vscode/

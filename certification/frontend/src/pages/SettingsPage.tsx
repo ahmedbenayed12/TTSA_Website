@@ -58,6 +58,19 @@ export const SettingsPage: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null)
 
   useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ttsa_smtp_config')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        setSmtpForm((prev) => ({
+          ...prev,
+          smtp_host: parsed.smtp_host || prev.smtp_host,
+          smtp_port: parsed.smtp_port || prev.smtp_port,
+          smtp_user: parsed.smtp_user || prev.smtp_user,
+          sender_email: parsed.sender_email || prev.sender_email,
+        }))
+      }
+    } catch (_) {}
     loadStatus()
   }, [])
 
@@ -69,13 +82,13 @@ export const SettingsPage: React.FC = () => {
       if (res.auth_type === 'oauth2') {
         setActiveTab('oauth2')
       }
-      if (res.sender_email && !smtpForm.sender_email) {
-        setSmtpForm((prev) => ({
-          ...prev,
-          smtp_user: res.sender_email,
-          sender_email: res.sender_email,
-        }))
-      }
+      setSmtpForm((prev) => ({
+        ...prev,
+        smtp_host: res.smtp_host || prev.smtp_host || 'smtp.gmail.com',
+        smtp_port: res.smtp_port || prev.smtp_port || 587,
+        smtp_user: res.smtp_user || res.sender_email || prev.smtp_user,
+        sender_email: res.sender_email || prev.sender_email,
+      }))
     } catch (err) {
       console.error(err)
     } finally {
@@ -92,6 +105,15 @@ export const SettingsPage: React.FC = () => {
         ...smtpForm,
         smtp_port: Number(smtpForm.smtp_port),
       })
+      localStorage.setItem(
+        'ttsa_smtp_config',
+        JSON.stringify({
+          smtp_host: smtpForm.smtp_host,
+          smtp_port: smtpForm.smtp_port,
+          smtp_user: smtpForm.smtp_user,
+          sender_email: smtpForm.sender_email,
+        })
+      )
       setSuccess('SMTP credentials encrypted and saved successfully!')
       await loadStatus()
     } catch (err: any) {

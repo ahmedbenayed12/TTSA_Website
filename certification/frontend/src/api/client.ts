@@ -105,10 +105,20 @@ export interface SheetData {
 }
 
 export interface ExcelUploadResponse {
+  id?: number
   file_path: string
   original_filename: string
   sheet_names: string[]
   sheets: Record<string, SheetData>
+}
+
+export interface SavedExcelFile {
+  id: number
+  filename: string
+  file_path: string
+  sheet_names: string[]
+  total_rows: number
+  created_at: string
 }
 
 export interface ValidationErrorItem {
@@ -157,6 +167,9 @@ export const typesApi = {
 }
 
 export const excelApi = {
+  listFiles: async () => (await api.get<SavedExcelFile[]>('/excel/files')).data,
+  getFile: async (id: number) => (await api.get<ExcelUploadResponse & { id: number }>(`/excel/files/${id}`)).data,
+  deleteFile: async (id: number) => (await api.delete<{ message: string }>(`/excel/files/${id}`)).data,
   upload: async (file: File) => {
     const formData = new FormData()
     formData.append('file', file)

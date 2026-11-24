@@ -23,7 +23,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import get_db
-from app.models.attestation import AttestationType, SendJob, SendLog
+from app.models.attestation import AttestationType, ExcelFile, SendJob, SendLog
 from app.models.schemas import ExcelValidationResult, SendJobOut
 from app.services import excel_service
 
@@ -45,11 +45,100 @@ class CreateJobRequest(BaseModel):
     selected_indices: Optional[list[int]] = None  # None = select all valid rows
 
 
+@router.get("/files")
+async def list_excel_files(
+    db: AsyncSession = Depends(get_db),
+) -> list[dict[str, Any]]:
+    """List all previously uploaded Excel workbooks."""
+    result = await db.execute(select(ExcelFile).order_by(ExcelFile.id.desc()))
+    files = result.scalars().all()
+    out = []
+    for f in files:
+        try:
+            s_names = json.loads(f.sheet_names)
+        except Exception:
+            s_names = []
+        out.append({
+            "id": f.id,
+            "filename": f.filename,
+            "file_path": f.file_path,
+            "sheet_names": s_names,
+            "total_rows": f.total_rows,
+            "created_at": f.created_at.isoformat() if f.created_at else None,
+        })
+    return out
+
+
+@router.get("/files/{file_id}")
+async def get_excel_file(
+    file_id: int,
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, Any]:
+    """Retrieve details and parsed sheet data of an uploaded Excel file."""
+    settings = get_settings()
+    excel_file = await db.get(ExcelFile, file_id)
+    if not excel_file:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Excel file with ID {file_id} not found.",
+        )
+
+    full_path = os.path.join(settings.upload_dir, excel_file.file_path)
+    if not os.path.exists(full_path):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Excel file '{excel_file.filename}' is missing from storage.",
+        )
+
+    try:
+        parsed = excel_service.parse_excel(full_path)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Could not parse Excel workbook: {exc}",
+        ) from exc
+
+    return {
+        "id": excel_file.id,
+        "file_path": excel_file.file_path,
+        "original_filename": excel_file.filename,
+        "sheet_names": parsed["sheet_names"],
+        "sheets": parsed["sheets"],
+    }
+
+
+@router.delete("/files/{file_id}")
+async def delete_excel_file(
+    file_id: int,
+    db: AsyncSession = Depends(get_db),
+) -> dict[str, str]:
+    """Delete an uploaded Excel file from storage and database."""
+    settings = get_settings()
+    excel_file = await db.get(ExcelFile, file_id)
+    if not excel_file:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Excel file with ID {file_id} not found.",
+        )
+
+    full_path = os.path.join(settings.upload_dir, excel_file.file_path)
+    if os.path.exists(full_path):
+        try:
+            os.remove(full_path)
+        except Exception:
+            pass
+
+    await db.delete(excel_file)
+    await db.commit()
+    return {"message": f"Excel file '{excel_file.filename}' deleted successfully."}
+
+
 @router.post("/upload")
 async def upload_excel(
     file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
 ) -> dict[str, Any]:
-    """Upload an Excel file and parse all sheet names, columns, and preview data."""
+    """Upload an Excel file, register it in DB, and parse all sheet names and data."""
     settings = get_settings()
 
     if not file.filename or not (
@@ -81,7 +170,22 @@ async def upload_excel(
             detail=f"Could not parse Excel workbook: {exc}",
         ) from exc
 
+    # Register in database for persistence across sessions
+    total_rows = sum(s.get("row_count", 0) for s in parsed["sheets"].values())
+    sheet_names_json = json.dumps(parsed["sheet_names"])
+
+    excel_file = ExcelFile(
+        filename=file.filename,
+        file_path=dest_filename,
+        sheet_names=sheet_names_json,
+        total_rows=total_rows,
+    )
+    db.add(excel_file)
+    await db.commit()
+    await db.refresh(excel_file)
+
     return {
+        "id": excel_file.id,
         "file_path": dest_filename,
         "original_filename": file.filename,
         "sheet_names": parsed["sheet_names"],

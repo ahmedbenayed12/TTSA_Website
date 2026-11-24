@@ -1,6 +1,7 @@
 """Application configuration using pydantic-settings.
 Loads settings from environment variables and optional .env file.
 """
+import os
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -35,5 +36,25 @@ class Settings(BaseSettings):
 
 @lru_cache()
 def get_settings() -> Settings:
-    """Return cached Settings singleton. Reads .env once."""
-    return Settings()
+    """Return cached Settings singleton. Reads .env once and detects persistent storage."""
+    s = Settings()
+
+    # If Render persistent disk exists at /data, store DB & files there
+    if os.environ.get("DATABASE_URL"):
+        s.database_url = os.environ["DATABASE_URL"]
+    elif os.path.exists("/data") and os.path.isdir("/data"):
+        s.database_url = "sqlite+aiosqlite:////data/attestation.db"
+
+    if os.environ.get("UPLOAD_DIR"):
+        s.upload_dir = os.environ["UPLOAD_DIR"]
+    elif os.path.exists("/data") and os.path.isdir("/data"):
+        s.upload_dir = "/data/cert_uploads"
+        os.makedirs(s.upload_dir, exist_ok=True)
+
+    if os.environ.get("GENERATED_DIR"):
+        s.generated_dir = os.environ["GENERATED_DIR"]
+    elif os.path.exists("/data") and os.path.isdir("/data"):
+        s.generated_dir = "/data/cert_generated"
+        os.makedirs(s.generated_dir, exist_ok=True)
+
+    return s
