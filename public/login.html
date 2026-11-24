@@ -54,12 +54,20 @@
 </div>
 <script src="/js/api.js?v=2"></script>
 <script>
-// Redirect if already logged in
+// Redirect if already logged in — honour ?redirect= param so cert manager deeplinks work
 if (getToken() && getRole()) {
   const r = getRole();
-  if (r==='admin') location.href='/admin/dashboard.html';
-  else if (r==='reviewer') location.href='/reviewer/dashboard.html';
-  else location.href='/member/dashboard.html';
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get('redirect');
+  if (redirect && redirect.startsWith('/')) {
+    location.href = redirect;
+  } else if (r==='admin') {
+    location.href='/admin/dashboard.html';
+  } else if (r==='reviewer') {
+    location.href='/reviewer/dashboard.html';
+  } else {
+    location.href='/member/dashboard.html';
+  }
 }
 
 document.getElementById('loginForm').addEventListener('submit', async e => {

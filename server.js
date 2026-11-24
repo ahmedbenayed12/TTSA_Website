@@ -1,4 +1,4 @@
-require('dotenv').config();
+﻿require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -125,12 +125,30 @@ function requireAdminPageOrToken(req, res, next) {
   }
 }
 
-if (fs.existsSync(certDistDir)) {
-  app.use('/admin/certification', requireAdminPageOrToken, express.static(certDistDir));
-  app.use('/admin/certification', requireAdminPageOrToken, (req, res) => {
-    res.sendFile(path.join(certDistDir, 'index.html'));
-  });
-}
+// Always register the certification route — show helpful error if dist is missing
+app.use('/admin/certification', requireAdminPageOrToken, (req, res, next) => {
+  if (fs.existsSync(certDistDir)) return next();
+  // dist not built yet — show a clear error instead of a blank loop
+  return res.status(503).send(`
+    <!DOCTYPE html>
+    <html lang="en">
+    <head><meta charset="UTF-8"><title>Certification Manager – Building…</title></head>
+    <body style="font-family:sans-serif;padding:60px 20px;text-align:center;background:#f8fafc;color:#1e293b">
+      <h1 style="color:#0C589A;font-size:2rem;margin-bottom:12px">🎓 Certification Manager</h1>
+      <p style="font-size:1.1rem;margin-bottom:8px">The frontend bundle has not been built yet on this server.</p>
+      <p style="font-size:.95rem;color:#64748b;margin-bottom:24px">
+        Run <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px">cd certification/frontend &amp;&amp; npm run build</code>
+        in the project root, then restart the server.
+      </p>
+      <a href="/admin/dashboard.html" style="background:#0C589A;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold">← Back to Dashboard</a>
+    </body>
+    </html>
+  `);
+});
+app.use('/admin/certification', requireAdminPageOrToken, express.static(certDistDir));
+app.use('/admin/certification', requireAdminPageOrToken, (req, res) => {
+  res.sendFile(path.join(certDistDir, 'index.html'));
+});
 
 // Serve static frontend
 app.use(express.static(path.join(__dirname, 'public')));
@@ -146,6 +164,30 @@ app.use('/api/abstracts', require('./routes/abstracts'));
 app.use('/api/reviews',   require('./routes/reviews'));
 app.use('/api/admin',     require('./routes/admin'));
 app.use('/api',           require('./routes/public'));
+
+// ─── Diagnostic endpoint (admin token required) ───────────────────────────────
+app.get('/api/diag/cert', (req, res) => {
+  let token = req.query.token;
+  const authHeader = req.headers['authorization'];
+  if (!token && authHeader) token = authHeader.split(' ')[1];
+  let decoded = null;
+  try { decoded = token ? jwt.verify(token, process.env.JWT_SECRET) : null; } catch (_) {}
+  if (!decoded || decoded.role !== 'admin') {
+    return res.status(403).json({ error: 'Admin token required' });
+  }
+  res.json({
+    platform: process.platform,
+    node: process.version,
+    cwd: process.cwd(),
+    dirname: __dirname,
+    certDistDir,
+    certDistExists: fs.existsSync(certDistDir),
+    certDistIndexExists: fs.existsSync(path.join(certDistDir, 'index.html')),
+    certBackendDir: path.join(__dirname, 'certification', 'backend'),
+    certBackendExists: fs.existsSync(path.join(__dirname, 'certification', 'backend')),
+    env: { NODE_ENV: process.env.NODE_ENV, RENDER: process.env.RENDER, PORT: process.env.PORT },
+  });
+});
 
 // ─── SPA Fallback ─────────────────────────────────────────────────────────────
 // Serve index.html for any non-API, non-certification GET request
@@ -189,7 +231,12 @@ async function ensureCertBackendRunning() {
     return;
   }
 
-  const pyPath = process.env.PYTHON_PATH || 'C:\\Users\\ABC\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe';
+  // On Linux/cPanel use python3; on Windows fall back to local dev path
+  const isWindows = process.platform === 'win32';
+  const defaultPyPath = isWindows
+    ? 'C:\\\\Users\\\\ABC\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe'
+    : (process.env.PYTHON3_PATH || 'python3');
+  const pyPath = process.env.PYTHON_PATH || defaultPyPath;
   const certBackendDir = path.join(__dirname, 'certification', 'backend');
 
   if (!fs.existsSync(certBackendDir)) {
