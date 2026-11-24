@@ -36,6 +36,7 @@ app.use(helmet({
 const allowedOrigins = [
   process.env.APP_URL,
   'https://ttsa.tn',
+  'https://www.ttsa.tn',
   'http://localhost:3000',
   'http://127.0.0.1:3000',
   'http://localhost:5173',
@@ -44,10 +45,15 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) {
+    if (
+      !origin ||
+      allowedOrigins.includes(origin) ||
+      /^https?:\/\/([a-z0-9-]+\.)?ttsa\.tn(:\d+)?$/i.test(origin) ||
+      /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)
+    ) {
       return callback(null, true);
     }
-    return callback(new Error('Not allowed by CORS'));
+    return callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -83,12 +89,10 @@ app.use(express.urlencoded({ extended: true }));
 // ─── Certification Manager Frontend (Super Admin Only) ───────────────────────
 const certDistDir = path.join(__dirname, 'certification', 'frontend', 'dist');
 
-function requireAdminPageOrToken(req, res, next) {
-  // Allow static assets under /admin/certification/assets/ without query token
-  if (req.path.startsWith('/assets/')) {
-    return next();
-  }
+// Serve all static assets directly (JS, CSS, SVGs, favicon) without token overhead
+app.use('/admin/certification', express.static(certDistDir));
 
+function requireAdminPageOrToken(req, res, next) {
   let token = req.query.token;
   const authHeader = req.headers['authorization'];
   if (!token && authHeader) token = authHeader.split(' ')[1];
@@ -125,10 +129,9 @@ function requireAdminPageOrToken(req, res, next) {
   }
 }
 
-// Always register the certification route — show helpful error if dist is missing
-app.use('/admin/certification', requireAdminPageOrToken, (req, res, next) => {
+// Serve HTML app entry point (protected for Super Admin)
+app.use('/admin/certification', (req, res, next) => {
   if (fs.existsSync(certDistDir)) return next();
-  // dist not built yet — show a clear error instead of a blank loop
   return res.status(503).send(`
     <!DOCTYPE html>
     <html lang="en">
@@ -144,9 +147,7 @@ app.use('/admin/certification', requireAdminPageOrToken, (req, res, next) => {
     </body>
     </html>
   `);
-});
-app.use('/admin/certification', requireAdminPageOrToken, express.static(certDistDir));
-app.use('/admin/certification', requireAdminPageOrToken, (req, res) => {
+}, requireAdminPageOrToken, (req, res) => {
   res.sendFile(path.join(certDistDir, 'index.html'));
 });
 
