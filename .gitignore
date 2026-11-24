@@ -1,5 +1,7 @@
 node_modules/
 .env
+.env.*
+!.env.example
 uploads/
 *.db
 *.db-shm
@@ -10,3 +12,28 @@ migrate.js
 *.zip
 zip_full.js
 chrome-temp/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+.pytest_cache/
+
+# Certification backend generated / upload directories
+certification/backend/generated/*
+!certification/backend/generated/.gitkeep
+certification/backend/uploads/*
+!certification/backend/uploads/.gitkeep
+certification/backend/attestation.db
+
+# Editor
+.vscode/
+.idea/
+.DS_Store
+*.log

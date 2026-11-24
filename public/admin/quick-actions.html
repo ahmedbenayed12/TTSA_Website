@@ -55,6 +55,8 @@
       <a href="/admin/users.html"><span class="nav-icon">👤</span> Participants</a>
       <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
       <a href="/admin/quick-actions.html" class="active"><span class="nav-icon">⚡</span> Quick Actions</a>
+      <div class="sidebar-nav-label">Certificates</div>
+      <a href="#" onclick="openCertificationManager(event)"><span class="nav-icon">🎓</span> Certification Manager</a>
       <div class="sidebar-nav-label">Configuration</div>
       <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
       <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
@@ -104,6 +106,13 @@
         </div>
 
 
+        <div class="action-card" style="border-left: 4px solid #0C589A;">
+          <div class="action-icon">🎓</div>
+          <div class="action-title">Certification Manager</div>
+          <div class="action-desc">Generate personalized certificates from templates and dispatch them via Gmail with live progress.</div>
+          <button onclick="openCertificationManager(event)" class="btn btn-primary btn-sm" style="align-self:flex-start">Open in New Window ↗</button>
+        </div>
+
         <div class="action-card">
           <div class="action-icon">📊</div>
           <div class="action-title">Platform Overview</div>
@@ -126,6 +135,17 @@
 <script src="/js/api.js"></script>
 <script>
 if (!requireAuth(['admin'])) throw '';
+
+function openCertificationManager(e) {
+  if (e) e.preventDefault();
+  const token = getToken();
+  const role = getRole();
+  if (!token || role !== 'admin') {
+    alert('Access restricted to Super Admin only.');
+    return;
+  }
+  window.open('/admin/certification/?token=' + encodeURIComponent(token), '_blank');
+}
 apiFetch('/auth/me').then(me => {
   document.getElementById('sidebarName').textContent  = me.first_name + ' ' + me.last_name;
   document.getElementById('sidebarAvatar').textContent = me.first_name[0];

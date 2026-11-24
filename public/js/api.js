@@ -164,4 +164,16 @@ function getSlideInstructions(presentationType, preference) {
   return null;
 }
 
+function openCertificationManager(e) {
+  if (e) e.preventDefault();
+  const token = getToken();
+  const role = getRole();
+  if (!token || role !== 'admin') {
+    alert('Access restricted to Super Admin only.');
+    return;
+  }
+  window.open('/admin/certification/?token=' + encodeURIComponent(token), '_blank');
+}
+
+
 

@@ -4,12 +4,17 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const fs = require('fs');
+const http = require('http');
+const { spawn } = require('child_process');
+const jwt = require('jsonwebtoken');
+const { createProxyMiddleware } = require('http-proxy-middleware');
+const { requireAdmin } = require('./middleware/auth');
 
 const app = express();
 
 // ─── Security Headers (helmet) ────────────────────────────────────────────────
 app.use(helmet({
-  // Allow inline scripts/styles needed by the admin SPA pages
+  // Allow inline scripts/styles needed by admin SPA pages and certification editor
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
@@ -19,8 +24,8 @@ app.use(helmet({
       fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
       imgSrc: ["'self'", "data:", "blob:"],
       connectSrc: ["'self'"],
-      frameSrc: ["'none'"],
-      objectSrc: ["'none'"],
+      frameSrc: ["'self'", "blob:"],
+      objectSrc: ["'self'", "blob:"],
     },
   },
   crossOriginEmbedderPolicy: false, // needed for file downloads
@@ -35,8 +40,81 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+// ─── Certification API Proxy (Super Admin Only) ──────────────────────────────
+// Must be registered BEFORE express.json() to allow clean multipart/streaming proxying
+app.use('/api/cert', requireAdmin, createProxyMiddleware({
+  target: 'http://127.0.0.1:8000',
+  pathRewrite: (path) => (path.startsWith('/api') ? path : '/api' + path),
+  changeOrigin: true,
+  ws: true,
+  on: {
+    error: (err, req, res) => {
+      console.error('Certification service proxy error:', err.message);
+      if (!res.headersSent) {
+        res.status(502).json({
+          error: 'Certification backend is starting or unavailable. Please retry in a few seconds.',
+          details: err.message,
+        });
+      }
+    },
+  },
+}));
+
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
+
+// ─── Certification Manager Frontend (Super Admin Only) ───────────────────────
+const certDistDir = path.join(__dirname, 'certification', 'frontend', 'dist');
+
+function requireAdminPageOrToken(req, res, next) {
+  // Allow static assets under /admin/certification/assets/ without query token
+  if (req.path.startsWith('/assets/')) {
+    return next();
+  }
+
+  let token = req.query.token;
+  const authHeader = req.headers['authorization'];
+  if (!token && authHeader) token = authHeader.split(' ')[1];
+
+  if (!token) {
+    if (req.accepts('html')) {
+      return res.redirect('/login.html?redirect=' + encodeURIComponent(req.originalUrl));
+    }
+    return res.status(401).json({ error: 'Access token required' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded.role !== 'admin') {
+      return res.status(403).send(`
+        <!DOCTYPE html>
+        <html lang="en">
+        <head><meta charset="UTF-8"><title>403 Forbidden</title></head>
+        <body style="font-family:sans-serif;padding:60px 20px;text-align:center;background:#f8fafc;color:#1e293b">
+          <h1 style="color:#e11d48;font-size:2rem;margin-bottom:12px">403 Forbidden</h1>
+          <p style="font-size:1.1rem;margin-bottom:24px">Access to Certification Manager is strictly restricted to Super Admin.</p>
+          <a href="/login.html" style="background:#0C589A;color:#fff;padding:10px 20px;border-radius:6px;text-decoration:none;font-weight:bold">Sign in as Super Admin</a>
+        </body>
+        </html>
+      `);
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    if (req.accepts('html')) {
+      return res.redirect('/login.html?error=expired&redirect=' + encodeURIComponent(req.originalUrl));
+    }
+    return res.status(403).json({ error: 'Invalid or expired token' });
+  }
+}
+
+if (fs.existsSync(certDistDir)) {
+  app.use('/admin/certification', requireAdminPageOrToken, express.static(certDistDir));
+  app.use('/admin/certification', requireAdminPageOrToken, (req, res) => {
+    res.sendFile(path.join(certDistDir, 'index.html'));
+  });
+}
 
 // Serve static frontend
 app.use(express.static(path.join(__dirname, 'public')));
@@ -54,9 +132,9 @@ app.use('/api/admin',     require('./routes/admin'));
 app.use('/api',           require('./routes/public'));
 
 // ─── SPA Fallback ─────────────────────────────────────────────────────────────
-// Serve index.html for any non-API GET request
+// Serve index.html for any non-API, non-certification GET request
 app.use((req, res, next) => {
-  if (req.method === 'GET' && !req.path.startsWith('/api')) {
+  if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/admin/certification')) {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
   } else if (req.path.startsWith('/api')) {
     res.status(404).json({ error: 'Route not found' });
@@ -68,15 +146,87 @@ app.use((req, res, next) => {
 // ─── Error Handler ────────────────────────────────────────────────────────────
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  // Never leak internal error details to the client in production
   const message = process.env.NODE_ENV === 'production' ? 'Internal server error' : (err.message || 'Internal server error');
   res.status(500).json({ error: message });
 });
 
+// ─── Certification Backend Lifecycle Management ──────────────────────────────
+let certBackendProcess = null;
+
+function checkCertBackendAlive() {
+  return new Promise((resolve) => {
+    const req = http.get('http://127.0.0.1:8000/api/health', (res) => {
+      resolve(res.statusCode === 200);
+    });
+    req.on('error', () => resolve(false));
+    req.setTimeout(1200, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+async function ensureCertBackendRunning() {
+  const isAlive = await checkCertBackendAlive();
+  if (isAlive) {
+    console.log('🎓 Certification service detected running on http://127.0.0.1:8000');
+    return;
+  }
+
+  const pyPath = process.env.PYTHON_PATH || 'C:\\Users\\ABC\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe';
+  const certBackendDir = path.join(__dirname, 'certification', 'backend');
+
+  if (!fs.existsSync(certBackendDir)) {
+    console.warn('⚠️  Certification backend directory not found at', certBackendDir);
+    return;
+  }
+
+  console.log('🚀 Spawning Certification service on port 8000...');
+  try {
+    certBackendProcess = spawn(pyPath, ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8000'], {
+      cwd: certBackendDir,
+      stdio: ['ignore', 'pipe', 'pipe'],
+      detached: false,
+    });
+
+    certBackendProcess.stdout.on('data', (d) => {
+      const msg = d.toString().trim();
+      if (msg.includes('Uvicorn running') || msg.includes('Application startup complete')) {
+        console.log(`🎓 [Certification API] ${msg}`);
+      }
+    });
+
+    certBackendProcess.stderr.on('data', (d) => {
+      // quiet debug logging
+    });
+
+    certBackendProcess.on('error', (err) => {
+      console.warn('⚠️  Could not spawn certification backend:', err.message);
+    });
+  } catch (err) {
+    console.warn('⚠️  Failed to launch certification backend:', err.message);
+  }
+}
+
+// Clean up child process on exit
+const cleanUpChildProcess = () => {
+  if (certBackendProcess) {
+    try {
+      certBackendProcess.kill();
+    } catch (_) {}
+  }
+};
+process.on('exit', cleanUpChildProcess);
+process.on('SIGINT', () => { cleanUpChildProcess(); process.exit(); });
+process.on('SIGTERM', () => { cleanUpChildProcess(); process.exit(); });
+
 // ─── Start ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`\n🏥 TTSA Platform running at http://localhost:${PORT}`);
   console.log(`📋 Admin panel: http://localhost:${PORT}/admin/dashboard.html`);
+  console.log(`🎓 Certification Manager: http://localhost:${PORT}/admin/certification/`);
   console.log(`👤 Member portal: http://localhost:${PORT}/member/dashboard.html\n`);
+
+  await ensureCertBackendRunning();
 });

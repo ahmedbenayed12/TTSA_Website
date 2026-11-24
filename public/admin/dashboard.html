@@ -231,6 +231,8 @@
       <a href="/admin/users.html"><span class="nav-icon">👤</span> Participants</a>
       <a href="/admin/events.html"><span class="nav-icon">📅</span> Events</a>
       <a href="/admin/quick-actions.html"><span class="nav-icon">⚡</span> Quick Actions</a>
+      <div class="sidebar-nav-label">Certificates</div>
+      <a href="#" onclick="openCertificationManager(event)"><span class="nav-icon">🎓</span> Certification Manager</a>
       <div class="sidebar-nav-label">Configuration</div>
       <a href="/admin/export.html"><span class="nav-icon">📥</span> Export Data</a>
       <a href="/admin/settings.html"><span class="nav-icon">⚙️</span> Settings</a>
@@ -248,6 +250,25 @@
       <h2>Platform Overview</h2>
     </div>
     <div class="portal-body">
+
+      <!-- Certification Manager Section / Rubric -->
+      <div class="cert-manager-banner" style="background:linear-gradient(135deg, #0C589A 0%, #1e3a8a 100%); color:#fff; border-radius:var(--radius); padding:22px 26px; margin-bottom:28px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 4px 16px rgba(12,88,154,.18); border:1px solid rgba(255,255,255,.12); flex-wrap:wrap; gap:16px;">
+        <div style="flex:1; min-width:280px">
+          <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,.16); padding:4px 12px; border-radius:20px; font-size:.72rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; margin-bottom:8px">
+            <span>🎓</span> Super Admin Tool
+          </div>
+          <h3 style="margin:0 0 6px; font-size:1.3rem; font-weight:800; color:#fff">Certification Manager</h3>
+          <p style="margin:0; font-size:.85rem; color:#cfe2ff; max-width:620px; line-height:1.4">
+            Generate, customize, and mass-send official personalized PDF certificates (Oral Communication, Poster, Attendee) via Gmail with real-time delivery tracking.
+          </p>
+        </div>
+        <div>
+          <button type="button" onclick="openCertificationManager(event)" class="btn" style="background:#fff; color:#0C589A; font-weight:700; font-size:.88rem; padding:11px 20px; border-radius:8px; display:inline-flex; align-items:center; gap:8px; box-shadow:0 2px 8px rgba(0,0,0,.15); border:none; cursor:pointer;">
+            <span>Open in New Window</span>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          </button>
+        </div>
+      </div>
 
       <!-- Platform Totals -->
       <p class="section-title">Platform totals</p>
@@ -484,6 +505,17 @@
 <script src="/js/api.js"></script>
 <script>
 if (!requireAuth(['admin'])) throw '';
+
+function openCertificationManager(e) {
+  if (e) e.preventDefault();
+  const token = getToken();
+  const role = getRole();
+  if (!token || role !== 'admin') {
+    alert('Access restricted to Super Admin only.');
+    return;
+  }
+  window.open('/admin/certification/?token=' + encodeURIComponent(token), '_blank');
+}
 
 function pct(part, total) {
   if (!total || total === 0) return '0.0%';
