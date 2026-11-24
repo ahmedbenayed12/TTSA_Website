@@ -110,11 +110,7 @@ def _resolve_font(font_name: str, is_bold: bool = False, is_italic: bool = False
 
 
 def _wrap_text(text: str, font_name: str, font_size: float, max_width: float) -> list[str]:
-    """Split *text* into lines that fit within *max_width* points.
-
-    Uses a simple word-wrapping algorithm based on character-width estimates.
-    Returns the original single-item list when max_width <= 0.
-    """
+    """Split *text* into lines that fit within *max_width* points using PyMuPDF font metrics."""
     if max_width <= 0 or not text:
         return [text]
 
@@ -124,9 +120,12 @@ def _wrap_text(text: str, font_name: str, font_size: float, max_width: float) ->
 
     for word in words:
         candidate = f"{current} {word}".strip() if current else word
-        # Rough width estimate: average char width ≈ font_size * 0.5
-        est_width = len(candidate) * font_size * 0.5
-        if est_width <= max_width:
+        try:
+            width = fitz.get_text_length(candidate, fontname=font_name, fontsize=font_size)
+        except Exception:
+            width = len(candidate) * font_size * 0.52
+
+        if width <= max_width:
             current = candidate
         else:
             if current:
@@ -317,32 +316,28 @@ def generate_pdf_for_row(
             font_key: str = _resolve_font(
                 str(mapping.get("font", "Helvetica")), is_bold, is_italic
             )
-            align_const: int = _ALIGN_MAP.get(alignment_str, fitz.TEXT_ALIGN_CENTER)
+            # Wrap text if max_width is set
+            lines = _wrap_text(text, font_key, font_size, max_width)
+            line_spacing = font_size * 1.35
 
-            if max_width > 0:
-                # Use textbox for wrapped / aligned text
-                lines = _wrap_text(text, font_key, font_size, max_width)
-                line_height = font_size * 1.3
-                for i, line in enumerate(lines):
-                    rect = fitz.Rect(
-                        x - max_width / 2 if alignment_str == "center" else x,
-                        y + i * line_height,
-                        x + max_width / 2 if alignment_str == "center" else x + max_width,
-                        y + (i + 1) * line_height,
-                    )
-                    page.insert_textbox(
-                        rect,
-                        line,
-                        fontname=font_key,
-                        fontsize=font_size,
-                        color=color,
-                        align=align_const,
-                    )
-            else:
-                # Simple point-based insertion
+            for i, line in enumerate(lines):
+                try:
+                    t_len = fitz.get_text_length(line, fontname=font_key, fontsize=font_size)
+                except Exception:
+                    t_len = len(line) * font_size * 0.52
+
+                if alignment_str == "center":
+                    px = x - t_len / 2.0
+                elif alignment_str == "right":
+                    px = x - t_len
+                else:
+                    px = x
+
+                py = y + i * line_spacing
+
                 page.insert_text(
-                    fitz.Point(x, y),
-                    text,
+                    fitz.Point(px, py),
+                    line,
                     fontname=font_key,
                     fontsize=font_size,
                     color=color,
