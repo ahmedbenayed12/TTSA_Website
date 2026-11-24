@@ -71,6 +71,76 @@ def parse_excel(file_path: str) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# Column Resolution & Normalization
+# ---------------------------------------------------------------------------
+
+def normalize_col_name(name: str) -> str:
+    """Normalize a column name by removing all whitespace, hyphens, underscores and lowercasing."""
+    return re.sub(r"[\s_\-]+", "", str(name)).lower()
+
+
+EMAIL_ALIASES = {"email", "mail", "courriel", "adresseemail", "e-mail", "courrelec", "emailaddress"}
+NAME_ALIASES = {"participantname", "participant", "author", "nom", "name", "fullname", "nometprenom", "nomprenom", "nomduparticipant"}
+ROLE_ALIASES = {"roledescription", "role", "description", "qualite", "fonction"}
+TITLE_ALIASES = {"presentationtitle", "title", "titre", "titredelapresentation", "sujet"}
+
+
+def resolve_column(columns: Any, target_name: str) -> str | None:
+    """Find matching column name in sheet columns, ignoring case, spaces, hyphens, underscores and checking aliases."""
+    if not columns or not target_name:
+        return None
+    cols = list(columns)
+
+    # 1. Exact match
+    if target_name in cols:
+        return target_name
+
+    norm_target = normalize_col_name(target_name)
+
+    # 2. Normalized match (e.g. 'E-MAIL' matches 'email', 'PARTICIPANT NAME' matches 'participant_name')
+    for c in cols:
+        if str(c).startswith("_"):
+            continue
+        if normalize_col_name(c) == norm_target:
+            return str(c)
+
+    # 3. Alias matches
+    if norm_target in EMAIL_ALIASES:
+        for c in cols:
+            if str(c).startswith("_"):
+                continue
+            nc = normalize_col_name(c)
+            if nc in EMAIL_ALIASES or "email" in nc or "mail" in nc:
+                return str(c)
+
+    if norm_target in NAME_ALIASES:
+        for c in cols:
+            if str(c).startswith("_"):
+                continue
+            nc = normalize_col_name(c)
+            if nc in NAME_ALIASES or "participant" in nc or "author" in nc:
+                return str(c)
+
+    if norm_target in ROLE_ALIASES:
+        for c in cols:
+            if str(c).startswith("_"):
+                continue
+            nc = normalize_col_name(c)
+            if nc in ROLE_ALIASES or "role" in nc:
+                return str(c)
+
+    if norm_target in TITLE_ALIASES:
+        for c in cols:
+            if str(c).startswith("_"):
+                continue
+            nc = normalize_col_name(c)
+            if nc in TITLE_ALIASES or "title" in nc or "titre" in nc:
+                return str(c)
+
+    return None
+
+
+# ---------------------------------------------------------------------------
 # Validation
 # ---------------------------------------------------------------------------
 
@@ -80,57 +150,55 @@ def validate_rows(
     required_columns: list[str],
     email_column: str = "Email",
 ) -> ExcelValidationResult:
-    """Validate a list of parsed rows against basic rules.
+    """Validate a list of parsed rows against basic rules with flexible column resolution.
 
     Rules applied
     -------------
-    1. ``email_column`` must exist in every row.
+    1. ``email_column`` (or normalized equivalent) must exist in every row.
     2. Each email must pass the basic regex check.
     3. Duplicate emails are reported as *warnings* (not blocking errors).
     4. Required columns must not be empty.
-
-    Parameters
-    ----------
-    rows:
-        List of row dicts as returned by :func:`parse_excel`.
-    required_columns:
-        Column names that must be non-empty.
-    email_column:
-        Name of the column that holds the recipient e-mail address.
-
-    Returns
-    -------
-    ExcelValidationResult
-        Contains ``valid_rows`` count and ``errors`` / ``warnings`` lists.
     """
     errors: list[ValidationError] = []
     warnings: list[ValidationError] = []
     emails_seen: list[str] = []
     valid_count = 0
 
+    if not rows:
+        return ExcelValidationResult(valid_rows=0, errors=[], warnings=[])
+
+    # Resolve actual column names present in the dataset
+    sample_row = rows[0]
+    actual_email_col = resolve_column(sample_row.keys(), email_column) or email_column
+
+    # Map required columns to their actual sheet column names
+    resolved_req_map: dict[str, str] = {}
+    for col in required_columns:
+        resolved_req_map[col] = resolve_column(sample_row.keys(), col) or col
+
     for row in rows:
         row_idx: int = int(row.get("_row_index", 0))
         row_has_error = False
 
         # --- Email column existence ---
-        if email_column not in row:
+        if actual_email_col not in row:
             errors.append(
                 ValidationError(
                     row_index=row_idx,
                     field=email_column,
-                    message=f"Column '{email_column}' not found in this sheet",
+                    message=f"Column '{email_column}' (or '{actual_email_col}') not found in this sheet",
                 )
             )
             row_has_error = True
         else:
-            raw_email = row.get(email_column)
+            raw_email = row.get(actual_email_col)
             email_str = str(raw_email).strip() if raw_email is not None else ""
 
             if not email_str:
                 errors.append(
                     ValidationError(
                         row_index=row_idx,
-                        field=email_column,
+                        field=actual_email_col,
                         message="Email address is empty",
                     )
                 )
@@ -139,7 +207,7 @@ def validate_rows(
                 errors.append(
                     ValidationError(
                         row_index=row_idx,
-                        field=email_column,
+                        field=actual_email_col,
                         message=f"Invalid email format: '{email_str}'",
                     )
                 )
@@ -148,16 +216,27 @@ def validate_rows(
                 emails_seen.append(email_str.lower())
 
         # --- Required columns not empty ---
-        for col in required_columns:
-            if col == email_column:
+        for orig_col, act_col in resolved_req_map.items():
+            if act_col == actual_email_col:
                 continue  # already checked
-            val = row.get(col)
+            if act_col not in row:
+                errors.append(
+                    ValidationError(
+                        row_index=row_idx,
+                        field=orig_col,
+                        message=f"Required column '{orig_col}' not found in this sheet",
+                    )
+                )
+                row_has_error = True
+                continue
+
+            val = row.get(act_col)
             if val is None or str(val).strip() == "":
                 errors.append(
                     ValidationError(
                         row_index=row_idx,
-                        field=col,
-                        message=f"Required field '{col}' is empty",
+                        field=act_col,
+                        message=f"Required field '{act_col}' is empty",
                     )
                 )
                 row_has_error = True
@@ -169,14 +248,13 @@ def validate_rows(
     duplicates = find_duplicate_emails(emails_seen)
     if duplicates:
         for dup_email in duplicates:
-            # Find all rows with this email
             for row in rows:
-                raw_email = row.get(email_column)
+                raw_email = row.get(actual_email_col)
                 if raw_email and str(raw_email).strip().lower() == dup_email:
                     warnings.append(
                         ValidationError(
                             row_index=int(row.get("_row_index", 0)),
-                            field=email_column,
+                            field=actual_email_col,
                             message=f"Duplicate email address: '{dup_email}'",
                         )
                     )

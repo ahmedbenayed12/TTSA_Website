@@ -279,9 +279,16 @@ def generate_pdf_for_row(
 
     doc = fitz.open(template_path)
     try:
+        from app.services.excel_service import resolve_column
+
         for mapping in field_mappings:
             field_name: str = mapping.get("field_name", "")
             raw_value = row_data.get(field_name)
+            if raw_value is None:
+                # Fallback to flexible case/separator-insensitive resolution
+                matched_key = resolve_column(row_data.keys(), field_name)
+                if matched_key:
+                    raw_value = row_data.get(matched_key)
             if raw_value is None:
                 continue
 

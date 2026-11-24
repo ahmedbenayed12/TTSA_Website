@@ -163,6 +163,36 @@ export const ExcelImportPage: React.FC<ExcelImportPageProps> = ({ onNavigate }) 
   const currentSheetData = uploadResult?.sheets[selectedSheet]
   const currentType = types.find((t) => t.id === selectedTypeId)
 
+  const findMatchingCol = (target: string | undefined) => {
+    if (!target || !currentSheetData) return target || ''
+    const norm = (s: string) => s.toLowerCase().replace(/[\s_\-]+/g, '')
+    const targetNorm = norm(target)
+    const exact = currentSheetData.columns.find((c) => c === target)
+    if (exact) return exact
+    const matched = currentSheetData.columns.find((c) => norm(c) === targetNorm)
+    if (matched) return matched
+    if (targetNorm.includes('email') || targetNorm.includes('mail')) {
+      const emailCol = currentSheetData.columns.find(
+        (c) => norm(c).includes('email') || norm(c).includes('mail')
+      )
+      if (emailCol) return emailCol
+    }
+    if (
+      targetNorm.includes('name') ||
+      targetNorm.includes('participant') ||
+      targetNorm.includes('author')
+    ) {
+      const nameCol = currentSheetData.columns.find(
+        (c) => norm(c).includes('name') || norm(c).includes('participant') || norm(c).includes('nom')
+      )
+      if (nameCol) return nameCol
+    }
+    return target
+  }
+
+  const detectedNameCol = findMatchingCol(currentType?.name_column)
+  const detectedEmailCol = findMatchingCol(currentType?.email_column)
+
   return (
     <div className="space-y-6 max-w-6xl mx-auto">
       {/* Header */}
@@ -338,11 +368,21 @@ export const ExcelImportPage: React.FC<ExcelImportPageProps> = ({ onNavigate }) 
 
                 <div className="text-xs text-slate-500 flex items-center space-x-3">
                   <span>
-                    Name col: <strong className="text-slate-700">{currentType?.name_column}</strong>
+                    Name col:{' '}
+                    <strong className="text-slate-800">
+                      {detectedNameCol !== currentType?.name_column
+                        ? `${detectedNameCol} (matched)`
+                        : detectedNameCol}
+                    </strong>
                   </span>
                   <span>•</span>
                   <span>
-                    Email col: <strong className="text-slate-700">{currentType?.email_column}</strong>
+                    Email col:{' '}
+                    <strong className="text-slate-800">
+                      {detectedEmailCol !== currentType?.email_column
+                        ? `${detectedEmailCol} (matched)`
+                        : detectedEmailCol}
+                    </strong>
                   </span>
                 </div>
               </div>

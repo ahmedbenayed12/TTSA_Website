@@ -59,6 +59,11 @@ def interpolate_template(template_str: str, row_data: dict[str, Any]) -> str:
         key = match.group(1).strip()
         val = row_data.get(key)
         if val is None:
+            from app.services.excel_service import resolve_column
+            matched_k = resolve_column(row_data.keys(), key)
+            if matched_k:
+                val = row_data.get(matched_k)
+        if val is None:
             return match.group(0)  # leave placeholder intact
         return str(val)
 

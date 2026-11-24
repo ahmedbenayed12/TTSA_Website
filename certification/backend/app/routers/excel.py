@@ -158,8 +158,13 @@ async def create_send_job(
         )
 
     all_rows = sheet_data["rows"]
-    email_col = att_type.email_column or "Email"
-    name_col = att_type.name_column or "Author"
+    email_col = att_type.email_column or "email"
+    name_col = att_type.name_column or "participant_name"
+
+    # Flexible column resolution (handles E-MAIL, PARTICIPANT NAME, case, hyphens, spaces)
+    sample_row = all_rows[0] if all_rows else {}
+    actual_email_col = excel_service.resolve_column(sample_row.keys(), email_col) or email_col
+    actual_name_col = excel_service.resolve_column(sample_row.keys(), name_col) or name_col
 
     # Filter by selected indices if provided
     selected_indices_set = (
@@ -171,7 +176,7 @@ async def create_send_job(
         row_idx = r.get("_row_index", 0)
         if selected_indices_set is not None and row_idx not in selected_indices_set:
             continue
-        email_val = str(r.get(email_col) or "").strip()
+        email_val = str(r.get(actual_email_col) or "").strip()
         if not email_val:
             continue
         eligible_rows.append(r)
@@ -179,7 +184,7 @@ async def create_send_job(
     if not eligible_rows:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No valid recipient rows found to process.",
+            detail=f"No valid recipient rows found. Expected email column '{email_col}' or '{actual_email_col}'.",
         )
 
     # Create SendJob
@@ -196,8 +201,8 @@ async def create_send_job(
 
     # Create SendLog records
     for r in eligible_rows:
-        email_val = str(r.get(email_col) or "").strip()
-        name_val = str(r.get(name_col) or "").strip() or "Participant"
+        email_val = str(r.get(actual_email_col) or "").strip()
+        name_val = str(r.get(actual_name_col) or "").strip() or "Participant"
         row_idx = r.get("_row_index", 0)
 
         log_item = SendLog(
