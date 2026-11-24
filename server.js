@@ -175,6 +175,29 @@ app.get('/api/diag/cert', (req, res) => {
   if (!decoded || decoded.role !== 'admin') {
     return res.status(403).json({ error: 'Admin token required' });
   }
+
+  let pythonInfo = {};
+  const { execSync } = require('child_process');
+  try {
+    pythonInfo.pythonVersion = execSync('python3 --version 2>&1').toString().trim();
+  } catch (e) {
+    pythonInfo.pythonVersion = e.message;
+  }
+  try {
+    pythonInfo.pipVersion = execSync('pip3 --version 2>&1 || pip --version 2>&1').toString().trim();
+  } catch (e) {
+    pythonInfo.pipVersion = e.message;
+  }
+  try {
+    pythonInfo.uvicornCheck = execSync('python3 -m uvicorn --version 2>&1').toString().trim();
+  } catch (e) {
+    pythonInfo.uvicornCheck = e.message;
+  }
+  try {
+    const venvPy = path.join(__dirname, 'certification', 'backend', 'venv', 'bin', 'python');
+    pythonInfo.venvExists = fs.existsSync(venvPy);
+  } catch (_) {}
+
   res.json({
     platform: process.platform,
     node: process.version,
@@ -185,6 +208,8 @@ app.get('/api/diag/cert', (req, res) => {
     certDistIndexExists: fs.existsSync(path.join(certDistDir, 'index.html')),
     certBackendDir: path.join(__dirname, 'certification', 'backend'),
     certBackendExists: fs.existsSync(path.join(__dirname, 'certification', 'backend')),
+    pythonInfo,
+    lastBackendError: certBackendLastError,
     env: { NODE_ENV: process.env.NODE_ENV, RENDER: process.env.RENDER, PORT: process.env.PORT },
   });
 });
@@ -210,6 +235,7 @@ app.use((err, req, res, next) => {
 
 // ─── Certification Backend Lifecycle Management ──────────────────────────────
 let certBackendProcess = null;
+let certBackendLastError = null;
 
 function checkCertBackendAlive() {
   return new Promise((resolve) => {
@@ -231,20 +257,21 @@ async function ensureCertBackendRunning() {
     return;
   }
 
-  // On Linux/cPanel use python3; on Windows fall back to local dev path
-  const isWindows = process.platform === 'win32';
-  const defaultPyPath = isWindows
-    ? 'C:\\\\Users\\\\ABC\\\\AppData\\\\Local\\\\Python\\\\pythoncore-3.14-64\\\\python.exe'
-    : (process.env.PYTHON3_PATH || 'python3');
-  const pyPath = process.env.PYTHON_PATH || defaultPyPath;
   const certBackendDir = path.join(__dirname, 'certification', 'backend');
-
   if (!fs.existsSync(certBackendDir)) {
     console.warn('⚠️  Certification backend directory not found at', certBackendDir);
+    certBackendLastError = 'Directory not found: ' + certBackendDir;
     return;
   }
 
-  console.log('🚀 Spawning Certification service on port 8000...');
+  const isWindows = process.platform === 'win32';
+  const venvPy = path.join(certBackendDir, 'venv', 'bin', 'python');
+  const defaultPyPath = isWindows
+    ? 'C:\\Users\\ABC\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe'
+    : (fs.existsSync(venvPy) ? venvPy : (process.env.PYTHON3_PATH || 'python3'));
+  const pyPath = process.env.PYTHON_PATH || defaultPyPath;
+
+  console.log(`🚀 Spawning Certification service (${pyPath}) on port 8000...`);
   try {
     certBackendProcess = spawn(pyPath, ['-m', 'uvicorn', 'app.main:app', '--host', '127.0.0.1', '--port', '8000'], {
       cwd: certBackendDir,
@@ -260,14 +287,25 @@ async function ensureCertBackendRunning() {
     });
 
     certBackendProcess.stderr.on('data', (d) => {
-      // quiet debug logging
+      const errText = d.toString().trim();
+      console.warn(`🎓 [Certification API stderr] ${errText}`);
+      certBackendLastError = errText;
+    });
+
+    certBackendProcess.on('exit', (code, signal) => {
+      console.warn(`⚠️  Certification backend exited with code ${code}, signal ${signal}`);
+      if (code !== 0 && !certBackendLastError) {
+        certBackendLastError = `Exited with code ${code}`;
+      }
     });
 
     certBackendProcess.on('error', (err) => {
       console.warn('⚠️  Could not spawn certification backend:', err.message);
+      certBackendLastError = err.message;
     });
   } catch (err) {
     console.warn('⚠️  Failed to launch certification backend:', err.message);
+    certBackendLastError = err.message;
   }
 }
 
