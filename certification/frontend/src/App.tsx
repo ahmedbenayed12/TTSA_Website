@@ -142,7 +142,7 @@ export function App() {
           {/* Scrollable Page Body */}
           <div className="flex-1 overflow-y-auto p-8">
             {currentTab === 'dashboard' && <Dashboard onNavigate={handleNavigate} />}
-            {currentTab === 'templates' && <TemplatesPage />}
+            {currentTab === 'templates' && <TemplatesPage onNavigate={handleNavigate} />}
             {currentTab === 'types' && <AttestationTypesPage onNavigate={handleNavigate} />}
             {currentTab === 'field-editor' && <FieldEditorPage initialTypeId={activeTypeId} />}
             {currentTab === 'excel-import' && <ExcelImportPage onNavigate={handleNavigate} />}

@@ -7,9 +7,10 @@ import {
   Eye,
   CheckCircle,
   AlertCircle,
-  RefreshCw,
   Sliders,
-  Type,
+  Upload,
+  RefreshCw,
+  FileText,
 } from 'lucide-react'
 import {
   typesApi,
@@ -19,6 +20,8 @@ import {
   FieldMapping,
   PdfTemplate,
 } from '../api/client'
+
+const STORAGE_KEY = 'ttsa_selected_template_id'
 
 interface FieldEditorPageProps {
   initialTypeId?: number
@@ -31,12 +34,14 @@ const PDF_HEIGHT = 595.28
 export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId }) => {
   const [types, setTypes] = useState<AttestationType[]>([])
   const [selectedTypeId, setSelectedTypeId] = useState<number | null>(initialTypeId || null)
+  const [allTemplates, setAllTemplates] = useState<PdfTemplate[]>([])
+  const [template, setTemplate] = useState<PdfTemplate | null>(null)
   const [fields, setFields] = useState<FieldMapping[]>([])
   const [selectedFieldIndex, setSelectedFieldIndex] = useState<number>(0)
-  const [template, setTemplate] = useState<PdfTemplate | null>(null)
-  
+
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [uploadingPdf, setUploadingPdf] = useState(false)
   const [previewing, setPreviewing] = useState(false)
   const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -45,7 +50,7 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
   const canvasRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    loadTypes()
+    loadTypesAndTemplates()
   }, [])
 
   useEffect(() => {
@@ -54,13 +59,19 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
     }
   }, [selectedTypeId])
 
-  const loadTypes = async () => {
+  const loadTypesAndTemplates = async () => {
     try {
       setLoading(true)
-      const list = await typesApi.list()
-      setTypes(list)
-      if (list.length > 0) {
-        const targetId = initialTypeId || list[0].id
+      const [typeList, tplList] = await Promise.all([
+        typesApi.list(),
+        templatesApi.list(),
+      ])
+
+      setTypes(typeList)
+      setAllTemplates(tplList)
+
+      if (typeList.length > 0) {
+        const targetId = initialTypeId || typeList[0].id
         setSelectedTypeId(targetId)
       }
     } catch (err: any) {
@@ -72,20 +83,88 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
 
   const loadTypeFields = async (typeId: number) => {
     try {
-      const typeData = await typesApi.get(typeId)
-      const loadedFields = await typesApi.getFields(typeId)
+      const [typeData, loadedFields, tplList] = await Promise.all([
+        typesApi.get(typeId),
+        typesApi.getFields(typeId),
+        templatesApi.list(),
+      ])
+
+      setAllTemplates(tplList)
       setFields(loadedFields.length > 0 ? loadedFields : getDefaultFields())
       setSelectedFieldIndex(0)
 
+      let activeTpl: PdfTemplate | null = null
+
       if (typeData.template_id) {
-        const tpl = await templatesApi.list().then((list) => list.find((t) => t.id === typeData.template_id))
-        setTemplate(tpl || null)
-      } else {
-        const list = await templatesApi.list()
-        setTemplate(list[0] || null)
+        activeTpl = tplList.find((t) => t.id === typeData.template_id) || null
+      }
+
+      // If no template assigned to type, check localStorage or fallback to latest
+      if (!activeTpl) {
+        const savedId = localStorage.getItem(STORAGE_KEY)
+        activeTpl = tplList.find((t) => String(t.id) === savedId) || tplList[tplList.length - 1] || null
+
+        if (activeTpl) {
+          // Persist association to database
+          await typesApi.update(typeId, { template_id: activeTpl.id }).catch(() => {})
+        }
+      }
+
+      if (activeTpl) {
+        setTemplate(activeTpl)
+        localStorage.setItem(STORAGE_KEY, String(activeTpl.id))
       }
     } catch (err: any) {
       setError('Failed to load fields for selected type.')
+    }
+  }
+
+  const handleTemplateChange = async (newTplId: number) => {
+    const chosen = allTemplates.find((t) => t.id === newTplId)
+    if (!chosen || !selectedTypeId) return
+
+    setTemplate(chosen)
+    localStorage.setItem(STORAGE_KEY, String(chosen.id))
+
+    try {
+      await typesApi.update(selectedTypeId, { template_id: chosen.id })
+      setSuccess(`Active template changed to: ${chosen.name}`)
+      setTimeout(() => setSuccess(null), 3000)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to update template for this type.')
+    }
+  }
+
+  const handleDirectPdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !selectedTypeId) return
+
+    if (!file.name.toLowerCase().endsWith('.pdf')) {
+      setError('Only PDF files are supported.')
+      return
+    }
+
+    try {
+      setUploadingPdf(true)
+      setError(null)
+      const cleanName = file.name.replace(/\.[^/.]+$/, '')
+      const newTpl = await templatesApi.upload(file, cleanName)
+
+      // Associate immediately with active type in database
+      await typesApi.update(selectedTypeId, { template_id: newTpl.id })
+
+      const updatedTplList = await templatesApi.list()
+      setAllTemplates(updatedTplList)
+      setTemplate(newTpl)
+      localStorage.setItem(STORAGE_KEY, String(newTpl.id))
+
+      setSuccess(`Template "${newTpl.name}" uploaded and set active for this type!`)
+      setTimeout(() => setSuccess(null), 4000)
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Failed to upload PDF template.')
+    } finally {
+      setUploadingPdf(false)
+      e.target.value = ''
     }
   }
 
@@ -93,12 +172,12 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
     {
       field_name: 'participant_name',
       label: 'Participant Name',
-      x: 430,
+      x: 421,
       y: 285,
       page: 0,
       font: 'Helvetica-Bold',
       font_size: 22,
-      color: 0x1A2B4C,
+      color: 0x1a2b4c,
       alignment: 'center',
       max_width: 450,
       is_bold: true,
@@ -107,7 +186,7 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
     {
       field_name: 'role_description',
       label: 'Role Description',
-      x: 430,
+      x: 421,
       y: 320,
       page: 0,
       font: 'Helvetica-Oblique',
@@ -121,8 +200,8 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
     {
       field_name: 'presentation_title',
       label: 'Presentation Title',
-      x: 430,
-      y: 345,
+      x: 421,
+      y: 348,
       page: 0,
       font: 'Helvetica-Oblique',
       font_size: 12,
@@ -161,7 +240,7 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
     const newField: FieldMapping = {
       field_name: 'custom_field',
       label: 'New Field',
-      x: 430,
+      x: 421,
       y: 300,
       page: 0,
       font: 'Helvetica',
@@ -203,11 +282,12 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
       setPreviewing(true)
       setError(null)
 
-      // Test row data
+      // Test row data matching Conference fields
       const sampleRow = {
         participant_name: 'Dr. Ahmed Ben Ali',
         role_description: 'has presented an Oral Communication at the congress',
-        presentation_title: 'Lobectomy via VATS in Locally Advanced Non-Small Cell Lung Cancer: Single-Center Experience',
+        presentation_title:
+          'Lobectomy via VATS in Locally Advanced Non-Small Cell Lung Cancer: Single-Center Experience',
         department: 'Service de Chirurgie Thoracique',
         city: 'Tunis',
       }
@@ -215,10 +295,13 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
       // First save fields to ensure preview uses latest settings
       await typesApi.updateFields(selectedTypeId, fields)
 
-      const blob = await sendApi.previewRowBlob({
-        type_id: selectedTypeId,
-        row_data: sampleRow,
-      }, true) // image format
+      const blob = await sendApi.previewRowBlob(
+        {
+          type_id: selectedTypeId,
+          row_data: sampleRow,
+        },
+        true
+      ) // image format
 
       const imageUrl = URL.createObjectURL(blob)
       setPreviewImageUrl(imageUrl)
@@ -234,7 +317,7 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
   return (
     <div className="space-y-6 max-w-7xl mx-auto">
       {/* Top Bar */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
         <div className="flex items-center space-x-3">
           <div className="p-2 bg-sky-50 text-sky-600 rounded-lg">
             <Move className="h-5 w-5" />
@@ -242,40 +325,76 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
           <div>
             <h1 className="text-lg font-bold text-slate-900">Visual Field Mapping Editor</h1>
             <p className="text-xs text-slate-500">
-              Click anywhere on the PDF preview or use the controls to position dynamic text fields.
+              Click anywhere on the PDF canvas to position text fields precisely.
             </p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 w-full sm:w-auto">
-          <select
-            value={selectedTypeId || ''}
-            onChange={(e) => setSelectedTypeId(Number(e.target.value))}
-            className="px-3 py-1.5 text-xs font-semibold border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500"
-          >
-            {types.map((t, idx) => (
-              <option key={t.id} value={t.id}>
-                Type #{idx} — {t.name}
-              </option>
-            ))}
-          </select>
+        {/* Toolbar Controls */}
+        <div className="flex flex-wrap items-center gap-2.5 w-full lg:w-auto">
+          {/* Attestation Type Selector */}
+          <div className="flex items-center space-x-1.5">
+            <span className="text-xs text-slate-500 font-medium">Type:</span>
+            <select
+              value={selectedTypeId || ''}
+              onChange={(e) => setSelectedTypeId(Number(e.target.value))}
+              className="px-2.5 py-1.5 text-xs font-semibold border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500"
+            >
+              {types.map((t, idx) => (
+                <option key={t.id} value={t.id}>
+                  Type #{idx} — {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
+          {/* Template Selector */}
+          <div className="flex items-center space-x-1.5">
+            <span className="text-xs text-slate-500 font-medium">Template:</span>
+            <select
+              value={template?.id || ''}
+              onChange={(e) => handleTemplateChange(Number(e.target.value))}
+              className="px-2.5 py-1.5 text-xs font-semibold border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-sky-500 max-w-[210px] truncate"
+            >
+              {allTemplates.map((t) => (
+                <option key={t.id} value={t.id}>
+                  {t.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Direct Upload PDF Button */}
+          <label className="inline-flex items-center space-x-1 px-2.5 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 rounded-lg text-xs font-semibold cursor-pointer transition-colors">
+            <Upload className="h-3.5 w-3.5" />
+            <span>{uploadingPdf ? 'Uploading...' : 'Upload PDF'}</span>
+            <input
+              type="file"
+              accept=".pdf,application/pdf"
+              className="hidden"
+              disabled={uploadingPdf}
+              onChange={handleDirectPdfUpload}
+            />
+          </label>
+
+          {/* Live Preview Button */}
           <button
             onClick={renderLivePreview}
             disabled={previewing}
             className="inline-flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 rounded-lg text-xs font-semibold transition-colors"
           >
-            <Eye className="h-4 w-4" />
-            <span>{previewing ? 'Rendering...' : 'Live Test Render'}</span>
+            <Eye className="h-3.5 w-3.5" />
+            <span>{previewing ? 'Rendering...' : 'Live Test'}</span>
           </button>
 
+          {/* Save Mappings Button */}
           <button
             onClick={saveMappings}
             disabled={saving}
-            className="inline-flex items-center space-x-1.5 px-4 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
+            className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors"
           >
-            <Save className="h-4 w-4" />
-            <span>{saving ? 'Saving...' : 'Save Mappings'}</span>
+            <Save className="h-3.5 w-3.5" />
+            <span>{saving ? 'Saving...' : 'Save'}</span>
           </button>
         </div>
       </div>
@@ -300,7 +419,13 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
         <div className="lg:col-span-3 space-y-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
             <div className="flex items-center justify-between mb-3 text-xs text-slate-500 font-medium">
-              <span>PDF Canvas (Click to position selected field)</span>
+              <span className="flex items-center space-x-2">
+                <FileText className="h-4 w-4 text-sky-600" />
+                <span className="font-semibold text-slate-800">
+                  {template ? template.name : 'Loading Template...'}
+                </span>
+                <span className="text-slate-400">({template?.original_filename || 'PDF'})</span>
+              </span>
               <span>A4 Landscape: 842 × 595 pt</span>
             </div>
 
@@ -313,7 +438,7 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
               {/* Template background image */}
               {template ? (
                 <img
-                  src={templatesApi.previewUrl(template.id, 0, 1.5)}
+                  src={templatesApi.previewUrl(template.id, 0, 1.8)}
                   alt="Template Base"
                   className="w-full h-full object-contain pointer-events-none"
                 />
@@ -339,12 +464,17 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
                     style={{
                       left: `${leftPercent}%`,
                       top: `${topPercent}%`,
-                      transform: f.alignment === 'center' ? 'translate(-50%, -50%)' : 'translate(0, -50%)',
+                      transform:
+                        f.alignment === 'center'
+                          ? 'translate(-50%, -50%)'
+                          : f.alignment === 'right'
+                          ? 'translate(-100%, -50%)'
+                          : 'translate(0, -50%)',
                     }}
                     className={`absolute z-10 px-2.5 py-1 rounded-md text-xs font-bold transition-all shadow-md cursor-pointer ${
                       isSelected
                         ? 'bg-sky-600 text-white ring-4 ring-sky-300/60 scale-105'
-                        : 'bg-white/90 text-slate-800 border border-slate-400/80 hover:bg-sky-50'
+                        : 'bg-white/95 text-slate-800 border border-slate-400/80 hover:bg-sky-50'
                     }`}
                   >
                     <span>{f.label || f.field_name}</span>
@@ -563,4 +693,3 @@ export const FieldEditorPage: React.FC<FieldEditorPageProps> = ({ initialTypeId 
     </div>
   )
 }
-
