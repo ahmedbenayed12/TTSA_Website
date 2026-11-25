@@ -91,7 +91,7 @@ export interface SendLog {
   row_index: number
   recipient_email: string
   recipient_name: string
-  status: 'pending' | 'sent' | 'failed' | 'skipped'
+  status: 'pending' | 'sent' | 'failed' | 'skipped' | 'no_email'
   error_message: string
   generated_pdf_path: string
   sent_at: string | null
@@ -129,8 +129,28 @@ export interface ValidationErrorItem {
 
 export interface ExcelValidationResult {
   valid_rows: number
+  no_email_rows?: number
   errors: ValidationErrorItem[]
   warnings: ValidationErrorItem[]
+}
+
+export interface NoEmailCertificate {
+  id: number
+  job_id: number | null
+  type_id: number | null
+  type_name: string
+  recipient_name: string
+  recipient_email: string
+  email_issue: string
+  role_description: string
+  presentation_title: string
+  pdf_filename: string
+  pdf_path: string
+  file_size_bytes: number
+  row_index: number
+  source_excel_name: string
+  sheet_name: string
+  created_at: string
 }
 
 export const templatesApi = {
@@ -225,4 +245,28 @@ export const settingsApi = {
   exchangeOAuth: async (data: { code: string; client_id?: string; client_secret?: string; redirect_uri?: string }) =>
     (await api.post<any>('/settings/gmail/oauth/callback', data)).data,
   testEmail: async (testEmail: string) => (await api.post<any>('/settings/test', { test_email: testEmail })).data,
+}
+
+export const noEmailCertsApi = {
+  list: async (params?: { type_id?: number; search?: string }) =>
+    (await api.get<NoEmailCertificate[]>('/no-email-certs/', { params })).data,
+  downloadUrl: (id: number) => {
+    const token = getAuthToken()
+    return `${API_BASE}/no-email-certs/${id}/download${token ? `?token=${encodeURIComponent(token)}` : ''}`
+  },
+  previewUrl: (id: number, asImage: boolean = true) => {
+    const token = getAuthToken()
+    return `${API_BASE}/no-email-certs/${id}/preview?as_image=${asImage}${token ? `&token=${encodeURIComponent(token)}` : ''}`
+  },
+  downloadZipUrl: (ids?: number[], includeAll: boolean = false) => {
+    const token = getAuthToken()
+    const query = new URLSearchParams()
+    if (ids && ids.length > 0) query.set('ids', ids.join(','))
+    if (includeAll) query.set('include_all', 'true')
+    if (token) query.set('token', token)
+    const qs = query.toString()
+    return `${API_BASE}/no-email-certs/download-zip${qs ? `?${qs}` : ''}`
+  },
+  delete: async (id: number) => (await api.delete(`/no-email-certs/${id}`)).data,
+  bulkDelete: async (ids: number[]) => (await api.post('/no-email-certs/bulk-delete', { ids })).data,
 }

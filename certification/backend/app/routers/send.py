@@ -162,13 +162,19 @@ async def start_send_job(
         "generated_dir": settings.generated_dir,
     }
 
-    # Fetch rows to send
+    # Fetch rows to send (skipping already sent or no_email rows)
     res_logs = await db.execute(
-        select(SendLog).where(SendLog.job_id == job_id, SendLog.status != "sent")
+        select(SendLog).where(
+            SendLog.job_id == job_id,
+            SendLog.status.notin_(["sent", "no_email"]),
+        )
     )
     logs = res_logs.scalars().all()
     if not logs:
-        return {"message": "All recipients have already been sent.", "job_id": job_id}
+        return {
+            "message": "All email-eligible recipients have already been processed (no-email certificates are in 'No Email Address Certification').",
+            "job_id": job_id,
+        }
 
     rows = []
     for log in logs:

@@ -7,6 +7,7 @@ import { AttestationTypesPage } from './pages/AttestationTypesPage'
 import { FieldEditorPage } from './pages/FieldEditorPage'
 import { ExcelImportPage } from './pages/ExcelImportPage'
 import { RecipientsSendPage } from './pages/RecipientsSendPage'
+import { NoEmailCertificatesPage } from './pages/NoEmailCertificatesPage'
 import { SettingsPage } from './pages/SettingsPage'
 
 interface ErrorBoundaryProps {
@@ -147,6 +148,7 @@ export function App() {
             {currentTab === 'field-editor' && <FieldEditorPage initialTypeId={activeTypeId} />}
             {currentTab === 'excel-import' && <ExcelImportPage onNavigate={handleNavigate} />}
             {currentTab === 'recipients-send' && <RecipientsSendPage initialJobId={activeJobId} />}
+            {currentTab === 'no-email-certs' && <NoEmailCertificatesPage onNavigate={handleNavigate} />}
             {currentTab === 'settings' && <SettingsPage />}
           </div>
         </main>

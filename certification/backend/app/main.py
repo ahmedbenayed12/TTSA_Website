@@ -21,7 +21,7 @@ from sqlalchemy import select
 from app.config import get_settings
 from app.database import AsyncSessionLocal, init_db
 from app.models.attestation import AttestationType, PdfTemplate
-from app.routers import attestation_types, excel, send, settings, templates
+from app.routers import attestation_types, excel, no_email_certs, send, settings, templates
 from app.services import pdf_service
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
@@ -236,6 +236,7 @@ app.include_router(attestation_types.router)
 app.include_router(excel.router)
 app.include_router(send.router)
 app.include_router(settings.router)
+app.include_router(no_email_certs.router)
 
 
 @app.get("/api/health", tags=["system"])

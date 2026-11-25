@@ -23,9 +23,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.database import get_db
-from app.models.attestation import AttestationType, ExcelFile, SendJob, SendLog
+from app.models.attestation import (
+    AttestationType,
+    ExcelFile,
+    NoEmailCertificate,
+    PdfTemplate,
+    SendJob,
+    SendLog,
+)
 from app.models.schemas import ExcelValidationResult, SendJobOut
-from app.services import excel_service
+from app.services import email_service, excel_service, pdf_service
 
 router = APIRouter(prefix="/api/excel", tags=["excel"])
 
@@ -269,8 +276,10 @@ async def create_send_job(
     sample_row = all_rows[0] if all_rows else {}
     actual_email_col = excel_service.resolve_column(sample_row.keys(), email_col) or email_col
     actual_name_col = excel_service.resolve_column(sample_row.keys(), name_col) or name_col
+    actual_role_col = excel_service.resolve_column(sample_row.keys(), "role_description") or "role_description"
+    actual_title_col = excel_service.resolve_column(sample_row.keys(), "presentation_title") or "presentation_title"
 
-    # Filter by selected indices if provided
+    # Filter by selected indices if provided (include rows even without valid email)
     selected_indices_set = (
         set(payload.selected_indices) if payload.selected_indices is not None else None
     )
@@ -280,16 +289,36 @@ async def create_send_job(
         row_idx = r.get("_row_index", 0)
         if selected_indices_set is not None and row_idx not in selected_indices_set:
             continue
-        email_val = str(r.get(actual_email_col) or "").strip()
-        if not email_val:
-            continue
         eligible_rows.append(r)
 
     if not eligible_rows:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"No valid recipient rows found. Expected email column '{email_col}' or '{actual_email_col}'.",
+            detail="No rows selected or available in this sheet.",
         )
+
+    # Resolve PDF template for immediate no-email certificate generation
+    template_file = ""
+    if att_type.template_id:
+        template = await db.get(PdfTemplate, att_type.template_id)
+        if template:
+            template_file = os.path.join(settings.upload_dir, template.path)
+    if not template_file or not os.path.exists(template_file):
+        root_tpl = os.path.abspath("Certification_template.pdf")
+        if os.path.exists(root_tpl):
+            template_file = root_tpl
+
+    try:
+        field_mappings = json.loads(att_type.field_mappings or "[]")
+    except Exception:
+        field_mappings = []
+
+    # Look up original Excel filename
+    res_ef = await db.execute(
+        select(ExcelFile).where(ExcelFile.file_path == payload.file_path).limit(1)
+    )
+    excel_file_rec = res_ef.scalars().first()
+    source_excel_name = excel_file_rec.filename if excel_file_rec else payload.file_path
 
     # Create SendJob
     job = SendJob(
@@ -303,23 +332,103 @@ async def create_send_job(
     db.add(job)
     await db.flush()
 
-    # Create SendLog records
+    pending_email_count = 0
+    no_email_dir = os.path.join(settings.generated_dir, f"no_email_job{job.id}")
+
+    # Create SendLog records & immediately generate PDFs for no-email / invalid-email rows
     for r in eligible_rows:
         email_val = str(r.get(actual_email_col) or "").strip()
         name_val = str(r.get(actual_name_col) or "").strip() or "Participant"
+        role_val = str(r.get(actual_role_col) or "").strip()
+        title_val = str(r.get(actual_title_col) or "").strip()
         row_idx = r.get("_row_index", 0)
 
-        log_item = SendLog(
-            job_id=job.id,
-            row_index=row_idx,
-            recipient_email=email_val,
-            recipient_name=name_val,
-            status="pending",
-            error_message="",
-            generated_pdf_path="",
-            row_data=json.dumps(r),
-        )
-        db.add(log_item)
+        has_valid_email = bool(email_val and excel_service.is_valid_email(email_val))
+
+        if has_valid_email:
+            pending_email_count += 1
+            log_item = SendLog(
+                job_id=job.id,
+                row_index=row_idx,
+                recipient_email=email_val,
+                recipient_name=name_val,
+                status="pending",
+                error_message="",
+                generated_pdf_path="",
+                row_data=json.dumps(r),
+            )
+            db.add(log_item)
+        else:
+            email_issue = "Missing email" if not email_val else f"Invalid email: {email_val}"
+            output_path = ""
+            pdf_filename = ""
+            file_size = 0
+
+            if template_file and os.path.exists(template_file):
+                os.makedirs(no_email_dir, exist_ok=True)
+                row_for_interp = dict(r)
+                row_for_interp["name"] = name_val
+                raw_filename = email_service.interpolate_template(
+                    att_type.filename_pattern or "Certificate_{{name}}.pdf",
+                    row_for_interp,
+                )
+                safe_filename = "".join(c for c in raw_filename if c not in r'\/:*?"<>|').strip()
+                if not safe_filename:
+                    safe_filename = f"cert_row_{row_idx}.pdf"
+                if not safe_filename.lower().endswith(".pdf"):
+                    safe_filename += ".pdf"
+
+                # Avoid overwriting if two participants share a name
+                candidate_path = os.path.join(no_email_dir, safe_filename)
+                if os.path.exists(candidate_path):
+                    base, ext = os.path.splitext(safe_filename)
+                    safe_filename = f"{base}_row{row_idx}{ext}"
+                    candidate_path = os.path.join(no_email_dir, safe_filename)
+
+                pdf_service.generate_pdf_for_row(
+                    template_path=template_file,
+                    field_mappings=field_mappings,
+                    row_data=r,
+                    output_path=candidate_path,
+                )
+                output_path = candidate_path
+                pdf_filename = safe_filename
+                if os.path.exists(output_path):
+                    file_size = os.path.getsize(output_path)
+
+            log_item = SendLog(
+                job_id=job.id,
+                row_index=row_idx,
+                recipient_email=email_val,
+                recipient_name=name_val,
+                status="no_email",
+                error_message=f"{email_issue} — saved to No Email Address Certification",
+                generated_pdf_path=output_path,
+                row_data=json.dumps(r),
+            )
+            db.add(log_item)
+
+            no_email_cert = NoEmailCertificate(
+                job_id=job.id,
+                type_id=att_type.id,
+                type_name=att_type.name,
+                recipient_name=name_val,
+                recipient_email=email_val,
+                email_issue=email_issue,
+                role_description=role_val,
+                presentation_title=title_val,
+                pdf_filename=pdf_filename,
+                pdf_path=output_path,
+                file_size_bytes=file_size,
+                row_index=row_idx,
+                source_excel_name=source_excel_name,
+                sheet_name=payload.sheet_name,
+                row_data=json.dumps(r),
+            )
+            db.add(no_email_cert)
+
+    if pending_email_count == 0:
+        job.status = "done"
 
     await db.commit()
     await db.refresh(job)

@@ -187,8 +187,32 @@ class ExcelValidationResult(BaseModel):
     """Summary of Excel validation results."""
 
     valid_rows: int
+    no_email_rows: int = 0
     errors: list[ValidationError] = Field(default_factory=list)
     warnings: list[ValidationError] = Field(default_factory=list)
+
+
+class NoEmailCertificateOut(BaseModel):
+    """Serialised NoEmailCertificate returned by the API."""
+
+    id: int
+    job_id: Optional[int] = None
+    type_id: Optional[int] = None
+    type_name: str = ""
+    recipient_name: str = ""
+    recipient_email: str = ""
+    email_issue: str = "Missing email"
+    role_description: str = ""
+    presentation_title: str = ""
+    pdf_filename: str = ""
+    pdf_path: str = ""
+    file_size_bytes: int = 0
+    row_index: int = 0
+    source_excel_name: str = ""
+    sheet_name: str = ""
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
 
 
 class ExcelFileOut(BaseModel):

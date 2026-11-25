@@ -403,7 +403,7 @@ export const RecipientsSendPage: React.FC<RecipientsSendPageProps> = ({ initialJ
           <div className="flex items-center space-x-2">
             <Filter className="h-3.5 w-3.5 text-slate-400" />
             <div className="flex bg-slate-200/70 p-0.5 rounded-lg text-xs">
-              {(['', 'sent', 'failed', 'pending'] as const).map((st) => (
+              {(['', 'sent', 'failed', 'pending', 'no_email'] as const).map((st) => (
                 <button
                   key={st}
                   onClick={() => setStatusFilter(st)}
@@ -413,7 +413,7 @@ export const RecipientsSendPage: React.FC<RecipientsSendPageProps> = ({ initialJ
                       : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
-                  {st || 'All'}
+                  {st === 'no_email' ? 'No Email' : st || 'All'}
                 </button>
               ))}
             </div>
@@ -467,10 +467,18 @@ export const RecipientsSendPage: React.FC<RecipientsSendPageProps> = ({ initialJ
                           <span>PENDING</span>
                         </span>
                       )}
+                      {log.status === 'no_email' && (
+                        <span className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold text-[10px]">
+                          <span>NO EMAIL (PDF SAVED)</span>
+                        </span>
+                      )}
                     </td>
                     <td className="py-3 px-3 text-slate-500">
                       {log.error_message ? (
-                        <span className="text-rose-600 truncate block max-w-xs" title={log.error_message}>
+                        <span
+                          className={`${log.status === 'no_email' ? 'text-amber-700' : 'text-rose-600'} truncate block max-w-xs`}
+                          title={log.error_message}
+                        >
                           {log.error_message}
                         </span>
                       ) : log.sent_at ? (

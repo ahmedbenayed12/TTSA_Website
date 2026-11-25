@@ -220,3 +220,37 @@ class ExcelFile(Base):
         DateTime(timezone=True), default=_utcnow
     )
 
+
+# ---------------------------------------------------------------------------
+# NoEmailCertificate
+# ---------------------------------------------------------------------------
+
+class NoEmailCertificate(Base):
+    """Generated PDF certificate for participants with missing or invalid emails."""
+
+    __tablename__ = "no_email_certificates"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    job_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("send_jobs.id", ondelete="SET NULL"), nullable=True
+    )
+    type_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("attestation_types.id", ondelete="SET NULL"), nullable=True
+    )
+    type_name: Mapped[str] = mapped_column(String(255), default="")
+    recipient_name: Mapped[str] = mapped_column(String(512), default="")
+    recipient_email: Mapped[str] = mapped_column(String(512), default="")
+    email_issue: Mapped[str] = mapped_column(String(255), default="Missing email")
+    role_description: Mapped[str] = mapped_column(String(512), default="")
+    presentation_title: Mapped[str] = mapped_column(String(512), default="")
+    pdf_filename: Mapped[str] = mapped_column(String(512), default="")
+    pdf_path: Mapped[str] = mapped_column(String(1024), default="")
+    file_size_bytes: Mapped[int] = mapped_column(Integer, default=0)
+    row_index: Mapped[int] = mapped_column(Integer, default=0)
+    source_excel_name: Mapped[str] = mapped_column(String(512), default="")
+    sheet_name: Mapped[str] = mapped_column(String(255), default="")
+    row_data: Mapped[str] = mapped_column(Text, default="{}")
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=_utcnow
+    )
+

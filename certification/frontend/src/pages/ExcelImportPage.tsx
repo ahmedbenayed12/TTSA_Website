@@ -250,10 +250,24 @@ export const ExcelImportPage: React.FC<ExcelImportPageProps> = ({ onNavigate }) 
         selected_indices: selectedRowIndices,
       })
 
-      setSuccess(`Job #${job.id} created with ${job.total_rows} recipients! Redirecting...`)
-      setTimeout(() => {
-        onNavigate('recipients-send', job.id)
-      }, 1000)
+      const noEmailCount = validation?.no_email_rows || 0
+      const emailCount = validation?.valid_rows || 0
+
+      if (emailCount === 0 && noEmailCount > 0) {
+        setSuccess(
+          `Generated ${job.total_rows} certificate(s) in "No Email Address Certification"! Redirecting...`
+        )
+        setTimeout(() => {
+          onNavigate('no-email-certs')
+        }, 1200)
+      } else {
+        setSuccess(
+          `Job #${job.id} created (${job.total_rows} recipients${noEmailCount > 0 ? `, including ${noEmailCount} saved to No Email Certifications` : ''})! Redirecting...`
+        )
+        setTimeout(() => {
+          onNavigate('recipients-send', job.id)
+        }, 1200)
+      }
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to create send job.')
     } finally {
@@ -466,7 +480,7 @@ export const ExcelImportPage: React.FC<ExcelImportPageProps> = ({ onNavigate }) 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-xs text-slate-500 font-medium">Valid Recipients</p>
+              <p className="text-xs text-slate-500 font-medium">Valid Email Recipients</p>
               <p className="text-xl font-bold text-emerald-600 mt-0.5">{validation.valid_rows}</p>
             </div>
             <CheckCircle2 className="h-6 w-6 text-emerald-500" />
@@ -474,10 +488,11 @@ export const ExcelImportPage: React.FC<ExcelImportPageProps> = ({ onNavigate }) 
 
           <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-xs flex items-center justify-between">
             <div>
-              <p className="text-xs text-slate-500 font-medium">Validation Warnings</p>
+              <p className="text-xs text-slate-500 font-medium">No Email (PDF Only)</p>
               <p className="text-xl font-bold text-amber-600 mt-0.5">
-                {validation.warnings.length}
+                {validation.no_email_rows ?? 0}
               </p>
+              <p className="text-[10px] text-slate-400">Saved to No Email Certifications</p>
             </div>
             <AlertTriangle className="h-6 w-6 text-amber-500" />
           </div>

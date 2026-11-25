@@ -6,6 +6,7 @@ import {
   Move,
   FileSpreadsheet,
   Send,
+  FileDown,
   Settings as SettingsIcon,
   Award,
 } from 'lucide-react'
@@ -17,6 +18,7 @@ export type NavTab =
   | 'field-editor'
   | 'excel-import'
   | 'recipients-send'
+  | 'no-email-certs'
   | 'settings'
 
 interface SidebarProps {
@@ -32,6 +34,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ currentTab, onSelectTab }) => 
     { id: 'field-editor', label: 'Field Mapping Editor', icon: Move },
     { id: 'excel-import', label: 'Excel Import', icon: FileSpreadsheet },
     { id: 'recipients-send', label: 'Send & Progress', icon: Send },
+    { id: 'no-email-certs', label: 'No Email Certifications', icon: FileDown },
     { id: 'settings', label: 'Gmail & Settings', icon: SettingsIcon },
   ] as const
 

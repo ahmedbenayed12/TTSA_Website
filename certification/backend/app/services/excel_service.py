@@ -163,9 +163,10 @@ def validate_rows(
     warnings: list[ValidationError] = []
     emails_seen: list[str] = []
     valid_count = 0
+    no_email_count = 0
 
     if not rows:
-        return ExcelValidationResult(valid_rows=0, errors=[], warnings=[])
+        return ExcelValidationResult(valid_rows=0, no_email_rows=0, errors=[], warnings=[])
 
     # Resolve actual column names present in the dataset
     sample_row = rows[0]
@@ -179,41 +180,40 @@ def validate_rows(
     for row in rows:
         row_idx: int = int(row.get("_row_index", 0))
         row_has_error = False
+        row_has_valid_email = False
 
-        # --- Email column existence ---
+        # --- Email column check (missing or invalid goes to No Email Address Certification) ---
         if actual_email_col not in row:
-            errors.append(
+            warnings.append(
                 ValidationError(
                     row_index=row_idx,
                     field=email_column,
-                    message=f"Column '{email_column}' (or '{actual_email_col}') not found in this sheet",
+                    message="Email column missing — certificate will be saved in 'No Email Address Certification'",
                 )
             )
-            row_has_error = True
         else:
             raw_email = row.get(actual_email_col)
             email_str = str(raw_email).strip() if raw_email is not None else ""
 
             if not email_str:
-                errors.append(
+                warnings.append(
                     ValidationError(
                         row_index=row_idx,
                         field=actual_email_col,
-                        message="Email address is empty",
+                        message="Empty email address — certificate will be saved in 'No Email Address Certification'",
                     )
                 )
-                row_has_error = True
             elif not is_valid_email(email_str):
-                errors.append(
+                warnings.append(
                     ValidationError(
                         row_index=row_idx,
                         field=actual_email_col,
-                        message=f"Invalid email format: '{email_str}'",
+                        message=f"Invalid email '{email_str}' — certificate will be saved in 'No Email Address Certification'",
                     )
                 )
-                row_has_error = True
             else:
                 emails_seen.append(email_str.lower())
+                row_has_valid_email = True
 
         # --- Required columns not empty ---
         for orig_col, act_col in resolved_req_map.items():
@@ -242,7 +242,10 @@ def validate_rows(
                 row_has_error = True
 
         if not row_has_error:
-            valid_count += 1
+            if row_has_valid_email:
+                valid_count += 1
+            else:
+                no_email_count += 1
 
     # --- Duplicate emails (warnings only) ---
     duplicates = find_duplicate_emails(emails_seen)
@@ -261,6 +264,7 @@ def validate_rows(
 
     return ExcelValidationResult(
         valid_rows=valid_count,
+        no_email_rows=no_email_count,
         errors=errors,
         warnings=warnings,
     )
